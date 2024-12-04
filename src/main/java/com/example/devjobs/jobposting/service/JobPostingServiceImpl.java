@@ -7,11 +7,13 @@ import com.example.devjobs.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+
 @Service
 public class JobPostingServiceImpl implements JobPostingService {
 
     @Autowired
-    JobPostingRepository repository;
+    JobPostingRepository jobPostingRepository;
 
     @Autowired
     FileUtil fileUtil;
@@ -19,8 +21,19 @@ public class JobPostingServiceImpl implements JobPostingService {
     @Override
     public int register(JobPostingDTO dto) {
 
-        JobPosting entity = dtoToEntity(dto);
+        // FileUtil을 사용하여 파일 업로드 처리
+        String imgFileName = fileUtil.fileUpload(dto.getUploadFile(), dto.getImgDirectory());
 
-        return 0;
+        // JobPostingDTO -> JobPosting 엔티티로
+        JobPosting jobPosting = dtoToEntity(dto);
+
+        // 업로드된 파일명을 설정
+        jobPosting.setImgFileName(imgFileName);
+
+        // DB에 저장
+        jobPostingRepository.save(jobPosting);
+
+        return jobPosting.getJobCode(); // 공고의 jobCode 반환
+
     }
 }

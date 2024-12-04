@@ -5,6 +5,10 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -18,41 +22,77 @@ public class JobPosting extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "job_code", nullable = false)
-    int jobCode;  // 공고코드
+    private int jobCode;  // 공고코드
 
     @Column(name = "title", nullable = false)
-    String title;  // 공고제목
+    private String title;  // 공고제목
 
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
-    String description;  // 공고내용
+    private String description;  // 공고내용
 
     @Column(name = "recruit_job", nullable = false)
-    String recruitJob;  // 모집직무(직업 카테고리)
+    private String recruitJob;  // 모집직무
 
     @Column(name = "recruit_field", nullable = false)
-    int recruitField;  // 모집인원
+    private int recruitField;  // 모집인원
 
     @Column(name = "salary")
-    String salary;  // 급여
+    private String salary;  // 급여
 
     @Column(name = "posting_deadline")
-    LocalDateTime postingDeadline;  // 공고마감일
+    private LocalDateTime postingDeadline;  // 공고마감일
 
-    @Enumerated(EnumType.STRING)
+//    // 공고 상태 관련...
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "posting_status", nullable = false)
+//    private PostingStatus postingStatus;  // 공고상태: OPEN, CLOSE
+//
+//    // PostingStatus enum을 사용하여 OPEN과 CLOSE로 상태를 관리
+//    public PostingStatus getPostingStatus() {
+//        return postingStatus;
+//    }
+//
+//    public void setPostingStatus(PostingStatus postingStatus) {
+//        this.postingStatus = postingStatus;
+//    }
+
+    // 공고 상태
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "posting_status", nullable = false)
+//    private PostingStatus postingStatus;  // 공고상태: 모집중, 마감
+
+    // 공고 상태 관련...
     @Column(name = "posting_status", nullable = false)
-    PostingStatus postingStatus;  // 공고상태
+    private String postingStatus;  // 공고상태: "모집중", "마감" (String으로 관리)
+
+
+    
 
     @Column(name = "work_experience", nullable = false)
-    String workExperience;  // 경력 (신입, 경력)
+    private String workExperience;  // 경력 (신입, 경력)
 
     @Column(name = "tag")
-    String tag;  // 태그
+    private String tag;  // 태그
 
     @Column(name = "job_category", nullable = false)
-    String jobCategory;  // 직무 카테고리
+    private String jobCategory;  // 직무 카테고리
 
-    @Column(length = 200, nullable = true)
-    String imgPath; // 파일 첨부 이름
+    @Column(name = "img_directory", length = 200)
+    private String imgDirectory; // 파일이 저장된 폴더 경로
+
+    @Column(name = "img_file_name", length = 100)
+    private String imgFileName; // 파일명
+
+    @Transient // DB에 저장되지는 않음
+    private String imgPath; // 전체 파일 경로 (imgDirectory + imgFileName)
+
+    // imgPath 계산하는 메서드
+    public String getImgPath() {
+        if (imgDirectory != null && imgFileName != null) {
+            return imgDirectory + "/" + imgFileName;  // 경로 결합
+        }
+        return null;
+    }
 
     // 작성자
 //    @ManyToOne

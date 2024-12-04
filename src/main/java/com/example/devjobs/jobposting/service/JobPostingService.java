@@ -4,42 +4,54 @@ import com.example.devjobs.jobposting.dto.JobPostingDTO;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.jobposting.entity.PostingStatus;
 
-public interface JobPostingService  {
+public interface JobPostingService {
 
     int register(JobPostingDTO dto);
 
     default JobPosting dtoToEntity(JobPostingDTO dto) {
+        // PostingStatus 값이 "모집중"이면 OPEN, "마감"이면 CLOSE로 설정
+        // 변환 로직: dtoToEntity에서 "모집중"과 "마감"을
+        // PostingStatus.OPEN, PostingStatus.CLOSE로 변환하고,
+        // entityToDto에서 enum을 "모집중", "마감"으로 변환하여 반환
+//        PostingStatus postingStatus = PostingStatus.valueOf(dto.getPostingStatus());  // Enum 변환
 
-        return JobPosting.builder()
+        // JobPosting 객체를 생성
+        JobPosting jobPosting = JobPosting.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .recruitJob(dto.getRecruitJob())
                 .recruitField(dto.getRecruitField())
                 .salary(dto.getSalary())
                 .postingDeadline(dto.getPostingDeadline())
-                .postingStatus(PostingStatus.valueOf(dto.getPostingStatus()))
+                .postingStatus(dto.getPostingStatus())
                 .workExperience(dto.getWorkExprerience())
                 .tag(dto.getTag())
                 .jobCategory(dto.getJobCategory())
-                .imgPath(dto.getImgPath()) // 파일 이름
+                .imgDirectory(dto.getImgDirectory())
+                .imgFileName(dto.getImgFileName())
                 .build();
 
+        return jobPosting;
     }
 
     default JobPostingDTO entityToDto(JobPosting entity) {
-        return JobPostingDTO.builder()
+        JobPostingDTO dto = JobPostingDTO.builder()
                 .title(entity.getTitle())
                 .description(entity.getDescription())
                 .recruitJob(entity.getRecruitJob())
                 .recruitField(entity.getRecruitField())
                 .salary(entity.getSalary())
                 .postingDeadline(entity.getPostingDeadline())
-                .postingStatus(entity.getPostingStatus().name()) // Enum -> String 변환
+                .postingStatus(entity.getPostingStatus())
                 .workExprerience(entity.getWorkExperience())
                 .tag(entity.getTag())
                 .jobCategory(entity.getJobCategory())
-                .imgPath(entity.getImgPath()) // 파일 이름
+                .imgDirectory(entity.getImgDirectory())
+                .imgFileName(entity.getImgFileName())
+                // imgPath 필드는 @Transient로 설정되어 데이터베이스에 저장되지 않으며,
+                // getImgPath() 메서드를 통해 imgDirectory와 imgFileName을 결합한 경로를 반환
+                .imgPath(entity.getImgPath()) // 전체 파일 경로
                 .build();
+        return dto;
     }
-
 }

@@ -17,24 +17,33 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class FileUtil {
 
-    // 파일 경로는 환경에 따라 바뀔 수 있으므로
-    // 환경파일에 저장하고 클래스에서 불러다 써야함!
-    // 예: 로컬 컴퓨터 - c:/uploadfile
-    //     서버 컴퓨터 - d:/imagefile
-
-    // 이미지 파일을 저장할 경로
     @Value("${filepath}")
-    private String filepath;
+    private String filepath;  // 파일 저장 경로
 
     // 파일 업로드 메서드 (단일 파일 업로드)
-    public String fileUpload(MultipartFile multipartFile) {
+    public String fileUpload(MultipartFile multipartFile, String imgDirectory) {
         if (multipartFile == null || multipartFile.isEmpty()) {
             return null;
         }
 
         try {
-            // 파일 경로와 이름 설정
-            Path copyOfLocation = Paths.get(filepath + File.separator + StringUtils.cleanPath(multipartFile.getOriginalFilename()));
+            // imgDirectory가 절대경로라면 filepath와 결합하지 않음
+            Path uploadDirectory;
+            if (imgDirectory.startsWith("C:\\") || imgDirectory.startsWith("/")) {
+                // 절대경로가 이미 주어졌다면, 그 경로를 그대로 사용
+                uploadDirectory = Paths.get(imgDirectory);
+            } else {
+                // 상대경로라면, filepath와 결합
+                uploadDirectory = Paths.get(filepath, imgDirectory);
+            }
+
+            // 디렉토리가 존재하지 않으면 생성
+            if (!Files.exists(uploadDirectory)) {
+                Files.createDirectories(uploadDirectory); // 부모 디렉토리까지 함께 생성
+            }
+
+            // 파일 경로 설정
+            Path copyOfLocation = uploadDirectory.resolve(StringUtils.cleanPath(multipartFile.getOriginalFilename()));
 
             // 파일을 지정한 경로에 저장
             Files.copy(multipartFile.getInputStream(), copyOfLocation, StandardCopyOption.REPLACE_EXISTING);
@@ -46,20 +55,5 @@ public class FileUtil {
         }
 
         return null;
-    }
-
-    // 여러 파일 업로드 메서드 (다수 파일 업로드)
-    public List<String> fileUploadMultiple(List<MultipartFile> multipartFiles) {
-        List<String> uploadedFileNames = new ArrayList<>();
-
-        for (MultipartFile file : multipartFiles) {
-            String fileName = fileUpload(file);
-            if (fileName != null) {
-                uploadedFileNames.add(fileName);
-            }
-        }
-
-        return uploadedFileNames;
-
     }
 }
