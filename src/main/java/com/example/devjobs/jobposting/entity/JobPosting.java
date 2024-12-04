@@ -27,7 +27,7 @@ public class JobPosting extends BaseEntity {
     String description;  // 공고내용
 
     @Column(name = "recruit_job", nullable = false)
-    String recruitJob;  // 모집직무
+    String recruitJob;  // 모집직무(직업 카테고리)
 
     @Column(name = "recruit_field", nullable = false)
     int recruitField;  // 모집인원
@@ -51,7 +51,8 @@ public class JobPosting extends BaseEntity {
     @Column(name = "job_category", nullable = false)
     String jobCategory;  // 직무 카테고리
 
-
+    @Column(length = 200, nullable = true)
+    String imgPath; // 파일 첨부 이름
 
     // 작성자
 //    @ManyToOne

@@ -1,6 +1,7 @@
 package com.example.devjobs.jobposting.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -37,5 +38,10 @@ public class JobPostingDTO {
 //    String writer; // 작성자(Members.. PK)
 //
 //    String companyProfile; // 기업프로필코드(CompanyProfile...PK)
+
+    /* 이미지 파일 첨부 */
+    MultipartFile uploadFile; // 파일 스트림
+
+    String imgPath; // 파일 이름
 
 }
