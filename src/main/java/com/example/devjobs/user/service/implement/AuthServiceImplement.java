@@ -102,27 +102,37 @@ public class AuthServiceImplement implements AuthService {
         try {
 
             String userId = dto.getId();
+            String userCode = dto.getUserCode();
 
-            boolean isExistId = userRepository.existsById(userId);
-            if(isExistId) return SignUpResponseDto.duplicateId();
+            if(userCode != null && !userCode.isEmpty()){
+                boolean isExistUserCode = userRepository.existsByUserCode(userCode);
+                if(isExistUserCode) return SignUpResponseDto.duplicateId();
 
-            String email = dto.getEmail();
-            String certificationNumber = dto.getCertificationNumber();
+                String email = dto.getEmail();
+                String type = dto.getType();
+                User user = new User(userCode, email, type);
+                userRepository.save(user);
+            }else {
+                boolean isExistId = userRepository.existsById(userId);
+                if(isExistId) return SignUpResponseDto.duplicateId();
 
-            Certification certification = certificationRepository.findByUserId(userId);
-            boolean isMatched =
-                    certification.getEmail().equals(email) &&
-                            certification.getCertificationNumber().equals(certificationNumber);
-            if(!isMatched) return SignUpResponseDto.certificationFail();
+                String email = dto.getEmail();
+                String certificationNumber = dto.getCertificationNumber();
 
-            String password = dto.getPassword();
-            String encodedPassword = passwordEncoder.encode(password);
-            dto.setPassword(encodedPassword);
+                Certification certification = certificationRepository.findByUserId(userId);
+                boolean isMatched = certification.getEmail().equals(email) &&
+                        certification.getCertificationNumber().equals(certificationNumber);
+                if(!isMatched) return SignUpResponseDto.certificationFail();
 
-            User user = new User(dto);
-            userRepository.save(user);
+                String password = dto.getPassword();
+                String encodedPassword = passwordEncoder.encode(password);
+                dto.setPassword(encodedPassword);
 
-            certificationRepository.deleteByUserId(userId);
+                User user = new User(dto);
+                userRepository.save(user);
+
+                certificationRepository.deleteByUserId(userId);
+            }
 
         } catch (Exception exception){
             exception.printStackTrace();

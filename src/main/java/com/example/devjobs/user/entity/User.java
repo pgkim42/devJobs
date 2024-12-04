@@ -17,10 +17,18 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
-    private String userId;
+    @Column(name = "user_code")
+    private String userCode; // 소셜 회원가입 시 사용되는 고유ID
+
+    @Column(unique = true)
+    private String userId;   // 일반 회원가입 시 사용되는 고유ID
+
     private String password;
+
     private String email;
+
     private String type;
+
     private String role;
 
     public User(SignUpRequestDto dto){
@@ -29,12 +37,19 @@ public class User {
         this.email = dto.getEmail();
         this.type = "dev";
         this.role = "ROLE_USER";
+        // 일반 회원가입 시 userCode는 userId와 동일하게 설정
+        this.userCode = "dev_" + dto.getId();
     }
 
-    public User(String userId, String email, String type){
-        this.userId = userId;
-        this.password = "passw0rd";
+    public User(String userCode, String email, String type){
+        this.userCode = userCode;
         this.email = email;
+        this.type = type;
+        this.role = "ROLE_USER";
+    }
+
+    public User(String userCode, String type){
+        this.userCode = userCode;
         this.type = type;
         this.role = "ROLE_USER";
     }

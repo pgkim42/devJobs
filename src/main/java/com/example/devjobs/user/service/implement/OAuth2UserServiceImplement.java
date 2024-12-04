@@ -19,49 +19,39 @@ public class OAuth2UserServiceImplement extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
 
-
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
-
         OAuth2User oAuth2User = super.loadUser(request);
         String oauthClientName = request.getClientRegistration().getClientName();
 
         try {
-
             System.out.println(new ObjectMapper().writeValueAsString(oAuth2User.getAttributes()));
-
         } catch (Exception exception) {
             exception.printStackTrace();
         }
 
         User user = null;
-        String userId = null;
+        String userCode = null;
         String email = null;
 
         if(oauthClientName.equals("kakao")){
-
             Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
             if (kakaoAccount != null) {
                 email = (String) kakaoAccount.get("email");
             }
-
-            userId = "kakao_" + oAuth2User.getAttributes().get("id");
-            user = new User(userId, email, "kakao");
-
+            userCode = "kakao_" + oAuth2User.getAttributes().get("id");
+            user = new User(userCode, email, "kakao");
         }
 
         if(oauthClientName.equals("naver")){
-
             Map<String, String> responseMap = (Map<String, String>) oAuth2User.getAttributes().get("response");
-            userId = "naver_" + responseMap.get("id").substring(0, 14);
+            userCode = "naver_" + responseMap.get("id").substring(0, 14);
             email = responseMap.get("email");
-            user = new User(userId, email, "naver");
-
+            user = new User(userCode, email, "naver");
         }
 
-        userRepository.save(user);
+        userRepository.save(user); // User ID는 이미 수동으로 설정됨
 
-        return new CustomOAuth2User(userId);
-
+        return new CustomOAuth2User(userCode);
     }
 }
