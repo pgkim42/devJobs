@@ -1,4 +1,4 @@
-package com.example.devjobs.entity;
+package com.example.devjobs.jobposting.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
