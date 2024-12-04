@@ -1,5 +1,6 @@
 package com.example.devjobs.user.entity;
 
+import com.example.devjobs.common.BaseEntity;
 import com.example.devjobs.user.dto.request.auth.SignUpRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity(name = "user")
 @Table(name = "user")
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @Column(name = "user_code")
