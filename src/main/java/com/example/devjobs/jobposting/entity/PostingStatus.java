@@ -1,4 +1,4 @@
-package com.example.devjobs.entity;
+package com.example.devjobs.jobposting.entity;
 
 // 공고 상태
 public enum PostingStatus {

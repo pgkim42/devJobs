@@ -1,7 +1,6 @@
-package com.example.devjobs.dto;
+package com.example.devjobs.jobposting.dto;
 
 import lombok.*;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
