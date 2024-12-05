@@ -32,22 +32,30 @@ public class OAuth2UserServiceImplement extends DefaultOAuth2UserService {
 
         User user = null;
         String userCode = null;
+        String nickname = null;
         String email = null;
 
         if(oauthClientName.equals("kakao")){
             Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
             if (kakaoAccount != null) {
                 email = (String) kakaoAccount.get("email");
+
+                Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+                if (profile != null) {
+                    nickname = (String) profile.get("nickname");
+                }
             }
+
             userCode = "kakao_" + oAuth2User.getAttributes().get("id");
-            user = new User(userCode, email, "kakao");
+            user = new User(userCode, email, nickname,"kakao");
         }
 
         if(oauthClientName.equals("naver")){
             Map<String, String> responseMap = (Map<String, String>) oAuth2User.getAttributes().get("response");
             userCode = "naver_" + responseMap.get("id").substring(0, 14);
             email = responseMap.get("email");
-            user = new User(userCode, email, "naver");
+            nickname = responseMap.get("name");
+            user = new User(userCode, email, nickname,"naver");
         }
 
         userRepository.save(user); // User ID는 이미 수동으로 설정됨

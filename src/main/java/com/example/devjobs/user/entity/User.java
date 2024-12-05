@@ -24,6 +24,9 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String userId;   // 일반 회원가입 시 사용되는 고유ID
 
+    @Column(unique = true)
+    private String nickname;
+
     private String password;
 
     private String email;
@@ -33,18 +36,20 @@ public class User extends BaseEntity {
     private String role;
 
     public User(SignUpRequestDto dto){
-        this.userId = dto.getId();
+        this.userId = dto.getUserId();
+        this.nickname = dto.getNickname();
         this.password = dto.getPassword();
         this.email = dto.getEmail();
         this.type = "dev";
         this.role = "ROLE_USER";
         // 일반 회원가입 시 userCode는 userId와 동일하게 설정
-        this.userCode = "dev_" + dto.getId();
+        this.userCode = "dev_" + dto.getUserId();
     }
 
-    public User(String userCode, String email, String type){
+    public User(String userCode, String email, String nickname, String type){
         this.userCode = userCode;
         this.email = email;
+        this.nickname = nickname;
         this.type = type;
         this.role = "ROLE_USER";
     }

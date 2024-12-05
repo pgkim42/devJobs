@@ -25,6 +25,13 @@ public class AuthController {
         return response;
     }
 
+    @PostMapping("/nickname-check")
+    public ResponseEntity<? super NicknameCheckResponseDto> nicknameCheck
+            (@RequestBody @Valid NicknameCheckRequestDto requestBody) {
+        ResponseEntity< ? super NicknameCheckResponseDto> response = authService.nicknameCheck(requestBody);
+        return response;
+    }
+
     @PostMapping("/email-certification")
     public ResponseEntity<? super EmailCertificationResponseDto> emailCertification
             (@RequestBody @Valid EmailCertificationRequestDto requestBody) {

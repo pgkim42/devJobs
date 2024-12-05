@@ -11,6 +11,6 @@ import lombok.Setter;
 public class IdCheckRequestDto {
 
     @NotBlank
-    private String id;
+    private String userId;
 
 }

@@ -12,12 +12,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SignUpRequestDto {
 
-    private String id;
+    @NotBlank
+    private String userId;
 
     private String userCode;
 
     @NotBlank
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,13}$") // 비밀번호 영어 숫자 혼용하여 8~13자까지
+    private String nickname;
+
+    @NotBlank
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,13}$")
     private String password;
 
     @Email
@@ -30,4 +34,5 @@ public class SignUpRequestDto {
     private String type; // 회원가입 유형(일반회원가입 "dev" , 소셜회원가입 "kakao", "naver")
 
 }
+
 

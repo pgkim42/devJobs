@@ -23,4 +23,5 @@ public class IdCheckResponseDto extends ResponseDto {
         ResponseDto responseBody = new ResponseDto(ResponseCode.DUPLICATE_ID, ResponseMessage.DUPLICATE_ID);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
     }
+
 }

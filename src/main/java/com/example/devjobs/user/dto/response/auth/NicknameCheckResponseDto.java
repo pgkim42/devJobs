@@ -3,19 +3,17 @@ package com.example.devjobs.user.dto.response.auth;
 import com.example.devjobs.user.common.ResponseCode;
 import com.example.devjobs.user.common.ResponseMessage;
 import com.example.devjobs.user.dto.response.ResponseDto;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-@Getter
-public class EmailCertificationResponseDto extends ResponseDto {
+public class NicknameCheckResponseDto extends ResponseDto {
 
-    private EmailCertificationResponseDto() {
+    private NicknameCheckResponseDto() {
         super();
     }
 
-    public static ResponseEntity<EmailCertificationResponseDto> success() {
-        EmailCertificationResponseDto responseBody = new EmailCertificationResponseDto();
+    public static ResponseEntity<NicknameCheckResponseDto> success() {
+        NicknameCheckResponseDto responseBody = new NicknameCheckResponseDto();
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
@@ -26,11 +24,6 @@ public class EmailCertificationResponseDto extends ResponseDto {
 
     public static ResponseEntity<ResponseDto> duplicateNickname() {
         ResponseDto responseBody = new ResponseDto(ResponseCode.DUPLICATE_NICKNAME, ResponseMessage.DUPLICATE_NICKNAME);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
-    }
-
-    public static ResponseEntity<ResponseDto> mailSendFail() {
-        ResponseDto responseBody = new ResponseDto(ResponseCode.MAIL_FAIL, ResponseMessage.MAIL_FAIL);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
     }
 
