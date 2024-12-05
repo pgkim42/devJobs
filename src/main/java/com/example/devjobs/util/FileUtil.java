@@ -21,21 +21,14 @@ public class FileUtil {
     private String filepath;  // 파일 저장 경로
 
     // 파일 업로드 메서드 (단일 파일 업로드)
-    public String fileUpload(MultipartFile multipartFile, String imgDirectory) {
+    public String fileUpload(MultipartFile multipartFile) {
         if (multipartFile == null || multipartFile.isEmpty()) {
             return null;
         }
 
         try {
             // imgDirectory가 절대경로라면 filepath와 결합하지 않음
-            Path uploadDirectory;
-            if (imgDirectory.startsWith("C:\\") || imgDirectory.startsWith("/")) {
-                // 절대경로가 이미 주어졌다면, 그 경로를 그대로 사용
-                uploadDirectory = Paths.get(imgDirectory);
-            } else {
-                // 상대경로라면, filepath와 결합
-                uploadDirectory = Paths.get(filepath, imgDirectory);
-            }
+            Path uploadDirectory =  Paths.get("C:\\upload");
 
             // 디렉토리가 존재하지 않으면 생성
             if (!Files.exists(uploadDirectory)) {
@@ -55,5 +48,23 @@ public class FileUtil {
         }
 
         return null;
+    }
+
+    // 파일 삭제 메서드
+    public boolean deleteFile(String filePath) {
+
+        try {
+            Path path = Paths.get("C:\\upload", filePath);
+
+            if (Files.exists(path)) {
+                Files.delete(path); // 파일 삭제
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+
     }
 }

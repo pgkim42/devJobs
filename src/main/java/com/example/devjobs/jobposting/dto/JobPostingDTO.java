@@ -13,9 +13,11 @@ import java.time.LocalDateTime;
 @Builder
 public class JobPostingDTO {
 
+    private Integer jobCode; // 공고번호
+
     private String title;  // 공고제목
 
-    private String description;  // 공고내용
+    private String content;  // 공고내용
 
     private String recruitJob;  // 모집직무
 
@@ -29,16 +31,16 @@ public class JobPostingDTO {
 
     private String postingStatus;  // 공고상태
 
-    private String workExprerience;  // 경력
+    private String workExperience;  // 경력
 
-    private String tag;  // 태그
+    private String tag;  // 태그(스킬)
 
     private String jobCategory;  // 직무 카테고리
 
     // imgFile 관련 ...
     private MultipartFile uploadFile;  // 파일 스트림
 
-    private String imgDirectory;  // 파일이 저장될 경로
+//    private String imgDirectory;  // 파일이 저장될 경로
 
     private String imgFileName;  // 업로드된 파일명
 

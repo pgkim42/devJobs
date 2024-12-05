@@ -49,17 +49,17 @@ public class JobPostingServiceTest {
 
         JobPostingDTO dto = JobPostingDTO.builder()
                 .title("공고 테스트")
-                .description("내용 테스트")
+                .content("내용 테스트")
                 .recruitJob("모집 직종")
                 .recruitField(5)
                 .salary("추후협의")
                 .postingDeadline(null)
                 .postingStatus("OPEN")
-                .workExprerience("경력")
+                .workExperience("경력")
                 .tag("Java")
                 .jobCategory("Backend")
                 .uploadFile(mockFile) // 실제 파일을 DTO에 포함시킴
-                .imgDirectory("C:\\upload") // 실제 파일이 저장된 디렉토리
+//                .imgDirectory("C:\\upload") // 실제 파일이 저장된 디렉토리
                 .imgFileName(file.getName())
                 .build();
 

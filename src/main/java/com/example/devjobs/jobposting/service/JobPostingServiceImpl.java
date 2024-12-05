@@ -6,14 +6,20 @@ import com.example.devjobs.jobposting.repository.JobPostingRepository;
 import com.example.devjobs.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class JobPostingServiceImpl implements JobPostingService {
 
     @Autowired
-    JobPostingRepository jobPostingRepository;
+    JobPostingRepository repository;
 
     @Autowired
     FileUtil fileUtil;
@@ -22,7 +28,7 @@ public class JobPostingServiceImpl implements JobPostingService {
     public int register(JobPostingDTO dto) {
 
         // FileUtil을 사용하여 파일 업로드 처리
-        String imgFileName = fileUtil.fileUpload(dto.getUploadFile(), dto.getImgDirectory());
+        String imgFileName = fileUtil.fileUpload(dto.getUploadFile());
 
         // JobPostingDTO -> JobPosting 엔티티로
         JobPosting jobPosting = dtoToEntity(dto);
@@ -31,9 +37,131 @@ public class JobPostingServiceImpl implements JobPostingService {
         jobPosting.setImgFileName(imgFileName);
 
         // DB에 저장
-        jobPostingRepository.save(jobPosting);
+        repository.save(jobPosting);
 
         return jobPosting.getJobCode(); // 공고의 jobCode 반환
 
+    }
+
+    @Override
+    public List<JobPostingDTO> getList() {
+
+        List<JobPosting> entityList = repository.findAll();
+        List<JobPostingDTO> dtoList = entityList.stream()
+                .map(entity -> entityToDto(entity))
+                .collect(Collectors.toList());
+
+        return dtoList;
+
+    }
+
+    @Override
+    public JobPostingDTO read(int jobCode) {
+        Optional<JobPosting> result = repository.findById(jobCode);
+        if (result.isPresent()) {
+            JobPosting jobPosting = result.get();
+            return entityToDto(jobPosting);
+        } else {
+            return null;
+        }
+    }
+
+    // 전체 수정(데이터 모두 넣어줘야 함)
+    @Override
+    public void modify(JobPostingDTO dto) {
+        Optional<JobPosting> result = repository.findById(dto.getJobCode());
+
+        if (result.isPresent()) {
+            JobPosting entity = result.get();
+
+            // 새로운 이미지 파일이 첨부된 경우
+            if (dto.getUploadFile() != null && !dto.getUploadFile().isEmpty()) {
+
+                // 1. 기존 파일 삭제(필요한 경우)
+                if (entity.getImgFileName() != null) {
+                    fileUtil.deleteFile(entity.getImgFileName());
+                }
+
+                String newFileName = fileUtil.fileUpload(dto.getUploadFile());
+                entity.setImgFileName(newFileName); // 업로드된 파일명 설정
+
+                entity.setTitle(dto.getTitle());
+                entity.setContent(dto.getContent());
+                entity.setRecruitJob(dto.getRecruitJob());
+                entity.setRecruitField(dto.getRecruitField());
+                entity.setSalary(dto.getSalary());
+                entity.setPostingDeadline(dto.getPostingDeadline());
+                entity.setPostingStatus(dto.getPostingStatus());
+                entity.setWorkExperience(dto.getWorkExperience());
+                entity.setTag(dto.getTag());
+                entity.setJobCategory(dto.getJobCategory());
+
+                repository.save(entity);
+
+            }
+
+        }
+
+    }
+
+    // 일부 필드만 업데이트(개별 수정 @PATCH)
+    @Override
+    public void modifyPartial(Integer jobCode, String title, String content, String recruitJob,
+                              Integer recruitField, String salary, String postingStatus,
+                              String workExperience, String tag, String jobCategory,
+                              LocalDateTime postingDeadline, MultipartFile uploadFile) {
+
+        if (jobCode == null) {
+            throw new IllegalArgumentException("Job Code must not be null.");
+        }
+
+        Optional<JobPosting> result = repository.findById(jobCode);
+
+        if (result.isPresent()) {
+            JobPosting entity = result.get();
+
+            if (title != null) entity.setTitle(title);
+            if (content != null) entity.setContent(content);
+            if (recruitJob != null) entity.setRecruitJob(recruitJob);
+            if (recruitField != null) entity.setRecruitField(recruitField);
+            if (salary != null) entity.setSalary(salary);
+            if (postingStatus != null) entity.setPostingStatus(postingStatus);
+            if (workExperience != null) entity.setWorkExperience(workExperience);
+            if (tag != null) entity.setTag(tag);
+            if (jobCategory != null) entity.setJobCategory(jobCategory);
+            if (postingDeadline != null) entity.setPostingDeadline(postingDeadline);
+
+            if (uploadFile != null && !uploadFile.isEmpty()) {
+                String newFileName = fileUtil.fileUpload(uploadFile);
+                entity.setImgFileName(newFileName);
+            }
+
+            repository.save(entity);
+        } else {
+            throw new IllegalArgumentException("Job Posting with the given Job Code does not exist.");
+        }
+    }
+
+    @Override
+    public void delete(Integer jobCode) {
+        if(jobCode == null) {
+            throw new IllegalArgumentException("Job Code must not be null.");
+        }
+
+        Optional<JobPosting> result = repository.findById(jobCode);
+
+        if(result.isPresent()) {
+            // 파일 삭제 처리
+            JobPosting entity = result.get();
+
+            if(entity.getImgFileName() != null) {
+                fileUtil.deleteFile(entity.getImgFileName()); // 이미지 파일 삭제
+            }
+
+            repository.deleteById(jobCode);
+
+         } else {
+            throw new IllegalArgumentException("Job Posting with the given Job Code does not exist.");
+        }
     }
 }

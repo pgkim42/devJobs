@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@AttributeOverride(name = "createdDate", column = @Column(name = "posting_date"))  // BaseEntity의 createdDate를 posting_date로 덮어쓰기
 public class JobPosting extends BaseEntity {
 
     @Id
@@ -27,8 +28,8 @@ public class JobPosting extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;  // 공고제목
 
-    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
-    private String description;  // 공고내용
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    private String content;  // 공고내용
 
     @Column(name = "recruit_job", nullable = false)
     private String recruitJob;  // 모집직무
@@ -39,7 +40,7 @@ public class JobPosting extends BaseEntity {
     @Column(name = "salary")
     private String salary;  // 급여
 
-    @Column(name = "posting_deadline")
+    @Column(name = "posting_deadline", nullable = false)
     private LocalDateTime postingDeadline;  // 공고마감일
 
 //    // 공고 상태 관련...
@@ -65,9 +66,6 @@ public class JobPosting extends BaseEntity {
     @Column(name = "posting_status", nullable = false)
     private String postingStatus;  // 공고상태: "모집중", "마감" (String으로 관리)
 
-
-    
-
     @Column(name = "work_experience", nullable = false)
     private String workExperience;  // 경력 (신입, 경력)
 
@@ -77,8 +75,8 @@ public class JobPosting extends BaseEntity {
     @Column(name = "job_category", nullable = false)
     private String jobCategory;  // 직무 카테고리
 
-    @Column(name = "img_directory", length = 200)
-    private String imgDirectory; // 파일이 저장된 폴더 경로
+//    @Column(name = "img_directory", length = 200)
+//    private String imgDirectory; // 파일이 저장된 폴더 경로
 
     @Column(name = "img_file_name", length = 100)
     private String imgFileName; // 파일명
@@ -87,12 +85,12 @@ public class JobPosting extends BaseEntity {
     private String imgPath; // 전체 파일 경로 (imgDirectory + imgFileName)
 
     // imgPath 계산하는 메서드
-    public String getImgPath() {
-        if (imgDirectory != null && imgFileName != null) {
-            return imgDirectory + "/" + imgFileName;  // 경로 결합
-        }
-        return null;
-    }
+//    public String getImgPath() {
+//        if (imgDirectory != null && imgFileName != null) {
+//            return imgDirectory + "/" + imgFileName;  // 경로 결합
+//        }
+//        return null;
+//    }
 
     // 작성자
 //    @ManyToOne
