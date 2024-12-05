@@ -15,9 +15,15 @@
   - 이메일 형식 검증
   - 인증번호 검증
 
-# 1205 JobPosting, 모집공고
+# 1205 JobPosting(구인공고)
 - common.file로 파일첨부 스토리지 생성
 - 파일첨부 단위테스트
 - PostingStatus를 Enum으로 사용하려 했으나 "모집중", "마감"만 있어서 String으로 전환
 - 관련 dto, entity, repository, service 일부 구현
 - 현재 service 중 register만 완료
+
+# 1206 JobPosting(구인공고), CompanyProfile(기업프로필)
+- JobPosting 이미지 업로드 및 CRUD 기능(완료)
+- JobPosting에 CompanyProfile객체 외래키 연결
+- CompanyProfile dto, entity, repository, repository test(CRUD)
+- repositorytest로 데이터 생성 후 CompanyProfile PK를 받고 JobPosting테이블에 profileCd가 컬럼에 추가 되는 것 까지 확인
