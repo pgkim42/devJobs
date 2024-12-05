@@ -12,10 +12,14 @@ import com.example.devjobs.user.repository.CertificationRepository;
 import com.example.devjobs.user.repository.UserRepository;
 import com.example.devjobs.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -174,28 +178,32 @@ public class AuthServiceImplement implements AuthService {
 
     @Override
     public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
-
         String token = null;
-
         try {
-
             String userId = dto.getUserId();
             User user = userRepository.findByUserId(userId);
-            if(user == null) return SignInResponseDto.signInFail();
+            if (user == null) {
+                return SignInResponseDto.signInFail();  // 로그인 실패 처리
+            }
 
             String password = dto.getPassword();
             String encodedPassword = user.getPassword();
             boolean isMatched = passwordEncoder.matches(password, encodedPassword);
-            if(!isMatched) return SignInResponseDto.signInFail();
+            if (!isMatched) {
+                return SignInResponseDto.signInFail();  // 비밀번호 불일치 처리
+            }
 
+            // JWT 토큰 생성
             token = jwtProvider.create(userId);
 
-        } catch (Exception exception){
+            // 성공적으로 로그인 시 사용자 정보와 토큰 포함하여 반환
+            return ResponseEntity.ok(SignInResponseDto.success(token, user));
+
+        } catch (Exception exception) {
             exception.printStackTrace();
-            return ResponseDto.databaseError();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseDto.databaseError());
         }
-
-        return SignInResponseDto.success(token);
-
     }
+
 }

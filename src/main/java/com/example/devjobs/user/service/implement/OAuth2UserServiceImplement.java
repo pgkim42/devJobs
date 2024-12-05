@@ -40,9 +40,8 @@ public class OAuth2UserServiceImplement extends DefaultOAuth2UserService {
             if (kakaoAccount != null) {
                 email = (String) kakaoAccount.get("email");
 
-                Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
-                if (profile != null) {
-                    nickname = (String) profile.get("nickname");
+                if (email != null) {
+                    nickname = email.substring(0, email.indexOf("@"));
                 }
             }
 
@@ -54,7 +53,7 @@ public class OAuth2UserServiceImplement extends DefaultOAuth2UserService {
             Map<String, String> responseMap = (Map<String, String>) oAuth2User.getAttributes().get("response");
             userCode = "naver_" + responseMap.get("id").substring(0, 14);
             email = responseMap.get("email");
-            nickname = responseMap.get("name");
+            nickname = responseMap.get("email").substring(0, email.indexOf("@"));
             user = new User(userCode, email, nickname,"naver");
         }
 

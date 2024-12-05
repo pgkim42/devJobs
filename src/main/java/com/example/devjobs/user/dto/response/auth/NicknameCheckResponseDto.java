@@ -3,9 +3,11 @@ package com.example.devjobs.user.dto.response.auth;
 import com.example.devjobs.user.common.ResponseCode;
 import com.example.devjobs.user.common.ResponseMessage;
 import com.example.devjobs.user.dto.response.ResponseDto;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+@Getter
 public class NicknameCheckResponseDto extends ResponseDto {
 
     private NicknameCheckResponseDto() {

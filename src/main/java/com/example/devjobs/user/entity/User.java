@@ -59,4 +59,6 @@ public class User extends BaseEntity {
         this.type = type;
         this.role = "ROLE_USER";
     }
+
+
 }
