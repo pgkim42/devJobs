@@ -1,4 +1,4 @@
-package com.example.devjobs.jobposting.entity;
+package com.example.devjobs.common.file;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

@@ -1,5 +1,6 @@
 package com.example.devjobs.jobposting.service;
 
+import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.jobposting.dto.JobPostingDTO;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.jobposting.entity.PostingStatus;
@@ -14,7 +15,7 @@ public interface JobPostingService {
 
     List<JobPostingDTO> getList();
 
-    JobPostingDTO read(int jobCode);
+    JobPostingDTO read(Integer jobCode);
 
     void modify(JobPostingDTO dto);
 
@@ -26,11 +27,10 @@ public interface JobPostingService {
                        LocalDateTime postingDeadline, MultipartFile uploadFile);
 
     default JobPosting dtoToEntity(JobPostingDTO dto) {
-        // PostingStatus 값이 "모집중"이면 OPEN, "마감"이면 CLOSE로 설정
-        // 변환 로직: dtoToEntity에서 "모집중"과 "마감"을
-        // PostingStatus.OPEN, PostingStatus.CLOSE로 변환하고,
-        // entityToDto에서 enum을 "모집중", "마감"으로 변환하여 반환
-//        PostingStatus postingStatus = PostingStatus.valueOf(dto.getPostingStatus());  // Enum 변환
+
+        // CompanyProfile 가져오기(기업프로필)
+        CompanyProfile companyProfile = new CompanyProfile();
+        companyProfile.setCompanyProfileCd(dto.getCompanyProfileCd());
 
         // JobPosting 객체를 생성
         JobPosting jobPosting = JobPosting.builder()
@@ -46,6 +46,7 @@ public interface JobPostingService {
                 .tag(dto.getTag())
                 .jobCategory(dto.getJobCategory())
                 .imgFileName(dto.getImgFileName())
+                .companyProfile(companyProfile)
                 .build();
 
         return jobPosting;
@@ -66,6 +67,7 @@ public interface JobPostingService {
                 .tag(entity.getTag())
                 .jobCategory(entity.getJobCategory())
                 .imgFileName(entity.getImgFileName())
+                .companyProfileCd(entity.getCompanyProfile().getCompanyProfileCd())
                 // imgPath 필드는 @Transient로 설정되어 데이터베이스에 저장되지 않으며,
                 // getImgPath() 메서드를 통해 imgDirectory와 imgFileName을 결합한 경로를 반환
                 .imgPath(entity.getImgPath()) // 전체 파일 경로

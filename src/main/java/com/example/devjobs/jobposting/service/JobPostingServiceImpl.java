@@ -56,7 +56,7 @@ public class JobPostingServiceImpl implements JobPostingService {
     }
 
     @Override
-    public JobPostingDTO read(int jobCode) {
+    public JobPostingDTO read(Integer jobCode) {
         Optional<JobPosting> result = repository.findById(jobCode);
         if (result.isPresent()) {
             JobPosting jobPosting = result.get();
@@ -111,9 +111,9 @@ public class JobPostingServiceImpl implements JobPostingService {
                               String workExperience, String tag, String jobCategory,
                               LocalDateTime postingDeadline, MultipartFile uploadFile) {
 
-        if (jobCode == null) {
-            throw new IllegalArgumentException("Job Code must not be null.");
-        }
+//        if (jobCode == null) {
+//            throw new IllegalArgumentException("Job Code must not be null.");
+//        }
 
         Optional<JobPosting> result = repository.findById(jobCode);
 
@@ -144,9 +144,9 @@ public class JobPostingServiceImpl implements JobPostingService {
 
     @Override
     public void delete(Integer jobCode) {
-        if(jobCode == null) {
-            throw new IllegalArgumentException("Job Code must not be null.");
-        }
+//        if(jobCode == null) {
+//            throw new IllegalArgumentException("Job Code must not be null.");
+//        }
 
         Optional<JobPosting> result = repository.findById(jobCode);
 

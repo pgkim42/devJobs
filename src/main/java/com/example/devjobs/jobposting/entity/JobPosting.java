@@ -1,12 +1,10 @@
 package com.example.devjobs.jobposting.entity;
 
+import com.example.devjobs.common.file.BaseEntity;
+import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,7 +21,7 @@ public class JobPosting extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "job_code", nullable = false)
-    private int jobCode;  // 공고코드
+    private Integer jobCode;  // 공고코드
 
     @Column(name = "title", nullable = false)
     private String title;  // 공고제목
@@ -42,25 +40,6 @@ public class JobPosting extends BaseEntity {
 
     @Column(name = "posting_deadline", nullable = false)
     private LocalDateTime postingDeadline;  // 공고마감일
-
-//    // 공고 상태 관련...
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "posting_status", nullable = false)
-//    private PostingStatus postingStatus;  // 공고상태: OPEN, CLOSE
-//
-//    // PostingStatus enum을 사용하여 OPEN과 CLOSE로 상태를 관리
-//    public PostingStatus getPostingStatus() {
-//        return postingStatus;
-//    }
-//
-//    public void setPostingStatus(PostingStatus postingStatus) {
-//        this.postingStatus = postingStatus;
-//    }
-
-    // 공고 상태
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "posting_status", nullable = false)
-//    private PostingStatus postingStatus;  // 공고상태: 모집중, 마감
 
     // 공고 상태 관련...
     @Column(name = "posting_status", nullable = false)
@@ -84,20 +63,15 @@ public class JobPosting extends BaseEntity {
     @Transient // DB에 저장되지는 않음
     private String imgPath; // 전체 파일 경로 (imgDirectory + imgFileName)
 
-    // imgPath 계산하는 메서드
-//    public String getImgPath() {
-//        if (imgDirectory != null && imgFileName != null) {
-//            return imgDirectory + "/" + imgFileName;  // 경로 결합
-//        }
-//        return null;
-//    }
+    // 기업프로필코드
+    @ManyToOne
+    @JoinColumn(name = "company_profile_cd")
+    CompanyProfile companyProfile;  // 기업프로필코드
 
     // 작성자
 //    @ManyToOne
 //    Members writer;  // 작성자
 
-    // 기업프로필코드
-//    @ManyToOne
-//    CompanyProfile companyProfile;  // 기업프로필코드
+
 
 }

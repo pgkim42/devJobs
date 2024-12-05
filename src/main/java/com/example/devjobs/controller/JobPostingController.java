@@ -88,9 +88,9 @@ public class JobPostingController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime postingDeadline
     ) {
         // jobCode가 null인 경우 400 Bad Request 반환
-        if (jobCode == null) {
-            return new ResponseEntity<>("JobCode를 확인하세요.", HttpStatus.BAD_REQUEST);
-        }
+//        if (jobCode == null) {
+//            return new ResponseEntity<>("JobCode를 확인하세요.", HttpStatus.BAD_REQUEST);
+//        }
 
         try {
             service.modifyPartial(jobCode, title, content, recruitJob, recruitField, salary,
