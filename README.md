@@ -32,7 +32,7 @@
 - CompanyProfile dto, entity, repository, repository test(CRUD)
 - repositorytest로 데이터 생성 후 CompanyProfile PK를 받고 JobPosting테이블에 profileCd가 컬럼에 추가 되는 것 까지 확인
 
-# 1207 JobPosting, CompanyProfile
+# 1207 JobPosting(구인), CompanyProfile(기업프로필)
 - BaseEntity를 common.file로 이동
 - JobPosting, CompanyProfile - CRUD 기능 구현
 - Job, Company 모두 User 테이블의 USER_CODE의 PK값 외래키로 설정 필요로 함(추후 수정)
@@ -41,5 +41,8 @@
 - nickname 속성 -> name 속성으로 변경 및 기존 nickname 검증 코드 삭제
 - 소셜로그인 시 LocalStorage 내 userId, email, name, type 데이터 저장
 
-  
-  
+# 1207 JobPosting(구인), CompanyProfile(기업프로필), Resume(이력서)
+- 파일 업로드 경로 구조 변경 - 업로드된 파일을 각 패키지별로 관리하기위해, jobposting과 resume의 하위 폴더를 C:\\upload 아래에 생성하고 파일을 저장 하도록 FileUtil 클래스에서 경로를 동적으로 설정
+  (FileUtil 클래스에서 업로드 경로를 패키지명에 맞게 동적으로 생성하도록 수정... C:\uploadfile\jobposting\이미지.jpg 방식)
+- Resume 이력서 패키지 생성 - 패키지 기본 구조 생성 후 register까지 진행
+  (JSON <-> DTO 로 저장하기 위해 LanguagesSkillsDTO, CertificationsDTO 클래스 생성이 필요했음, Mapper를 사용하기 위해 implementation 'com.fasterxml.jackson.core:jackson-databind' 의존성 추가 필요)
