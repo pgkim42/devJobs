@@ -33,7 +33,7 @@ public class Resume extends BaseEntity {
     @Column(name = "language_skills", columnDefinition = "json")
     private String languageSkills; // 언어 능력 (JSON 형태로 저장)
 
-    @Column(name = "resume_file", length = 255)
-    private String resumeFile; // 이력서 파일 (파일명 또는 경로)
+    @Column(name = "upload_file_name", length = 255)
+    private String uploadFileName; // 이력서 파일 (파일명 또는 경로)
 
 }

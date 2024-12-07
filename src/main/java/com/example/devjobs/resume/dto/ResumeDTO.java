@@ -1,6 +1,7 @@
 package com.example.devjobs.resume.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -24,10 +25,15 @@ public class ResumeDTO {
 
     private String languageSkills;    // 언어 능력 (JSON 형태로 저장)
 
-    private String resumeFile;        // 이력서 파일 (파일명 또는 경로)
-
     private LocalDateTime createdDate; // 생성일
 
     private LocalDateTime updatedDate; // 수정일
+
+    // 파일 첨부 관련..
+    private MultipartFile uploadFile;   // 이력서 파일 (파일명 또는 경로)
+
+    private String uploadFileName;
+
+
 
 }
