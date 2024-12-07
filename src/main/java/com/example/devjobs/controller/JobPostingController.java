@@ -48,11 +48,11 @@ public class JobPostingController {
     }
 
     @GetMapping("/read")
-    public ResponseEntity<JobPostingDTO> read(@RequestParam(name = "jobCode") Integer jobCode) {
+    public ResponseEntity<JobPostingDTO> read(@RequestParam(name = "no") Integer no) {
 
-        System.out.println("직업코드: " + jobCode);
+        System.out.println("직업코드: " + no);
 
-        JobPostingDTO dto = service.read(jobCode);
+        JobPostingDTO dto = service.read(no);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 

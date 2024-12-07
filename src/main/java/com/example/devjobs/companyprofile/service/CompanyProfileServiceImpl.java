@@ -67,6 +67,8 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
             }
 
             repository.save(entity);
+        } else {
+            throw new IllegalArgumentException("해당 기업프로필 코드가 존재하지 않습니다.");
         }
     }
 

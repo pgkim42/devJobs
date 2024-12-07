@@ -5,9 +5,17 @@ import com.example.devjobs.resume.dto.ResumeDTO;
 import com.example.devjobs.resume.entity.Resume;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface ResumeService {
 
     int register(ResumeDTO dto, MultipartFile resumeFolder);
+
+    List<ResumeDTO> getList();
+
+    ResumeDTO read(Integer resumeCode);
+
+    void modify(ResumeDTO dto);
 
     default Resume dtoToEntity(ResumeDTO dto) {
         Resume entity = Resume.builder()
