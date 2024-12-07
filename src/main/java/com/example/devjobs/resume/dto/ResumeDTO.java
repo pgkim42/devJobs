@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,11 +20,11 @@ public class ResumeDTO {
 
     private String education;         // 학력
 
-    private String certifications;    // 자격증 (JSON 형태로 저장)
+    private List<CertificationsDTO> certifications;    // 자격증
+
+    private List<LanguagesSkillsDTO> languageSkills;   // 언어 능력
 
     private String skill;             // 스킬
-
-    private String languageSkills;    // 언어 능력 (JSON 형태로 저장)
 
     private LocalDateTime createdDate; // 생성일
 
