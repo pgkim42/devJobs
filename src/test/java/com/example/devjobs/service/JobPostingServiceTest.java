@@ -17,36 +17,29 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 @SpringBootTest
 public class JobPostingServiceTest {
 
     @Autowired
     private JobPostingServiceImpl service;
 
-    @Autowired
-    private JobPostingRepository repository;
-
-    @Autowired
-    private FileUtil fileUtil;
-
     @Test
     void JobPostingServiceTest() throws IOException {
-
-        // 실제경로
+        // 실제 파일 경로
         Path realFilePath = Paths.get("C:\\upload\\test.jpg");
 
-        //실제 파일ㅇ르 객체로 불러오기
+        // 실제 파일 객체 생성
         File file = realFilePath.toFile();
 
-        // MultipartFile로 변환
+        // MockMultipartFile 생성 (MultipartFile로 변환)
         MultipartFile mockFile = new MockMultipartFile(
-                "file",  // 파라미터 이름
-                file.getName(),
-                "image/jpeg", // MIME 타입(예시)
-                Files.readAllBytes(file.toPath()) //파일 내용
+                "jobPostingFolder", // 파라미터 이름
+                file.getName(),     // 파일 이름
+                "image/jpeg",       // MIME 타입
+                Files.readAllBytes(file.toPath()) // 파일 데이터
         );
 
+        // JobPostingDTO 생성
         JobPostingDTO dto = JobPostingDTO.builder()
                 .title("공고 테스트")
                 .content("내용 테스트")
@@ -58,14 +51,12 @@ public class JobPostingServiceTest {
                 .workExperience("경력")
                 .tag("Java")
                 .jobCategory("Backend")
-                .uploadFile(mockFile) // 실제 파일을 DTO에 포함시킴
-//                .imgDirectory("C:\\upload") // 실제 파일이 저장된 디렉토리
-                .imgFileName(file.getName())
                 .build();
 
-        int result = service.register(dto);
+        // register 메서드 호출
+        int result = service.register(dto, mockFile);
 
+        // 결과 출력 (또는 검증)
+        System.out.println("등록된 JobCode: " + result);
     }
-
-
 }

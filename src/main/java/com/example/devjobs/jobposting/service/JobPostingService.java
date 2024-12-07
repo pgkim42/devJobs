@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface JobPostingService {
 
-    int register(JobPostingDTO dto);
+    int register(JobPostingDTO dto, MultipartFile jobPostingFolder);
 
     List<JobPostingDTO> getList();
 

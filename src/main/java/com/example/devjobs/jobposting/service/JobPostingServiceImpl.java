@@ -25,18 +25,25 @@ public class JobPostingServiceImpl implements JobPostingService {
     FileUtil fileUtil;
 
     @Override
-    public int register(JobPostingDTO dto) {
+    public int register(JobPostingDTO dto, MultipartFile jobPostingFolder) {
 
         // FileUtil을 사용하여 파일 업로드 처리
-        String imgFileName = fileUtil.fileUpload(dto.getUploadFile());
+//        String imgFileName = fileUtil.fileUpload(dto.getUploadFile());
 
-        // JobPostingDTO -> JobPosting 엔티티로
+        // 파일 업로드 처리 (폴더 category: jobposting)
+        String imgFileName = null;
+        if (dto.getUploadFile() != null && !dto.getUploadFile().isEmpty()) {
+            imgFileName = fileUtil.fileUpload(dto.getUploadFile(), "jobposting");
+            System.out.println("파일 업로드 테스트" + imgFileName);
+        }
+
         JobPosting jobPosting = dtoToEntity(dto);
 
         // 업로드된 파일명을 설정
-        jobPosting.setImgFileName(imgFileName);
+        if(imgFileName != null) {
+            jobPosting.setImgFileName(imgFileName);
+        }
 
-        // DB에 저장
         repository.save(jobPosting);
 
         return jobPosting.getJobCode(); // 공고의 jobCode 반환
@@ -93,14 +100,22 @@ public class JobPostingServiceImpl implements JobPostingService {
             if (jobCategory != null) entity.setJobCategory(jobCategory);
             if (postingDeadline != null) entity.setPostingDeadline(postingDeadline);
 
+            // 업로드된 파일이 있을 경우 처리
             if (uploadFile != null && !uploadFile.isEmpty()) {
-                String newFileName = fileUtil.fileUpload(uploadFile);
+                // 새 파일 업로드 처리 (폴더: "jobposting")
+                String newFileName = fileUtil.fileUpload(uploadFile, "jobposting");
+
+                // 이전 파일 삭제
+                if (entity.getImgFileName() != null) {
+                    fileUtil.deleteFile(entity.getImgFileName());
+                }
+
+                // 새 파일 이름 저장
                 entity.setImgFileName(newFileName);
             }
 
+            // 변경된 엔티티 저장
             repository.save(entity);
-        } else {
-            throw new IllegalArgumentException("Job Posting with the given Job Code does not exist.");
         }
     }
 

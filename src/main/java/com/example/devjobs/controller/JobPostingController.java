@@ -33,10 +33,10 @@ public class JobPostingController {
     @PostMapping("/register")
 //    public ResponseEntity<Integer> register(@ModelAttribute JobPostingDTO dto, Principal principal) {
     // 없으면 폼데이터, @RequestBody-JSON
-    public ResponseEntity<Integer> register(JobPostingDTO dto) {
+    public ResponseEntity<Integer> register(JobPostingDTO dto, @RequestParam(value = "jobPostingFolder", required = false) MultipartFile jobPostingFolder) {
 
 //        dto.setTitle(principal.getName());
-        int no = service.register(dto);
+        int no = service.register(dto, jobPostingFolder);
         return new ResponseEntity<>(no, HttpStatus.CREATED);
 
     }
