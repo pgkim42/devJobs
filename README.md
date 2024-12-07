@@ -23,7 +23,13 @@
 - 현재 service 중 register만 완료
 
 # 1206 JobPosting(구인공고), CompanyProfile(기업프로필)
-- JobPosting 이미지 업로드 및 CRUD 기능(완료)
+- JobPosting 이미지 업로드 기능 구현
 - JobPosting에 CompanyProfile객체 외래키 연결
 - CompanyProfile dto, entity, repository, repository test(CRUD)
 - repositorytest로 데이터 생성 후 CompanyProfile PK를 받고 JobPosting테이블에 profileCd가 컬럼에 추가 되는 것 까지 확인
+
+# 1207 JobPosting, CompanyProfile
+- BaseEntity를 common.file로 이동
+- JobPosting, CompanyProfile - CRUD 기능 구현
+- Job, Company 모두 Members테이블의 USER_CODE의 PK값 외래키로 설정 필요로 함(추후 수정)
+  
