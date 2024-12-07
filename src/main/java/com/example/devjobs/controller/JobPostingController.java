@@ -56,20 +56,6 @@ public class JobPostingController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    // 게시물 전체 수정(모든 데이터 입력)
-    @PutMapping("/modify")
-    public ResponseEntity<String> modify(JobPostingDTO dto) {
-        try {
-            // JobPostingService에서 수정 처리
-            service.modify(dto);
-
-            return new ResponseEntity<>("Success", HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Failed", HttpStatus.BAD_REQUEST);
-        }
-    }
-
     // 게시글 개별 수정
     @PatchMapping("/modify")
     public ResponseEntity<String> modifyPartial(
@@ -104,20 +90,9 @@ public class JobPostingController {
         }
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> delete(Integer jobCode) {
-        if (jobCode == null){
-            return new ResponseEntity<>("JobCode가 없습니다.", HttpStatus.BAD_REQUEST);
-        }
-
-        try {
-            service.delete(jobCode);
-            return new ResponseEntity<>("Job posting deleted successfully.", HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Failed to delete the job posting.", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @DeleteMapping("/remove/{cd}")
+    public ResponseEntity remove(@PathVariable("cd") int cd){
+        service.remove(cd);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

@@ -66,44 +66,6 @@ public class JobPostingServiceImpl implements JobPostingService {
         }
     }
 
-    // 전체 수정(데이터 모두 넣어줘야 함)
-    @Override
-    public void modify(JobPostingDTO dto) {
-        Optional<JobPosting> result = repository.findById(dto.getJobCode());
-
-        if (result.isPresent()) {
-            JobPosting entity = result.get();
-
-            // 새로운 이미지 파일이 첨부된 경우
-            if (dto.getUploadFile() != null && !dto.getUploadFile().isEmpty()) {
-
-                // 1. 기존 파일 삭제(필요한 경우)
-                if (entity.getImgFileName() != null) {
-                    fileUtil.deleteFile(entity.getImgFileName());
-                }
-
-                String newFileName = fileUtil.fileUpload(dto.getUploadFile());
-                entity.setImgFileName(newFileName); // 업로드된 파일명 설정
-
-                entity.setTitle(dto.getTitle());
-                entity.setContent(dto.getContent());
-                entity.setRecruitJob(dto.getRecruitJob());
-                entity.setRecruitField(dto.getRecruitField());
-                entity.setSalary(dto.getSalary());
-                entity.setPostingDeadline(dto.getPostingDeadline());
-                entity.setPostingStatus(dto.getPostingStatus());
-                entity.setWorkExperience(dto.getWorkExperience());
-                entity.setTag(dto.getTag());
-                entity.setJobCategory(dto.getJobCategory());
-
-                repository.save(entity);
-
-            }
-
-        }
-
-    }
-
     // 일부 필드만 업데이트(개별 수정 @PATCH)
     @Override
     public void modifyPartial(Integer jobCode, String title, String content, String recruitJob,
@@ -143,7 +105,7 @@ public class JobPostingServiceImpl implements JobPostingService {
     }
 
     @Override
-    public void delete(Integer jobCode) {
+    public void remove(Integer jobCode) {
 //        if(jobCode == null) {
 //            throw new IllegalArgumentException("Job Code must not be null.");
 //        }

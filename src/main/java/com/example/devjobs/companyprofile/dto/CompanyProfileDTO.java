@@ -21,8 +21,6 @@ public class CompanyProfileDTO {
 
     private String websiteUrl;  // 기업 사이트 URL
 
-    private String logoUrl;  // 로고 URL
-
     private LocalDateTime createDate;  // 작성일
 
     private LocalDateTime updateDate;  // 수정일

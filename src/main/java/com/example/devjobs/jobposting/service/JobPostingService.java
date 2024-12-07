@@ -17,9 +17,7 @@ public interface JobPostingService {
 
     JobPostingDTO read(Integer jobCode);
 
-    void modify(JobPostingDTO dto);
-
-    void delete(Integer jobCode);
+    void remove(Integer jobCode);
 
     void modifyPartial(Integer jobCode, String title, String content, String recruitJob,
                        Integer recruitField, String salary, String postingStatus,

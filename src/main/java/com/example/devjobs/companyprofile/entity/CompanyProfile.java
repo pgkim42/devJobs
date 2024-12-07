@@ -31,7 +31,4 @@ public class CompanyProfile extends BaseEntity {
     @Column(name = "website_url")
     private String websiteUrl;  // 기업 사이트 URL
 
-    @Column(name = "logo_url")
-    private String logoUrl;  // 로고 URL
-
 }
