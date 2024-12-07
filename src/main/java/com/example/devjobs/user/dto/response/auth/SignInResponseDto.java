@@ -15,10 +15,13 @@ public class SignInResponseDto extends ResponseDto {
 
     private String token;
     private int expirationTime;
+    private String userCode;
     private String userId;
     private String type;  // dev_id, kakao_id, naver_id 등
-    private String nickname;
+    private String name;
     private String email;
+
+
 
     // 성공 응답 메서드 수정
     public static SignInResponseDto success(String token, User user) {
@@ -27,10 +30,23 @@ public class SignInResponseDto extends ResponseDto {
         responseDto.setExpirationTime(3600);  // 예시: 1시간 만료
         responseDto.setUserId(user.getUserId());
         responseDto.setType(user.getType());  // 사용자 유형 (소셜/일반)
-        responseDto.setNickname(user.getNickname());
+        responseDto.setName(user.getName());
         responseDto.setEmail(user.getEmail());
         return responseDto;
     }
+
+    // 성공 응답 메서드 수정
+    public static SignInResponseDto oauthSuccess(String token, User user) {
+        SignInResponseDto responseDto = new SignInResponseDto();
+        responseDto.setToken(token);
+        responseDto.setExpirationTime(3600);  // 예시: 1시간 만료
+        responseDto.setUserCode(user.getUserCode());
+        responseDto.setEmail(user.getEmail());
+        responseDto.setName(user.getName());
+        responseDto.setType(user.getType());  // 사용자 유형 (소셜/일반)
+        return responseDto;
+    }
+
 
     // 로그인 실패 응답 메서드
     public static ResponseEntity<ResponseDto> signInFail () {

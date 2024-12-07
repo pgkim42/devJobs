@@ -24,11 +24,6 @@ public class EmailCertificationResponseDto extends ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDto> duplicateNickname() {
-        ResponseDto responseBody = new ResponseDto(ResponseCode.DUPLICATE_NICKNAME, ResponseMessage.DUPLICATE_NICKNAME);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
-    }
-
     public static ResponseEntity<ResponseDto> mailSendFail() {
         ResponseDto responseBody = new ResponseDto(ResponseCode.MAIL_FAIL, ResponseMessage.MAIL_FAIL);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);

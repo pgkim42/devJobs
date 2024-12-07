@@ -24,41 +24,41 @@ public class OAuth2UserServiceImplement extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(request);
         String oauthClientName = request.getClientRegistration().getClientName();
 
-        try {
-            System.out.println(new ObjectMapper().writeValueAsString(oAuth2User.getAttributes()));
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-
-        User user = null;
-        String userCode = null;
-        String nickname = null;
+        String userCode = null;  // userCode -> userId로 수정
+        String name = null;
         String email = null;
+        String type = null;
 
-        if(oauthClientName.equals("kakao")){
+        // 카카오 로그인 처리
+        if (oauthClientName.equals("kakao")) {
             Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
+
             if (kakaoAccount != null) {
                 email = (String) kakaoAccount.get("email");
-
-                if (email != null) {
-                    nickname = email.substring(0, email.indexOf("@"));
+                Map<String, Object> properties = (Map<String, Object>) oAuth2User.getAttributes().get("properties");
+                if (properties != null && properties.containsKey("nickname")) {
+                    name = (String) properties.get("nickname");
                 }
             }
 
             userCode = "kakao_" + oAuth2User.getAttributes().get("id");
-            user = new User(userCode, email, nickname,"kakao");
+            type = "kakao";  // 소셜 타입을 "kakao"로 설정
         }
 
-        if(oauthClientName.equals("naver")){
+        // 네이버 로그인 처리
+        if (oauthClientName.equals("naver")) {
             Map<String, String> responseMap = (Map<String, String>) oAuth2User.getAttributes().get("response");
             userCode = "naver_" + responseMap.get("id").substring(0, 14);
             email = responseMap.get("email");
-            nickname = responseMap.get("email").substring(0, email.indexOf("@"));
-            user = new User(userCode, email, nickname,"naver");
+            name = responseMap.get("name");
+            type = "naver";  // 소셜 타입을 "naver"로 설정
         }
 
-        userRepository.save(user); // User ID는 이미 수동으로 설정됨
+        // 유저 객체 생성 및 저장
+        User user = new User(userCode, email, name, type);
+        userRepository.save(user);
 
-        return new CustomOAuth2User(userCode);
+        // CustomOAuth2User 객체 생성하여 반환
+        return new CustomOAuth2User(userCode, email, name, type);  // 이제 userId를 전달
     }
 }

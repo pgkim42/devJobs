@@ -17,8 +17,7 @@ public class SignUpRequestDto {
 
     private String userCode;
 
-    @NotBlank
-    private String nickname;
+    private String name;
 
     @NotBlank
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,13}$")
@@ -34,5 +33,3 @@ public class SignUpRequestDto {
     private String type; // 회원가입 유형(일반회원가입 "dev" , 소셜회원가입 "kakao", "naver")
 
 }
-
-

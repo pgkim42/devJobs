@@ -6,10 +6,7 @@ import com.example.devjobs.user.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,12 +25,6 @@ public class AuthController {
         return response;
     }
 
-    @PostMapping("/nickname-check")
-    public ResponseEntity<? super NicknameCheckResponseDto> nicknameCheck
-            (@RequestBody @Valid NicknameCheckRequestDto requestBody) {
-        ResponseEntity< ? super NicknameCheckResponseDto> response = authService.nicknameCheck(requestBody);
-        return response;
-    }
 
     @PostMapping("/email-certification")
     public ResponseEntity<? super EmailCertificationResponseDto> emailCertification
@@ -61,5 +52,17 @@ public class AuthController {
             (@RequestBody @Valid SignInRequestDto requestBody) {
         ResponseEntity<? super SignInResponseDto> response = authService.signIn(requestBody);
         return response;
+    }
+
+    @GetMapping("/oauth-response")
+    public ResponseEntity<OAuth2CallbackResponse> oauthResponse(
+            @RequestParam String token,
+            @RequestParam String userCode,
+            @RequestParam String email,
+            @RequestParam String name,
+            @RequestParam String type) {
+        // OAuth2 인증 후 받은 데이터로 응답 생성
+        OAuth2CallbackResponse response = new OAuth2CallbackResponse(token, 3600L, userCode, email, name, type);
+        return ResponseEntity.ok(response);
     }
 }

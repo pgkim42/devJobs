@@ -9,8 +9,10 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "user")
@@ -24,8 +26,7 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String userId;   // 일반 회원가입 시 사용되는 고유ID
 
-    @Column(unique = true)
-    private String nickname;
+    private String name;
 
     private String password;
 
@@ -37,7 +38,7 @@ public class User extends BaseEntity {
 
     public User(SignUpRequestDto dto){
         this.userId = dto.getUserId();
-        this.nickname = dto.getNickname();
+        this.name = dto.getName();
         this.password = dto.getPassword();
         this.email = dto.getEmail();
         this.type = "dev";
@@ -46,10 +47,10 @@ public class User extends BaseEntity {
         this.userCode = "dev_" + dto.getUserId();
     }
 
-    public User(String userCode, String email, String nickname, String type){
+    public User( String userCode, String email, String name, String type){
         this.userCode = userCode;
         this.email = email;
-        this.nickname = nickname;
+        this.name = name;
         this.type = type;
         this.role = "ROLE_USER";
     }

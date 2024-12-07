@@ -53,41 +53,17 @@ public class AuthServiceImplement implements AuthService {
 
     }
 
-    @Override
-    public ResponseEntity<? super NicknameCheckResponseDto> nicknameCheck(NicknameCheckRequestDto dto) {
-
-        try {
-            String userId = dto.getUserId();
-            String nickname = dto.getNickname();
-
-            boolean isExistId = userRepository.existsById(userId);
-            if(isExistId) return NicknameCheckResponseDto.duplicateId();
-
-            boolean isExistNickname = userRepository.existsByNickname(nickname);
-            if(isExistNickname) return NicknameCheckResponseDto.duplicateNickname();
-
-        } catch (Exception exception){
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-
-
-        return NicknameCheckResponseDto.success();
-    }
 
     @Override
     public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto) {
         try {
 
             String userId = dto.getUserId();
-            String nickname = dto.getNickname();
             String email = dto.getEmail();
 
             boolean isExistId = userRepository.existsById(userId);
             if(isExistId) return EmailCertificationResponseDto.duplicateId();
 
-            boolean isExistNickname = userRepository.existsByNickname(nickname);
-            if(isExistNickname) return EmailCertificationResponseDto.duplicateNickname();
 
             String certificationNumber = CertificationNumber.getCertificationNumber();
 
@@ -133,7 +109,7 @@ public class AuthServiceImplement implements AuthService {
 
             String userId = dto.getUserId();
             String userCode = dto.getUserCode();
-            String nickname = dto.getNickname();
+            String name = dto.getName();
 
             if(userCode != null && !userCode.isEmpty()){
                 boolean isExistUserCode = userRepository.existsByUserCode(userCode);
@@ -141,14 +117,12 @@ public class AuthServiceImplement implements AuthService {
 
                 String email = dto.getEmail();
                 String type = dto.getType();
-                User user = new User(userCode, nickname, email, type);
+                User user = new User(userCode, name, email, type);
                 userRepository.save(user);
             }else {
                 boolean isExistId = userRepository.existsById(userId);
                 if(isExistId) return SignUpResponseDto.duplicateId();
 
-                boolean isExistNickname = userRepository.existsByNickname(nickname);
-                if(isExistNickname) return SignUpResponseDto.duplicateNickname();
 
                 String email = dto.getEmail();
                 String certificationNumber = dto.getCertificationNumber();
