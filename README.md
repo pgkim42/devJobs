@@ -46,3 +46,4 @@
   (FileUtil 클래스에서 업로드 경로를 패키지명에 맞게 동적으로 생성하도록 수정... C:\uploadfile\jobposting\이미지.jpg 방식)
 - Resume 이력서 패키지 생성 - 패키지 기본 구조 생성 후 register까지 진행
   (JSON <-> DTO 로 저장하기 위해 LanguagesSkillsDTO, CertificationsDTO 클래스 생성이 필요했음, Mapper를 사용하기 위해 implementation 'com.fasterxml.jackson.core:jackson-databind' 의존성 추가 필요)
+- PostMan에 dto타입으로 {"education": "dd", "languageSkills": [{"language": "영어","level": "1"}]} / resumeFolder로 매개 변수 2개 받아서 dto,file 전송해야함
