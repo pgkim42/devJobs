@@ -9,7 +9,8 @@ import lombok.*;
 @Builder
 public class CertificationsDTO {
 
-    private String certificateName;  // 자격증 이름
+    private String certificationName;  // 자격증 이름
     private String issueDate;       // 발급일
+    private String issuer;          // 발급기관
 
 }

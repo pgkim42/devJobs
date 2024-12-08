@@ -138,7 +138,7 @@ public class JobPostingServiceImpl implements JobPostingService {
             repository.deleteById(jobCode);
 
          } else {
-            throw new IllegalArgumentException("Job Posting with the given Job Code does not exist.");
+            throw new IllegalArgumentException("Job Posting 코드가 존재하지 않습니다");
         }
     }
 }
