@@ -33,7 +33,7 @@ public class JobPostingDTO {
 
     private String workExperience;  // 경력
 
-    private String tag;  // 태그(스킬)
+    private String tag;  // 태그(스킬)?
 
     private String jobCategory;  // 직무 카테고리
 
