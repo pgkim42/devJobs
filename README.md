@@ -19,16 +19,14 @@
 - common.file로 파일첨부 스토리지 생성
 - 파일첨부 단위테스트
 - PostingStatus를 Enum으로 사용하려 했으나 "모집중", "마감"만 있어서 String으로 전환
-- 관련 dto, entity, repository, service 일부 구현
-- 현재 service 중 register만 완료
+- 관련 dto, entity, repository, service 일부 구현(현재 service 중 register만 완료)
 
 # 1205 User(회원)
 - 일반로그인 시 LocalStorage 저장
 - nickname 속성 검증 추가
 
 # 1206 JobPosting(구인공고), CompanyProfile(기업프로필)
-- JobPosting 이미지 업로드 기능 구현
-- JobPosting에 CompanyProfile객체 외래키 연결
+- JobPosting 이미지 업로드 기능 구현, CompanyProfile객체 외래키 연결
 - CompanyProfile dto, entity, repository, repository test(CRUD)
 - repositorytest로 데이터 생성 후 CompanyProfile PK를 받고 JobPosting테이블에 profileCd가 컬럼에 추가 되는 것 까지 확인
 
@@ -47,3 +45,10 @@
 - Resume 이력서 패키지 생성 - 패키지 기본 구조 생성 후 register까지 진행
   (JSON <-> DTO 로 저장하기 위해 LanguagesSkillsDTO, CertificationsDTO 클래스 생성이 필요했음, Mapper를 사용하기 위해 implementation 'com.fasterxml.jackson.core:jackson-databind' 의존성 추가 필요)
 - PostMan에 dto타입으로 {"education": "dd", "languageSkills": [{"language": "영어","level": "1"}]} / resumeFolder로 매개 변수 2개 받아서 dto,file 전송해야함
+
+# 1208 JobPosting(구인), CompanyProfile(기업프로필), Resume(이력서), Applications(지원)
+- Json <-> List를 변환하는 default 메서드를 util 패키지로 이동하여 재사용성 높힘(JsonUtil)
+- jobposting - modify 메서드 호출시 file업로드 할때 수정되지 않던 부분 수정
+- resume - CRUD 구현(CertificationsDTO, LanguagesSkillsDTO 부분 JSON형태로 관리), 파일첨부 기능 구현
+- Applications(지원) - dto, entity, repository, service, serviceimpl 기본구조 구성
+
