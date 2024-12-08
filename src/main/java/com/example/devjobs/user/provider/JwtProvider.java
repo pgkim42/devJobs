@@ -20,15 +20,16 @@ public class JwtProvider {
     private String secretKey;
 
     // JWT 생성 메소드
-    public String create(String userId) {
-        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));  // 1시간 유효기간
+    public String create(String userId, String role) {
+        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
-                .setSubject(userId) // userId는 JWT의 subject로 설정
-                .setIssuedAt(new Date()) // 발급 시간
-                .setExpiration(expiredDate) // 만료 시간
+                .setSubject(userId)
+                .claim("role", role) // 사용자 역할 추가
+                .setIssuedAt(new Date())
+                .setExpiration(expiredDate)
                 .compact();
     }
 

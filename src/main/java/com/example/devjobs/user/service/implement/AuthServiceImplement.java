@@ -26,9 +26,7 @@ import java.util.HashMap;
 public class AuthServiceImplement implements AuthService {
 
     private final UserRepository userRepository;
-
     private final CertificationRepository certificationRepository;
-
     private final JwtProvider jwtProvider;
     private final EmailProvider emailProvider;
 
@@ -106,43 +104,36 @@ public class AuthServiceImplement implements AuthService {
     @Override
     public ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto) {
         try {
-
             String userId = dto.getUserId();
-            String userCode = dto.getUserCode();
-            String name = dto.getName();
+            boolean isExistId = userRepository.existsById(userId);
 
-            if(userCode != null && !userCode.isEmpty()){
-                boolean isExistUserCode = userRepository.existsByUserCode(userCode);
-                if(isExistUserCode) return SignUpResponseDto.duplicateId();
-
-                String email = dto.getEmail();
-                String type = dto.getType();
-                User user = new User(userCode, name, email, type);
-                userRepository.save(user);
-            }else {
-                boolean isExistId = userRepository.existsById(userId);
-                if(isExistId) return SignUpResponseDto.duplicateId();
-
-
-                String email = dto.getEmail();
-                String certificationNumber = dto.getCertificationNumber();
-
-                Certification certification = certificationRepository.findByUserId(userId);
-                boolean isMatched = certification.getEmail().equals(email) &&
-                        certification.getCertificationNumber().equals(certificationNumber);
-                if(!isMatched) return SignUpResponseDto.certificationFail();
-
-                String password = dto.getPassword();
-                String encodedPassword = passwordEncoder.encode(password);
-                dto.setPassword(encodedPassword);
-
-                User user = new User(dto);
-                userRepository.save(user);
-
-                certificationRepository.deleteByUserId(userId);
+            if (isExistId) {
+                return SignUpResponseDto.duplicateId();
             }
 
-        } catch (Exception exception){
+            // 인증번호 확인 로직
+            String email = dto.getEmail();
+            String certificationNumber = dto.getCertificationNumber();
+            Certification certification = certificationRepository.findByUserId(userId);
+
+            if (certification == null || !certification.getEmail().equals(email) ||
+                    !certification.getCertificationNumber().equals(certificationNumber)) {
+                return SignUpResponseDto.certificationFail();
+            }
+
+            // 비밀번호 암호화
+            String password = dto.getPassword();
+            String encodedPassword = passwordEncoder.encode(password);
+            dto.setPassword(encodedPassword);
+
+            // 유저 생성 및 저장
+            User user = new User(dto);
+            userRepository.save(user);
+
+            // 인증 정보 삭제
+            certificationRepository.deleteByUserId(userId);
+
+        } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
@@ -157,18 +148,21 @@ public class AuthServiceImplement implements AuthService {
             String userId = dto.getUserId();
             User user = userRepository.findByUserId(userId);
             if (user == null) {
-                return SignInResponseDto.signInFail();  // 로그인 실패 처리
+                return SignInResponseDto.signInFail(); // 로그인 실패 처리
             }
 
             String password = dto.getPassword();
             String encodedPassword = user.getPassword();
             boolean isMatched = passwordEncoder.matches(password, encodedPassword);
             if (!isMatched) {
-                return SignInResponseDto.signInFail();  // 비밀번호 불일치 처리
+                return SignInResponseDto.signInFail(); // 비밀번호 불일치 처리
             }
 
-            // JWT 토큰 생성
-            token = jwtProvider.create(userId);
+            // 사용자 역할 확인
+            String role = user.getRole(); // ROLE_USER, ROLE_ADMIN, ROLE_COMPANY 등
+
+            // JWT 토큰 생성 (userId와 role 포함)
+            token = jwtProvider.create(userId, role);
 
             // 성공적으로 로그인 시 사용자 정보와 토큰 포함하여 반환
             return ResponseEntity.ok(SignInResponseDto.success(token, user));

@@ -30,32 +30,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
         try {
+            String path = request.getRequestURI();
+            if (path.startsWith("/api/v1/auth")) {
+                // 인증이 필요 없는 경로는 필터링 제외
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             String token = parseBearerToken(request);
-            if(token == null) {
+            if (token == null) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
             String userId = jwtProvider.validate(token);
-            if(userId == null) {
+            if (userId == null) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
             User user = userRepository.findByUserId(userId);
-            String role = user.getRole();   // role = ROLE_USER, ROLE_ADMIN
+            String role = user.getRole(); // role = ROLE_USER, ROLE_ADMIN
 
-            System.out.println(role);
-
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority(role));
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
 
             SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             AbstractAuthenticationToken authenticationToken =
@@ -65,24 +66,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             securityContext.setAuthentication(authenticationToken);
             SecurityContextHolder.setContext(securityContext);
 
-        } catch (Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
 
         filterChain.doFilter(request, response);
-
     }
+
 
     private String parseBearerToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
 
-        boolean hasAuthorization = StringUtils.hasText(authorization);
-        if(!hasAuthorization) return null;
+        if (!StringUtils.hasText(authorization)) {
+            return null;
+        }
 
-        boolean isBearer = authorization.startsWith("Bearer ");
-        if(!isBearer) return null;
+        if (!authorization.startsWith("Bearer ")) {
+            return null;
+        }
 
-        String token = authorization.substring(7);  // 7번 인덱스부터 값을 가져온다.
-        return token;
+        return authorization.substring(7); // Bearer 이후의 토큰 값 반환
     }
 }

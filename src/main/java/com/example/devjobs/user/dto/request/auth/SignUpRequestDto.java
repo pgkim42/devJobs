@@ -32,4 +32,14 @@ public class SignUpRequestDto {
 
     private String type; // 회원가입 유형(일반회원가입 "dev" , 소셜회원가입 "kakao", "naver")
 
+    private String companyCode; // 사업자 등록번호
+
+    private String companyType; // 기업형태
+
+    private String companyName; // 회사 이름
+
+    private String ceoName;     // 대표 이름
+
+    private String companyAddress; // 회사 주소
+
 }
