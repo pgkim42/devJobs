@@ -22,7 +22,7 @@ public interface JobPostingService {
     void modifyPartial(Integer jobCode, String title, String content, String recruitJob,
                        Integer recruitField, String salary, String postingStatus,
                        String workExperience, String tag, String jobCategory,
-                       LocalDateTime postingDeadline, MultipartFile uploadFile);
+                       LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated);
 
     default JobPosting dtoToEntity(JobPostingDTO dto) {
 

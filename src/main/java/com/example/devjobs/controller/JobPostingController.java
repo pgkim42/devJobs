@@ -5,6 +5,7 @@ import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.jobposting.repository.JobPostingRepository;
 import com.example.devjobs.jobposting.service.JobPostingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +57,6 @@ public class JobPostingController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    // 게시글 개별 수정
     @PatchMapping("/modify")
     public ResponseEntity<String> modifyPartial(
             @RequestParam(required = false) Integer jobCode,
@@ -70,29 +70,20 @@ public class JobPostingController {
             @RequestParam(required = false) String tag,
             @RequestParam(required = false) String jobCategory,
             @RequestParam(required = false) MultipartFile uploadFile,
+            @RequestParam(required = false) LocalDateTime lastUpdated,
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime postingDeadline
     ) {
-        // jobCode가 null인 경우 400 Bad Request 반환
-//        if (jobCode == null) {
-//            return new ResponseEntity<>("JobCode를 확인하세요.", HttpStatus.BAD_REQUEST);
-//        }
-
         try {
+            // 서비스 메소드 호출
             service.modifyPartial(jobCode, title, content, recruitJob, recruitField, salary,
                     postingStatus, workExperience, tag, jobCategory,
-                    postingDeadline, uploadFile);
+                    postingDeadline, uploadFile, lastUpdated);
 
-            return new ResponseEntity<>("Success", HttpStatus.OK);
+            return new ResponseEntity<>("JobPosting updated successfully.", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Failed", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Failed to update JobPosting.", HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @DeleteMapping("/remove/{cd}")
-    public ResponseEntity remove(@PathVariable("cd") int cd){
-        service.remove(cd);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
