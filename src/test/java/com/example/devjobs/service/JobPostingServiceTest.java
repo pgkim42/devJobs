@@ -1,62 +1,201 @@
 package com.example.devjobs.service;
 
+import com.example.devjobs.companyprofile.entity.CompanyProfile;
+import com.example.devjobs.companyprofile.repository.CompanyProfileRepository;
 import com.example.devjobs.jobposting.dto.JobPostingDTO;
+import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.jobposting.repository.JobPostingRepository;
 import com.example.devjobs.jobposting.service.JobPostingService;
-import com.example.devjobs.jobposting.service.JobPostingServiceImpl;
-import com.example.devjobs.util.FileUtil;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
-public class JobPostingServiceTest {
+class JobPostingServiceTest {
 
     @Autowired
-    private JobPostingServiceImpl service;
+    private JobPostingService jobPostingService;
+
+    @Autowired
+    private JobPostingRepository jobPostingRepository;
+
+    @Autowired
+    private CompanyProfileRepository companyProfileRepository;
 
     @Test
-    void JobPostingServiceTest() throws IOException {
-        // 실제 파일 경로
-        Path realFilePath = Paths.get("C:\\upload\\test.jpg");
-
-        // 실제 파일 객체 생성
-        File file = realFilePath.toFile();
-
-        // MockMultipartFile 생성 (MultipartFile로 변환)
-        MultipartFile mockFile = new MockMultipartFile(
-                "jobPostingFolder", // 파라미터 이름
-                file.getName(),     // 파일 이름
-                "image/jpeg",       // MIME 타입
-                Files.readAllBytes(file.toPath()) // 파일 데이터
+    void testCreateJobPosting() {
+        // CompanyProfile 생성
+        CompanyProfile companyProfile = companyProfileRepository.save(
+                CompanyProfile.builder()
+                        .companyName("Example Company")
+                        .industry("IT")
+                        .build()
         );
 
-        // JobPostingDTO 생성
-        JobPostingDTO dto = JobPostingDTO.builder()
-                .title("공고 테스트")
-                .content("내용 테스트")
-                .recruitJob("모집 직종")
-                .recruitField(5)
-                .salary("추후협의")
-                .postingDeadline(null)
-                .postingStatus("OPEN")
-                .workExperience("경력")
-                .tag("Java")
-                .jobCategory("Backend")
+        // JobPosting 생성
+        JobPostingDTO jobPostingDTO = JobPostingDTO.builder()
+                .title("Frontend Developer")
+                .content("Design and implement user interfaces.")
+                .recruitJob("Frontend Developer")
+                .recruitField(2)
+                .salary("4000-6000 USD")
+                .postingDate(LocalDateTime.now())
+                .postingDeadline(LocalDateTime.now().plusDays(30))
+                .postingStatus("모집중")
+                .workExperience("신입")
+                .tag("React,JavaScript")
+                .jobCategory("IT")
+                .skill("React,JavaScript")
+                .companyProfileCd(companyProfile.getCompanyProfileCd())
                 .build();
 
-        // register 메서드 호출
-        int result = service.register(dto, mockFile);
+        Integer jobCode = jobPostingService.register(jobPostingDTO, null);
+        JobPostingDTO createdJobPosting = jobPostingService.read(jobCode);
 
-        // 결과 출력 (또는 검증)
-        System.out.println("등록된 JobCode: " + result);
+        System.out.println("=== JobPosting 생성 테스트 ===");
+        System.out.println("Job Title: " + createdJobPosting.getTitle());
+        System.out.println("Company Profile Code: " + createdJobPosting.getCompanyProfileCd());
+
+        assertThat(createdJobPosting).isNotNull();
+        assertThat(createdJobPosting.getTitle()).isEqualTo("Frontend Developer");
+    }
+
+    @Test
+    void testReadJobPosting() {
+        // CompanyProfile 생성
+        CompanyProfile companyProfile = companyProfileRepository.save(
+                CompanyProfile.builder()
+                        .companyName("Example Company")
+                        .industry("IT")
+                        .build()
+        );
+
+        // JobPosting 생성
+        JobPostingDTO jobPostingDTO = JobPostingDTO.builder()
+                .title("Software Engineer")
+                .content("Develop and maintain software systems.")
+                .recruitJob("Backend Developer")
+                .recruitField(3)
+                .salary("5000-7000 USD")
+                .postingDate(LocalDateTime.now())
+                .postingDeadline(LocalDateTime.now().plusDays(30))
+                .postingStatus("모집중")
+                .workExperience("경력")
+                .tag("Java,Spring,SQL")
+                .jobCategory("IT")
+                .skill("Java,Spring,SQL")
+                .companyProfileCd(companyProfile.getCompanyProfileCd())
+                .build();
+
+        Integer jobCode = jobPostingService.register(jobPostingDTO, null);
+        JobPostingDTO savedJobPostingDTO = jobPostingService.read(jobCode);
+
+        System.out.println("=== JobPosting 조회 테스트 ===");
+        System.out.println("Job Title: " + savedJobPostingDTO.getTitle());
+        System.out.println("Company Profile Code: " + savedJobPostingDTO.getCompanyProfileCd());
+
+        assertThat(savedJobPostingDTO).isNotNull();
+        assertThat(savedJobPostingDTO.getTitle()).isEqualTo("Software Engineer");
+    }
+
+    @Test
+    void testUpdateJobPosting() {
+        // CompanyProfile 생성
+        CompanyProfile companyProfile = companyProfileRepository.save(
+                CompanyProfile.builder()
+                        .companyName("Example Company")
+                        .industry("IT")
+                        .build()
+        );
+
+        // JobPosting 생성
+        JobPostingDTO jobPostingDTO = JobPostingDTO.builder()
+                .title("Software Engineer")
+                .content("Develop and maintain software systems.")
+                .recruitJob("Backend Developer")
+                .recruitField(3)
+                .salary("5000-7000 USD")
+                .postingDate(LocalDateTime.now())
+                .postingDeadline(LocalDateTime.now().plusDays(30))
+                .postingStatus("모집중")
+                .workExperience("경력")
+                .tag("Java,Spring,SQL")
+                .jobCategory("IT")
+                .skill("Java,Spring,SQL")
+                .companyProfileCd(companyProfile.getCompanyProfileCd())
+                .build();
+
+        Integer jobCode = jobPostingService.register(jobPostingDTO, null);
+
+        // 수정
+        String updatedTitle = "Senior Software Engineer";
+        jobPostingService.modify(
+                jobCode,
+                updatedTitle,
+                jobPostingDTO.getContent(),
+                jobPostingDTO.getRecruitJob(),
+                jobPostingDTO.getRecruitField(),
+                jobPostingDTO.getSalary(),
+                jobPostingDTO.getPostingStatus(),
+                jobPostingDTO.getWorkExperience(),
+                jobPostingDTO.getTag(),
+                jobPostingDTO.getJobCategory(),
+                jobPostingDTO.getSkill(),
+                jobPostingDTO.getPostingDeadline(),
+                null,
+                LocalDateTime.now()
+        );
+
+        JobPostingDTO updatedJobPosting = jobPostingService.read(jobCode);
+
+        System.out.println("=== JobPosting 수정 테스트 ===");
+        System.out.println("Updated Job Title: " + updatedJobPosting.getTitle());
+
+        assertThat(updatedJobPosting).isNotNull();
+        assertThat(updatedJobPosting.getTitle()).isEqualTo(updatedTitle);
+    }
+
+    @Test
+    void testDeleteJobPosting() {
+        // CompanyProfile 생성
+        CompanyProfile companyProfile = companyProfileRepository.save(
+                CompanyProfile.builder()
+                        .companyName("Example Company")
+                        .industry("IT")
+                        .build()
+        );
+
+        // JobPosting 생성
+        JobPostingDTO jobPostingDTO = JobPostingDTO.builder()
+                .title("Software Engineer")
+                .content("Develop and maintain software systems.")
+                .recruitJob("Backend Developer")
+                .recruitField(3)
+                .salary("5000-7000 USD")
+                .postingDate(LocalDateTime.now())
+                .postingDeadline(LocalDateTime.now().plusDays(30))
+                .postingStatus("모집중")
+                .workExperience("경력")
+                .tag("Java,Spring,SQL")
+                .jobCategory("IT")
+                .skill("Java,Spring,SQL")
+                .companyProfileCd(companyProfile.getCompanyProfileCd())
+                .build();
+
+        Integer jobCode = jobPostingService.register(jobPostingDTO, null);
+
+        // 삭제
+        jobPostingService.remove(jobCode);
+        Optional<JobPosting> deletedJobPosting = jobPostingRepository.findById(jobCode);
+
+        System.out.println("=== JobPosting 삭제 테스트 ===");
+        System.out.println("Deleted JobPosting Exists: " + deletedJobPosting.isPresent());
+
+        assertThat(deletedJobPosting).isEmpty();
     }
 }

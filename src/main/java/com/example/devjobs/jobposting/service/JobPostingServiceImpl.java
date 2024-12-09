@@ -44,6 +44,7 @@ public class JobPostingServiceImpl implements JobPostingService {
             System.out.println("파일 업로드 테스트" + imgFileName);
         }
 
+        // 애플리케이션에서는 받은 dto를 List형태로 담은 뒤(split)에 DB에는 join으로 문자열 형태로 전송(join)
         // DTO에서 skill 문자열을 리스트로 변환
         List<String> skillList = parseSkills(dto.getSkill());
 
