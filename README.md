@@ -56,3 +56,6 @@
 - jobposting - modify 메서드 호출시 file업로드 할때 수정되지 않던 부분 수정
 - resume - CRUD 구현(CertificationsDTO, LanguagesSkillsDTO 부분 JSON형태로 관리), 파일첨부 기능 구현
 - Applications(지원) - dto, entity, repository, service, serviceimpl 기본구조 구성
+
+# 1209
+- Applications - CRUD구현
