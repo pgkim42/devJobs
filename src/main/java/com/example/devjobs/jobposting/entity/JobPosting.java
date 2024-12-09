@@ -60,6 +60,10 @@ public class JobPosting extends BaseEntity {
     @Transient // DB에 저장되지는 않음
     private String imgPath; // 전체 파일 경로 (imgDirectory + imgFileName)
 
+    // 추가된 skill 컬럼
+    @Column(name = "skill", nullable = false, length = 255)
+    private String skill; // 쉼표로 구분된 스킬 문자열 (예: "Java,Spring,SQL")
+
     // 기업프로필코드
     @ManyToOne
     @JoinColumn(name = "company_profile_cd")

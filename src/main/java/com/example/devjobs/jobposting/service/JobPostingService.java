@@ -19,10 +19,10 @@ public interface JobPostingService {
 
     void remove(Integer jobCode);
 
-    void modifyPartial(Integer jobCode, String title, String content, String recruitJob,
-                       Integer recruitField, String salary, String postingStatus,
-                       String workExperience, String tag, String jobCategory,
-                       LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated);
+    void modify(Integer jobCode, String title, String content, String recruitJob,
+                      Integer recruitField, String salary, String postingStatus,
+                      String workExperience, String tag, String jobCategory,
+                      String skill, LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated);
 
     default JobPosting dtoToEntity(JobPostingDTO dto) {
 
@@ -44,6 +44,7 @@ public interface JobPostingService {
                 .tag(dto.getTag())
                 .jobCategory(dto.getJobCategory())
                 .imgFileName(dto.getImgFileName())
+                .skill(dto.getSkill())
                 .companyProfile(companyProfile)
                 .build();
 
@@ -65,6 +66,7 @@ public interface JobPostingService {
                 .tag(entity.getTag())
                 .jobCategory(entity.getJobCategory())
                 .imgFileName(entity.getImgFileName())
+                .skill(entity.getSkill()) // 추가된 skill 필드
                 .companyProfileCd(entity.getCompanyProfile().getCompanyProfileCd())
                 // imgPath 필드는 @Transient로 설정되어 데이터베이스에 저장되지 않으며,
                 // getImgPath() 메서드를 통해 imgDirectory와 imgFileName을 결합한 경로를 반환

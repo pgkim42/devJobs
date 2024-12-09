@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,11 +25,17 @@ public class JobPostingServiceImpl implements JobPostingService {
     @Autowired
     FileUtil fileUtil;
 
+    public List<String> parseSkills(String skillString) {
+        if (skillString == null || skillString.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return Arrays.stream(skillString.split(","))
+                .map(String::trim) // 공백 제거
+                .collect(Collectors.toList());
+    }
+
     @Override
     public int register(JobPostingDTO dto, MultipartFile jobPostingFolder) {
-
-        // FileUtil을 사용하여 파일 업로드 처리
-//        String imgFileName = fileUtil.fileUpload(dto.getUploadFile());
 
         // 파일 업로드 처리 (폴더 category: jobposting)
         String imgFileName = null;
@@ -37,7 +44,13 @@ public class JobPostingServiceImpl implements JobPostingService {
             System.out.println("파일 업로드 테스트" + imgFileName);
         }
 
+        // DTO에서 skill 문자열을 리스트로 변환
+        List<String> skillList = parseSkills(dto.getSkill());
+
         JobPosting jobPosting = dtoToEntity(dto);
+
+        // 엔티티에 skill 리스트를 다시 문자열로 설정
+        jobPosting.setSkill(String.join(",", skillList)); // "java,spring,sql"
 
         // 업로드된 파일명을 설정
         if(imgFileName != null) {
@@ -74,10 +87,10 @@ public class JobPostingServiceImpl implements JobPostingService {
     }
 
     @Override
-    public void modifyPartial(Integer jobCode, String title, String content, String recruitJob,
+    public void modify(Integer jobCode, String title, String content, String recruitJob,
                               Integer recruitField, String salary, String postingStatus,
                               String workExperience, String tag, String jobCategory,
-                              LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated) {
+                              String skill, LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated) {
 
         // jobCode로 기존 JobPosting 검색
         Optional<JobPosting> result = repository.findById(jobCode);
@@ -113,23 +126,23 @@ public class JobPostingServiceImpl implements JobPostingService {
             if (jobCategory != null) {
                 entity.setJobCategory(jobCategory);
             }
+
+            if (skill != null) {
+                entity.setSkill(skill);
+            }
+
             if (postingDeadline != null) {
                 entity.setPostingDeadline(postingDeadline);
             }
 
-//            // 업로드된 파일이 있을 경우 처리
-//            if (uploadFile != null && !uploadFile.isEmpty()) {
-//                // 새 파일 업로드 처리 (폴더: "jobposting")
-//                String newFileName = fileUtil.fileUpload(uploadFile, "jobposting");
+            if (uploadFile != null && !uploadFile.isEmpty()) {
+                String fileName = fileUtil.fileUpload(uploadFile, "jobposting");
+                entity.setImgFileName(fileName);
+            }
 
-                if (uploadFile != null && !uploadFile.isEmpty()) {
-                    String fileName = fileUtil.fileUpload(uploadFile, "jobposting");
-                    entity.setImgFileName(fileName);
-                }
+            entity.setUpdatedDate(lastUpdated);
 
-                entity.setUpdatedDate(lastUpdated);
-
-                repository.save(entity);
+            repository.save(entity);
 
         } else {
             throw new IllegalArgumentException("해당 JobPosting 코드가 존재하지 않습니다.");

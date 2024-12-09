@@ -32,9 +32,10 @@ public class JobPostingController {
     private JobPostingRepository repository;
 
     @PostMapping("/register")
-//    public ResponseEntity<Integer> register(@ModelAttribute JobPostingDTO dto, Principal principal) {
     // 없으면 폼데이터, @RequestBody-JSON
-    public ResponseEntity<Integer> register(JobPostingDTO dto, @RequestParam(value = "jobPostingFolder", required = false) MultipartFile jobPostingFolder) {
+    public ResponseEntity<Integer> register(
+            JobPostingDTO dto,
+            @RequestParam(value = "jobPostingFolder", required = false) MultipartFile jobPostingFolder) {
 
 //        dto.setTitle(principal.getName());
         int no = service.register(dto, jobPostingFolder);
@@ -71,13 +72,14 @@ public class JobPostingController {
             @RequestParam(required = false) String jobCategory,
             @RequestParam(required = false) MultipartFile uploadFile,
             @RequestParam(required = false) LocalDateTime lastUpdated,
+            @RequestParam(required = false) String skill,
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime postingDeadline
     ) {
         try {
             // 서비스 메소드 호출
-            service.modifyPartial(jobCode, title, content, recruitJob, recruitField, salary,
-                    postingStatus, workExperience, tag, jobCategory,
+            service.modify(jobCode, title, content, recruitJob, recruitField, salary,
+                    postingStatus, workExperience, tag, jobCategory, skill,
                     postingDeadline, uploadFile, lastUpdated);
 
             return new ResponseEntity<>("JobPosting updated successfully.", HttpStatus.OK);

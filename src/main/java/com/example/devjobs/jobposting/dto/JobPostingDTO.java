@@ -33,7 +33,7 @@ public class JobPostingDTO {
 
     private String workExperience;  // 경력
 
-    private String tag;  // 태그(스킬)?
+    private String tag;  // 태그
 
     private String jobCategory;  // 직무 카테고리
 
@@ -45,6 +45,8 @@ public class JobPostingDTO {
     private String imgPath; // 전체 파일 경로 (imgDirectory + imgFileName)
 
     private Integer companyProfileCd; // 기업프로필코드
+
+    private String skill; // 쉼표로 구분된 스킬 문자열 (예: "Java,Spring,SQL")
 
 //    String writer; // 작성자(Members.. PK)
 //
