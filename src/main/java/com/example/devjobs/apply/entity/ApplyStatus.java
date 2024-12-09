@@ -1,20 +1,14 @@
 package com.example.devjobs.apply.entity;
 
-public enum ApplyStatus {
+public class ApplyStatus {
 
-    AVAILABLE("지원가능"),
-    COMPLETED("지원완료");
+    public static final String APPLIED = "APPLIED";        // 모집 중
+    public static final String PASSED = "PASSED";          // 서류 통과
+    public static final String INTERVIEW = "INTERVIEW";    // 면접 예정
+    public static final String ACCEPTED = "ACCEPTED";      // 최종 합격
+    public static final String REJECTED = "REJECTED";      // 불합격
 
-    private final String status;
-
-    ApplyStatus(String status) {
-
-        this.status = status;
+    private ApplyStatus() {
+        // 객체 생성 방지
     }
-
-    public String getStatus() {
-
-        return this.status;
-    }
-
 }

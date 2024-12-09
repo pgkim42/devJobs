@@ -5,9 +5,6 @@ import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.resume.entity.Resume;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "apply")
@@ -27,9 +24,8 @@ public class Apply extends BaseEntity {
     @JoinColumn(name = "job_code", referencedColumnName = "job_code")
     private JobPosting jobCode;  // 공고 코드
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "apply_status", columnDefinition = "ENUM('AVAILABLE', 'COMPLETED')")
-    private ApplyStatus applyStatus;  // 지원 상태
+    @Column(name = "apply_status", nullable = false, length = 20) // 상태를 문자열로 저장
+    private String applyStatus;  // 지원 상태
 
     @ManyToOne
     @JoinColumn(name = "resume_cd", referencedColumnName = "resume_cd")

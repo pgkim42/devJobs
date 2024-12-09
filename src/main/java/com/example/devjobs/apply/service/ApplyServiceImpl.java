@@ -2,7 +2,7 @@ package com.example.devjobs.apply.service;
 
 import com.example.devjobs.apply.dto.ApplyDTO;
 import com.example.devjobs.apply.entity.Apply;
-import com.example.devjobs.apply.entity.ApplyStatus;
+import com.example.devjobs.apply.entity.ApplyStatusValidator;
 import com.example.devjobs.apply.repository.ApplyRepository;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.jobposting.repository.JobPostingRepository;
@@ -11,7 +11,6 @@ import com.example.devjobs.resume.repository.ResumeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,8 +81,12 @@ public class ApplyServiceImpl implements ApplyService {
             }
 
             // applyStatus 업데이트
-            if(dto.getApplyStatus() != null) {
-                entity.setApplyStatus(ApplyStatus.valueOf(dto.getApplyStatus())); // String -> Enum 변환
+            if (dto.getApplyStatus() != null) {
+                // 상태 값 검증
+                if (!ApplyStatusValidator.isValid(dto.getApplyStatus())) {
+                    throw new IllegalArgumentException("Invalid apply status: " + dto.getApplyStatus());
+                }
+                entity.setApplyStatus(dto.getApplyStatus()); // String으로 상태 설정
             }
 
             applyRepository.save(entity);

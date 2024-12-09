@@ -54,9 +54,6 @@ public class JobPosting extends BaseEntity {
     @Column(name = "job_category", nullable = false)
     private String jobCategory;  // 직무 카테고리
 
-//    @Column(name = "img_directory", length = 200)
-//    private String imgDirectory; // 파일이 저장된 폴더 경로
-
     @Column(name = "img_file_name", length = 100)
     private String imgFileName; // 파일명
 
@@ -71,7 +68,5 @@ public class JobPosting extends BaseEntity {
     // 작성자
 //    @ManyToOne
 //    Members writer;  // 작성자
-
-
 
 }

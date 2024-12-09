@@ -2,7 +2,7 @@ package com.example.devjobs.apply.service;
 
 import com.example.devjobs.apply.dto.ApplyDTO;
 import com.example.devjobs.apply.entity.Apply;
-import com.example.devjobs.apply.entity.ApplyStatus;
+import com.example.devjobs.apply.entity.ApplyStatusValidator;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.resume.entity.Resume;
 
@@ -38,8 +38,9 @@ public interface ApplyService {
                 dto.setResumeCd(entity.getResumeCd().getResumeCd());
             }
 
-            if(entity.getApplyStatus() != null) {
-                dto.setApplyStatus(entity.getApplyStatus().name());
+            // applyStatus 설정
+            if (entity.getApplyStatus() != null) {
+                dto.setApplyStatus(entity.getApplyStatus());
             }
 
             return dto;
@@ -64,8 +65,13 @@ public interface ApplyService {
             entity.setResumeCd(resume);
         }
 
-        if(dto.getApplyStatus() != null) {
-            entity.setApplyStatus(ApplyStatus.valueOf(dto.getApplyStatus()));
+        // applyStatus 설정
+        if (dto.getApplyStatus() != null) {
+            // 입력 값 검증 (유효한 상태값만 허용)
+            if (!ApplyStatusValidator.isValid(dto.getApplyStatus())) {
+                throw new IllegalArgumentException("Invalid apply status: " + dto.getApplyStatus());
+            }
+            entity.setApplyStatus(dto.getApplyStatus());
         }
 
         return entity;
