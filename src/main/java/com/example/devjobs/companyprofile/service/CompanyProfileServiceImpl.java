@@ -19,7 +19,7 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
     @Override
     public int register(CompanyProfileDTO dto) {
-        CompanyProfile entity = DTOToEntity(dto);
+        CompanyProfile entity = dtoToEntity(dto);
 
         repository.save(entity);
 

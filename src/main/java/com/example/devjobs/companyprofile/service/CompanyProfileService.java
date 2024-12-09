@@ -35,7 +35,7 @@ public interface CompanyProfileService {
 
     }
 
-    default CompanyProfile DTOToEntity(CompanyProfileDTO dto) {
+    default CompanyProfile dtoToEntity(CompanyProfileDTO dto) {
 
         CompanyProfile entity = CompanyProfile.builder()
                 .companyProfileCd(dto.getCompanyProfileCd())
