@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
+import java.util.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,23 +31,44 @@ public class ResumeServiceImpl implements ResumeService {
     @Autowired
     FileUtil fileUtil;
 
-//    @Autowired
-//    ResumeService service;
-
+    // skill부분 list형태로 파싱
+    private List<String> parseSkills(String skillString) {
+        if (skillString == null || skillString.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return Arrays.stream(skillString.split(",")) // 콤마로 분리
+                .map(String::trim) // 각 항목 공백 제거
+                .collect(Collectors.toList());
+    }
     @Override
     public int register(ResumeDTO dto, MultipartFile resumeFolder) {
-        String fileName = null;
 
+        // 파일 업로드 처리 (폴더 category: resume)
+        String fileName = null;
         if (resumeFolder != null && !resumeFolder.isEmpty()) {
             fileName = fileUtil.fileUpload(resumeFolder, "resume");
             System.out.println("파일 업로드 완료: " + fileName);
         }
 
-        dto.setUploadFileName(fileName);
+        // 애플리케이션에서는 받은 dto를 List 형태로 담은 뒤(split), DB에는 join으로 문자열 형태로 전송(join)
+        // DTO에서 skill 문자열을 리스트로 변환
+        List<String> skillList = parseSkills(dto.getSkill());
 
+        // DTO를 Entity로 변환
         Resume resume = dtoToEntity(dto);
+
+        // 엔티티에 skill 리스트를 다시 문자열로 설정
+        resume.setSkill(String.join(",", skillList)); // "java,spring,sql"
+
+        // 업로드된 파일명을 설정
+        if (fileName != null) {
+            resume.setUploadFileName(fileName);
+        }
+
+        // DB에 저장
         repository.save(resume);
 
+        // 저장된 이력서의 ID 반환
         return resume.getResumeCd();
     }
 

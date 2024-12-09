@@ -37,7 +37,6 @@ public class JobPostingController {
             JobPostingDTO dto,
             @RequestParam(value = "jobPostingFolder", required = false) MultipartFile jobPostingFolder) {
 
-//        dto.setTitle(principal.getName());
         int no = service.register(dto, jobPostingFolder);
         return new ResponseEntity<>(no, HttpStatus.CREATED);
 
