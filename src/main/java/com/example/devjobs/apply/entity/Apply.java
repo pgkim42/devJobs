@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@AttributeOverride(name = "createdDate", column = @Column(name = "posting_date"))  // BaseEntity의 createdDate를 posting_date로 덮어쓰기
+@AttributeOverride(name = "createdDate", column = @Column(name = "submission_date"))  // BaseEntity의 createdDate를 submission_date로 덮어쓰기
 public class Apply extends BaseEntity {
 
     @Id
@@ -30,10 +30,6 @@ public class Apply extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "apply_status", columnDefinition = "ENUM('AVAILABLE', 'COMPLETED')")
     private ApplyStatus applyStatus;  // 지원 상태
-
-    @CreationTimestamp
-    @Column(name = "submission_date")
-    private LocalDateTime submissionDate;  // 지원서 제출일 (BaseEntity에서 관리된 등록일)
 
     @ManyToOne
     @JoinColumn(name = "resume_cd", referencedColumnName = "resume_cd")

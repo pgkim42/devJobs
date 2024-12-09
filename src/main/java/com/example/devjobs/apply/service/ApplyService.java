@@ -24,7 +24,7 @@ public interface ApplyService {
 
             ApplyDTO dto = ApplyDTO.builder()
                 .applyCode(entity.getApplyCode()) // 지원코드
-                .submissionDate(entity.getSubmissionDate()) // 등록일
+                .submissionDate(entity.getCreatedDate()) // 등록일
                 .updateDate(entity.getUpdatedDate()) // 수정일
                 .build();
 
