@@ -15,6 +15,7 @@ public class Resume extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "resume_cd")
     private Integer resumeCd; // 이력서 코드
 
     @Column(length = 255)

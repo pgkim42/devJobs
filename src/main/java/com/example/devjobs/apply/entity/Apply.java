@@ -1,4 +1,4 @@
-package com.example.devjobs.applications.entity;
+package com.example.devjobs.apply.entity;
 
 import com.example.devjobs.common.file.BaseEntity;
 import com.example.devjobs.jobposting.entity.JobPosting;
@@ -7,36 +7,35 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "applications")
+@Table(name = "apply")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @AttributeOverride(name = "createdDate", column = @Column(name = "posting_date"))  // BaseEntity의 createdDate를 posting_date로 덮어쓰기
-public class Applications extends BaseEntity {
+public class Apply extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "applications_code")
-    private Integer applicationsCode;
+    @Column(name = "apply_code")
+    private Integer applyCode;
 
     @ManyToOne
     @JoinColumn(name = "job_code", referencedColumnName = "job_code")
-    private JobPosting jobPosting;  // 공고 코드
+    private JobPosting jobCode;  // 공고 코드
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "applications_status")
-    private ApplicationsStatus applicationsStatus;  // 지원 상태
+    @Column(name = "apply_status", columnDefinition = "ENUM('AVAILABLE', 'COMPLETED')")
+    private ApplyStatus applyStatus;  // 지원 상태
 
     @CreationTimestamp
     @Column(name = "submission_date")
     private LocalDateTime submissionDate;  // 지원서 제출일 (BaseEntity에서 관리된 등록일)
 
     @ManyToOne
-    @JoinColumn(name = "resume_code", referencedColumnName = "resume_code")
-    private Resume resume;  // 이력서 코드
+    @JoinColumn(name = "resume_cd", referencedColumnName = "resume_cd")
+    private Resume resumeCd;  // 이력서 코드
 }

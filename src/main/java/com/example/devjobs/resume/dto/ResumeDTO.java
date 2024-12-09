@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class ResumeDTO {
 
-    private Integer resumeCd;         // 이력서 코드
+    private Integer resumeCode;         // 이력서 코드
 
     private String workExperience;    // 경력
 

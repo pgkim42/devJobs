@@ -1,17 +1,19 @@
-package com.example.devjobs.applications.entity;
+package com.example.devjobs.apply.entity;
 
-public enum ApplicationsStatus {
+public enum ApplyStatus {
 
     AVAILABLE("지원가능"),
     COMPLETED("지원완료");
 
     private final String status;
 
-    ApplicationsStatus(String status) {
+    ApplyStatus(String status) {
+
         this.status = status;
     }
 
     public String getStatus() {
+
         return this.status;
     }
 

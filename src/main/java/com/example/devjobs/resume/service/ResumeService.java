@@ -31,7 +31,7 @@ public interface ResumeService {
     // 자격증, 언어능력 >> List에서 Json으로 변환 필요 (DB에 JSON 형태로로 저장) 직렬화?
     default Resume dtoToEntity(ResumeDTO dto) {
         Resume entity = Resume.builder()
-                .resumeCd(dto.getResumeCd())                     // 이력서 코드
+                .resumeCd(dto.getResumeCode())                     // 이력서 코드
                 .workExperience(dto.getWorkExperience())         // 경력
                 .education(dto.getEducation())                   // 학력
                 .certifications(JsonUtil.convertListToJson(dto.getCertifications()))  // 자격증 JSON으로 변환
@@ -46,7 +46,7 @@ public interface ResumeService {
     // 자격증, 언어능력 >> JSON에서 List로(DTO에 List형태로 되어있기에)
     default ResumeDTO entityToDTO(Resume entity) {
         ResumeDTO dto = ResumeDTO.builder()
-                .resumeCd(entity.getResumeCd())                      // 이력서 코드
+                .resumeCode(entity.getResumeCd())                      // 이력서 코드
                 .workExperience(entity.getWorkExperience())          // 경력
                 .education(entity.getEducation())                    // 학력
                 .certifications(JsonUtil.convertJsonToList(entity.getCertifications(), CertificationsDTO.class)) // 자격증 JSON -> List

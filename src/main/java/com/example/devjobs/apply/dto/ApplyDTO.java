@@ -1,8 +1,7 @@
-package com.example.devjobs.applications.dto;
+package com.example.devjobs.apply.dto;
 
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -10,15 +9,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ApplicationsDTO {
+public class ApplyDTO {
 
-    private Integer applicationCode; // 지원 코드
+    private Integer applyCode; // 지원 코드
 
     private Integer jobCode; // 구인공고 코드(jobposting PK)
 
-    private String applicationsStatus; // 지원 상태
+    private String applyStatus; // 지원 상태
 
-    private Integer resumeCode; // 이력서 코드(resume PK)
+    private Integer resumeCd; // 이력서 코드(resume PK)
 
     private LocalDateTime submissionDate; // 작성일
 

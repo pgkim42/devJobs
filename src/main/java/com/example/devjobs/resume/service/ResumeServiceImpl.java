@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Optional;
 
 import java.time.LocalDateTime;
@@ -60,11 +61,11 @@ public class ResumeServiceImpl implements ResumeService {
                 .map(entity -> {
                     ResumeDTO dto = entityToDTO(entity);
 
-                    if(entity.getCertifications() != null) {
+                    if (entity.getCertifications() != null) {
                         dto.setCertifications(JsonUtil.convertJsonToList(entity.getCertifications(), CertificationsDTO.class));
                     }
 
-                    if(entity.getLanguageSkills() != null) {
+                    if (entity.getLanguageSkills() != null) {
                         dto.setLanguageSkills(JsonUtil.convertJsonToList(entity.getLanguageSkills(), LanguagesSkillsDTO.class));
                     }
 
@@ -82,7 +83,7 @@ public class ResumeServiceImpl implements ResumeService {
 
         Optional<Resume> result = repository.findById(resumeCode);
 
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             Resume resume = result.get();
             return entityToDTO(resume);
         } else {
@@ -148,11 +149,11 @@ public class ResumeServiceImpl implements ResumeService {
 
         Optional<Resume> result = repository.findById(resumeCode);
 
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             // 파일 삭제 처리
             Resume entity = result.get();
 
-            if(entity.getUploadFileName() != null) {
+            if (entity.getUploadFileName() != null) {
                 fileUtil.deleteFile(entity.getUploadFileName()); // 파일 삭제
             }
 

@@ -74,7 +74,9 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
     @Override
     public void remove(int cd) {
+
         repository.deleteById(cd);
+
     }
 
 }
