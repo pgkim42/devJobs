@@ -51,11 +51,12 @@
   (JSON <-> DTO 로 저장하기 위해 LanguagesSkillsDTO, CertificationsDTO 클래스 생성이 필요했음, Mapper를 사용하기 위해 implementation 'com.fasterxml.jackson.core:jackson-databind' 의존성 추가 필요)
 - PostMan에 dto타입으로 {"education": "dd", "languageSkills": [{"language": "영어","level": "1"}]} / resumeFolder로 매개 변수 2개 받아서 dto,file 전송해야함
 
-# 1208 JobPosting(구인), CompanyProfile(기업프로필), Resume(이력서), Applications(지원)
+# 1208 JobPosting(구인), CompanyProfile(기업프로필), Resume(이력서), Apply(지원)
 - Json <-> List를 변환하는 default 메서드를 util 패키지로 이동하여 재사용성 높힘(JsonUtil)
 - jobposting - modify 메서드 호출시 file업로드 할때 수정되지 않던 부분 수정
 - resume - CRUD 구현(CertificationsDTO, LanguagesSkillsDTO 부분 JSON형태로 관리), 파일첨부 기능 구현
-- Applications(지원) - dto, entity, repository, service, serviceimpl 기본구조 구성
+- Apply(지원) - dto, entity, repository, service, serviceimpl 기본구조 구성
 
-# 1209 Applications(지원)
-- CRUD구현
+# 1209 Appliy(지원)
+- Apply - CRUD구현, ApplyStatus <- enum으로 AVAILABLE("지원가능"), COMPLETED("지원완료");
+
