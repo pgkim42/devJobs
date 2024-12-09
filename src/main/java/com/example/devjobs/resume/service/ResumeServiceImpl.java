@@ -114,7 +114,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     public void modify(Integer resumeCd, String workExperience, String education, String skill,
                        String certifications, String languageSkills, MultipartFile resumeFile,
-                       LocalDateTime lastUpdated) {
+                       LocalDateTime lastUpdated, String jobCategory) {
 
         // 이력서 코드로 기존 이력서 검색
         Optional<Resume> result = repository.findById(resumeCd);
@@ -133,6 +133,10 @@ public class ResumeServiceImpl implements ResumeService {
 
             if (skill != null) {
                 entity.setSkill(skill);
+            }
+
+            if (jobCategory != null) {
+                entity.setJobCategory(jobCategory);
             }
 
             // 자격증 JSON 문자열을 List로 변환 후 저장

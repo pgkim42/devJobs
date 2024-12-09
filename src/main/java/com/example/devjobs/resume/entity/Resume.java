@@ -34,6 +34,9 @@ public class    Resume extends BaseEntity {
     @Column(length = 255)
     private String skill; // 스킬
 
+    @Column
+    private String jobCategory; // 직무 카테고리
+
     @Column(name = "upload_file_name", length = 255)
     private String uploadFileName; // 이력서 파일 (파일명 또는 경로)
 

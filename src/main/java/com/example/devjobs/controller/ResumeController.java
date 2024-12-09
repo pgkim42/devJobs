@@ -1,5 +1,6 @@
 package com.example.devjobs.controller;
 
+import com.example.devjobs.jobcategory.entity.JobCategory;
 import com.example.devjobs.resume.dto.CertificationsDTO;
 import com.example.devjobs.resume.dto.LanguagesSkillsDTO;
 import com.example.devjobs.resume.dto.ResumeDTO;
@@ -86,6 +87,7 @@ public class ResumeController {
             @RequestParam(required = false) String workExperience,  // 경력 (String)
             @RequestParam(required = false) String education,  // 학력 (String)
             @RequestParam(required = false) String skill,  // 스킬 (String)
+            @RequestParam(required = false) String jobCategory, // 직무
             @RequestParam(required = false) String certifications,  // 자격증 (JSON String)
             @RequestParam(required = false) String languageSkills,  // 언어 능력 (JSON String)
             @RequestParam(required = false) MultipartFile uploadFileName,  // 이력서 파일 (MultipartFile)
@@ -97,7 +99,7 @@ public class ResumeController {
 
         try {
             // 서비스 메소드에서 여러 매개변수를 처리하도록 전달
-            service.modify(resumeCd, workExperience, education, skill, certifications, languageSkills, uploadFileName, lastUpdated);
+            service.modify(resumeCd, workExperience, education, skill, certifications, languageSkills, uploadFileName, lastUpdated, jobCategory);
 
             return new ResponseEntity<>("Resume updated successfully.", HttpStatus.OK);
         } catch (Exception e) {

@@ -24,7 +24,7 @@ public interface ResumeService {
     // 이력서 수정 메소드 추가
     void modify(Integer resumeCd, String workExperience, String education, String skill,
                 String certifications, String languageSkills, MultipartFile resumeFile,
-                LocalDateTime lastUpdated);
+                LocalDateTime lastUpdated, String jobCategory);
 
     void remove(Integer resumeCode);
 
@@ -36,6 +36,7 @@ public interface ResumeService {
                 .education(dto.getEducation())                   // 학력
                 .certifications(JsonUtil.convertListToJson(dto.getCertifications()))  // 자격증 JSON으로 변환
                 .skill(dto.getSkill())                           // 스킬
+                .jobCategory(dto.getJobCategory())              // 직무
                 .languageSkills(JsonUtil.convertListToJson(dto.getLanguageSkills()))  // 언어능력 JSON으로 변환
                 .uploadFileName(dto.getUploadFileName())         // 이력서 파일
                 .build();
@@ -51,6 +52,7 @@ public interface ResumeService {
                 .education(entity.getEducation())                    // 학력
                 .certifications(JsonUtil.convertJsonToList(entity.getCertifications(), CertificationsDTO.class)) // 자격증 JSON -> List
                 .skill(entity.getSkill())                            // 스킬
+                .jobCategory(entity.getJobCategory())               // 직무
                 .languageSkills(JsonUtil.convertJsonToList(entity.getLanguageSkills(), LanguagesSkillsDTO.class)) // 언어 능력 JSON -> List
                 .uploadFileName(entity.getUploadFileName())          // 이력서 파일
                 .createdDate(entity.getCreatedDate())                // 생성일

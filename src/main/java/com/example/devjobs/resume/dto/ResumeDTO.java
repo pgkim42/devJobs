@@ -26,6 +26,8 @@ public class ResumeDTO {
 
     private String skill;             // 스킬
 
+    private String jobCategory; //직무
+
     private LocalDateTime createdDate; // 생성일
 
     private LocalDateTime updatedDate; // 수정일
