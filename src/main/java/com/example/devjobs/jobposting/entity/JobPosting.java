@@ -69,6 +69,9 @@ public class JobPosting extends BaseEntity {
     @JoinColumn(name = "company_profile_cd")
     CompanyProfile companyProfile;  // 기업프로필코드
 
+    @Transient // DB에 저장되지 않음(유사공고에 사용할 임시 데이터)
+    private int matchScore; // 추천점수
+
     // 작성자
 //    @ManyToOne
 //    Members writer;  // 작성자

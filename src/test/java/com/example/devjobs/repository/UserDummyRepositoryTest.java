@@ -1,11 +1,9 @@
 package com.example.devjobs.repository;
 
-
 import com.example.devjobs.userdummy.entity.User;
 import com.example.devjobs.userdummy.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -23,12 +21,17 @@ public class UserDummyRepositoryTest {
     public void testSaveAndFindUsers() {
         // 1. 더미 데이터 생성
         Random random = new Random();
-        List<String> jobPreferences = List.of("Backend Developer", "Frontend Developer", "Data Scientist", "DevOps Engineer", "Mobile Developer");
+        List<String> jobCategories = List.of(
+                "백엔드 개발자", "프론트엔드 개발자", "풀스택 개발자",
+                "데이터 과학자", "게임 개발자", "모바일앱 개발자",
+                "데브옵스 엔지니어", "임베디드 엔지니어",
+                "클라우드 엔지니어", "시큐리티 엔지니어"
+        );
         List<String> skillsList = List.of("Java", "Spring", "SQL", "JavaScript", "React", "Python", "Machine Learning", "Docker", "Kubernetes");
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 30; i++) {
             // 랜덤 직무, 스킬, 경력 생성
-            String job = jobPreferences.get(random.nextInt(jobPreferences.size()));
+            String jobCategory = jobCategories.get(random.nextInt(jobCategories.size())); // 직무 카테고리 무작위 선택
             String skills = String.join(",", random.ints(0, skillsList.size())
                     .distinct()
                     .limit(3 + random.nextInt(3)) // 3~5개의 랜덤 스킬 선택
@@ -38,9 +41,9 @@ public class UserDummyRepositoryTest {
 
             // User 엔티티 생성
             User user = User.builder()
-                    .jobPreferences(job)
+                    .jobCategory(jobCategory)
                     .skills(skills)
-                    .experienceLevel(experience)
+                    .workExperience(experience)
                     .build();
 
             // 저장
@@ -51,9 +54,9 @@ public class UserDummyRepositoryTest {
         List<User> users = userRepository.findAll();
 
         // 3. 검증
-        assertThat(users).hasSize(20); // 저장된 사용자 수
-        assertThat(users.get(0).getJobPreferences()).isNotNull();
-        assertThat(users.get(0).getSkills()).isNotNull();
-        assertThat(users.get(0).getExperienceLevel()).isBetween(0, 5);
+        assertThat(users).hasSize(30); // 저장된 사용자 수
+        assertThat(users.get(0).getJobCategory()).isNotNull(); // 직무 카테고리 확인
+        assertThat(users.get(0).getSkills()).isNotNull(); // 스킬 확인
+        assertThat(users.get(0).getWorkExperience()).isBetween(0, 5); // 경력 확인
     }
 }
