@@ -86,4 +86,10 @@ public class JobPostingController {
             return new ResponseEntity<>("Failed to update JobPosting.", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @DeleteMapping("/remove/{cd}")
+    public ResponseEntity remove(@PathVariable("cd") Integer cd) {
+        service.remove(cd);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 }

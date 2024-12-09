@@ -18,6 +18,8 @@ public interface ApplyService {
 
     void modify(ApplyDTO dto);
 
+    void remove(Integer dto);
+
     default ApplyDTO entityToDTO(Apply entity) {
 
             ApplyDTO dto = ApplyDTO.builder()

@@ -42,5 +42,10 @@ public class ApplyController {
         return new ResponseEntity(dto, HttpStatus.NO_CONTENT);
     }
 
+    @DeleteMapping("/remove/{cd}")
+    public ResponseEntity remove(@PathVariable("cd") Integer cd) {
+        service.remove(cd);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 
 }

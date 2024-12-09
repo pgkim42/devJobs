@@ -92,5 +92,18 @@ public class ApplyServiceImpl implements ApplyService {
 
     }
 
+    @Override
+    public void remove(Integer applyCode) {
+
+        Optional<Apply> result = applyRepository.findById(applyCode);
+
+        if(result.isPresent()) {
+
+            applyRepository.delete(result.get());
+
+        }
+
+    }
+
 
 }
