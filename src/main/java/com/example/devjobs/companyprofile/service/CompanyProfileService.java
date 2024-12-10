@@ -2,6 +2,7 @@ package com.example.devjobs.companyprofile.service;
 
 import com.example.devjobs.companyprofile.dto.CompanyProfileDTO;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
+import com.example.devjobs.user.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,6 +30,7 @@ public interface CompanyProfileService {
                 .websiteUrl(entity.getWebsiteUrl())              // 기업사이트 URL
                 .createDate(entity.getCreateDate())              // 작성일
                 .updateDate(entity.getUpdateDate())              // 수정일
+                .userCode(entity.getUserCode().getUserCode())   // 유저
                 .build();
 
         return dto;
@@ -37,12 +39,17 @@ public interface CompanyProfileService {
 
     default CompanyProfile dtoToEntity(CompanyProfileDTO dto) {
 
+        // User 객체 생성
+        User user = new User();
+        user.setUserCode(dto.getUserCode());
+
         CompanyProfile entity = CompanyProfile.builder()
                 .companyProfileCode(dto.getCompanyProfileCode())
                 .companyName(dto.getCompanyName())
                 .companyContent(dto.getCompanyContent())
                 .industry(dto.getIndustry())
                 .websiteUrl(dto.getWebsiteUrl())
+                .userCode(user) // User 설정
                 .build();
 
         return entity;

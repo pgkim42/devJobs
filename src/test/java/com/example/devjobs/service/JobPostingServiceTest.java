@@ -76,7 +76,7 @@ public class JobPostingServiceTest {
                     .tag("Java,Spring,SQL")
                     .jobCategory(randomFromList(jobCategories))
                     .skill(randomFromList(skills))
-                    .companyProfileCd(companyProfile.getCompanyProfileCd())
+                    .companyProfileCode(companyProfile.getCompanyProfileCode())
                     .build();
 
             // 등록
@@ -110,7 +110,7 @@ public class JobPostingServiceTest {
                 .tag("Java,Spring,SQL")
                 .jobCategory(randomFromList(jobCategories))
                 .skill(randomFromList(skills))
-                .companyProfileCd(1)  // 예시로 companyProfileCd를 1로 설정
+                .companyProfileCode(1)  // 예시로 companyProfileCd를 1로 설정
                 .build();
 
         // 수정

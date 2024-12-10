@@ -65,11 +65,11 @@ public class ResumeController {
 
     // @requestparam보다는 @pathvariable이 적합(restful api설계 원칙에 부합)
     @GetMapping("/read/{code}")
-    public ResponseEntity<ResumeDTO> read(@PathVariable int Code){
+    public ResponseEntity<ResumeDTO> read(@PathVariable int code){
 
-        System.out.println("이력서코드:" + Code);
+        System.out.println("이력서코드:" + code);
 
-        ResumeDTO dto = service.read(Code);
+        ResumeDTO dto = service.read(code);
         return new ResponseEntity<>(dto, HttpStatus.OK);
 
     }

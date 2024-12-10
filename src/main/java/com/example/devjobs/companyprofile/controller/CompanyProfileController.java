@@ -39,16 +39,28 @@ public class CompanyProfileController {
 
     // 첨부파일 없어서 그냥 JSON으로, postman에서 code값 넣어주고 호출 해야함
     @PutMapping("/modify")
-    public ResponseEntity modify(@RequestBody CompanyProfileDTO dto){
-        service.modify(dto);
-        return new ResponseEntity(HttpStatus.NO_CONTENT); // 성공시 204
+    public ResponseEntity<String> modify(@RequestBody CompanyProfileDTO dto) {
+        try {
+            service.modify(dto);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 성공시 204
+        } catch (SecurityException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN); // 작성자 불일치 403
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // 잘못된 요청 400
+        }
     }
 
     // PathVariable이 더 직관적이고 RESTful한 방식(param 보다)
     @DeleteMapping("/remove/{code}")
-    public ResponseEntity remove(@PathVariable("code") int code){
-        service.remove(code);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    public ResponseEntity<String> remove(@PathVariable("code") int code) {
+        try {
+            service.remove(code);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 성공시 204
+        } catch (SecurityException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN); // 작성자 불일치 403
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // 잘못된 요청 400
+        }
     }
 
 }

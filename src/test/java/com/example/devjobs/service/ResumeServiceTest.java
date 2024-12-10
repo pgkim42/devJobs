@@ -85,8 +85,8 @@ public class ResumeServiceTest {
                     .skill(skills)
                     .jobCategory(jobCategory)
                     .uploadFileName("resume_" + i + ".pdf")
-                    .createdDate(LocalDateTime.now())
-                    .updatedDate(LocalDateTime.now())
+                    .createDate(LocalDateTime.now())
+                    .updateDate(LocalDateTime.now())
                     .build();
 
             // Resume 등록
@@ -99,7 +99,7 @@ public class ResumeServiceTest {
         System.out.println("Total Resumes: " + resumes.size());
 
         for (Resume resume : resumes) {
-            System.out.println("Resume Code: " + resume.getResumeCd());
+            System.out.println("Resume Code: " + resume.getResumeCode());
             System.out.println("Work Experience: " + resume.getWorkExperience());
             System.out.println("Job Category: " + resume.getJobCategory());
             System.out.println("Skills: " + resume.getSkill());

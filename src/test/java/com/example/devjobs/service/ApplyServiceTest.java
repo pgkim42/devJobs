@@ -63,7 +63,7 @@ class ApplyServiceTest {
         // Apply 생성 및 저장
         Apply apply = Apply.builder()
                 .jobCode(jobPosting)
-                .resumeCd(resume)
+                .resumeCode(resume)
                 .applyStatus(ApplyStatus.APPLIED)
                 .build();
 
@@ -77,7 +77,7 @@ class ApplyServiceTest {
         System.out.println("=== Apply 등록 테스트 ===");
         System.out.println("Apply Code: " + apply.getApplyCode());
         System.out.println("Job Code: " + apply.getJobCode().getJobCode());
-        System.out.println("Resume Code: " + apply.getResumeCd().getResumeCd());
+        System.out.println("Resume Code: " + apply.getResumeCode().getResumeCode());
         System.out.println("Status: " + apply.getApplyStatus());
 
         assertThat(apply).isNotNull();
@@ -94,7 +94,7 @@ class ApplyServiceTest {
         System.out.println("=== Apply 조회 테스트 ===");
         System.out.println("Apply Code: " + applyDTO.getApplyCode());
         System.out.println("Job Code: " + applyDTO.getJobCode());
-        System.out.println("Resume Code: " + applyDTO.getResumeCd());
+        System.out.println("Resume Code: " + applyDTO.getResumeCode());
         System.out.println("Status: " + applyDTO.getApplyStatus());
     }
 
@@ -151,7 +151,7 @@ class ApplyServiceTest {
         for (ApplyDTO apply : applies) {
             System.out.println("Apply Code: " + apply.getApplyCode());
             System.out.println("Job Code: " + apply.getJobCode());
-            System.out.println("Resume Code: " + apply.getResumeCd());
+            System.out.println("Resume Code: " + apply.getResumeCode());
         }
 
         assertThat(applies).isNotEmpty();

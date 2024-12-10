@@ -36,7 +36,7 @@ class CompanyProfileServiceTest {
         CompanyProfileDTO savedCompanyProfile = companyProfileService.read(companyProfileCd);
 
         System.out.println("=== CompanyProfile 등록 테스트 ===");
-        System.out.println("Company Profile Code: " + savedCompanyProfile.getCompanyProfileCd());
+        System.out.println("Company Profile Code: " + savedCompanyProfile.getCompanyProfileCode());
         System.out.println("Company Name: " + savedCompanyProfile.getCompanyName());
 
         assertThat(savedCompanyProfile).isNotNull();
@@ -59,7 +59,7 @@ class CompanyProfileServiceTest {
         CompanyProfileDTO savedCompanyProfile = companyProfileService.read(companyProfileCd);
 
         System.out.println("=== CompanyProfile 조회 테스트 ===");
-        System.out.println("Company Profile Code: " + savedCompanyProfile.getCompanyProfileCd());
+        System.out.println("Company Profile Code: " + savedCompanyProfile.getCompanyProfileCode());
         System.out.println("Company Name: " + savedCompanyProfile.getCompanyName());
         System.out.println("Industry: " + savedCompanyProfile.getIndustry());
 
@@ -81,7 +81,7 @@ class CompanyProfileServiceTest {
 
         // 수정
         CompanyProfileDTO modifyDTO = CompanyProfileDTO.builder()
-                .companyProfileCd(companyProfileCd)
+                .companyProfileCode(companyProfileCd)
                 .companyName("Updated Company")
                 .industry("Updated Industry")
                 .build();

@@ -1,9 +1,7 @@
 package com.example.devjobs.similarPosting.service;
 
-import com.example.devjobs.jobposting.dto.JobPostingDTO;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.jobposting.repository.JobPostingRepository;
-import com.example.devjobs.resume.dto.ResumeDTO;
 import com.example.devjobs.resume.entity.Resume;
 import com.example.devjobs.resume.repository.ResumeRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -71,6 +71,13 @@ public class JobPostingServiceImpl implements JobPostingService {
 
         JobPosting jobPosting = dtoToEntity(dto);
         jobPosting.setUserCode(user); // 로그인한 사용자의 userCode 설정
+
+        // Skills 파싱 및 설정
+        if (dto.getSkill() != null) {
+            List<String> skillList = parseSkills(dto.getSkill());
+            jobPosting.setSkill(String.join(",", skillList)); // 파싱한 스킬 리스트를 다시 문자열로 설정
+        }
+
         if (imgFileName != null) {
             jobPosting.setImgFileName(imgFileName);
         }
@@ -113,11 +120,28 @@ public class JobPostingServiceImpl implements JobPostingService {
                        String workExperience, String tag, String jobCategory,
                        String skill, LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated) {
 
+        // 현재 로그인된 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
+        }
+
+        String currentUserName = authentication.getName();
+        User loggedInUser = userRepository.findByUserId(currentUserName);
+        if (loggedInUser == null) {
+            throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
+        }
+
         // 기존 JobPosting 검색
         Optional<JobPosting> result = repository.findById(jobCode);
 
         if (result.isPresent()) {
             JobPosting entity = result.get();
+
+            // 작성자와 로그인된 사용자 비교
+            if (!entity.getUserCode().getUserCode().equals(loggedInUser.getUserCode())) {
+                throw new SecurityException("작성자만 게시글을 수정할 수 있습니다.");
+            }
 
             // 전달된 값만 업데이트
             if (title != null) {
@@ -148,7 +172,8 @@ public class JobPostingServiceImpl implements JobPostingService {
                 entity.setJobCategory(jobCategory);
             }
             if (skill != null) {
-                entity.setSkill(skill);
+                List<String> skillList = parseSkills(skill); // Skills 파싱
+                entity.setSkill(String.join(",", skillList)); // 파싱한 스킬 리스트를 다시 문자열로 설정
             }
             if (postingDeadline != null) {
                 entity.setPostingDeadline(postingDeadline);
@@ -171,9 +196,32 @@ public class JobPostingServiceImpl implements JobPostingService {
 
     @Override
     public void remove(Integer jobCode) {
+        // 현재 로그인된 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
+        }
 
+        String currentUserName = authentication.getName();
+        User loggedInUser = userRepository.findByUserId(currentUserName);
+        if (loggedInUser == null) {
+            throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
+        }
+
+        // 삭제하려는 JobPosting 검색
         Optional<JobPosting> result = repository.findById(jobCode);
-            repository.deleteById(jobCode);
 
+        if (result.isPresent()) {
+            JobPosting entity = result.get();
+
+            // 작성자와 로그인된 사용자 비교
+            if (!entity.getUserCode().getUserCode().equals(loggedInUser.getUserCode())) {
+                throw new SecurityException("작성자만 게시글을 삭제할 수 있습니다.");
+            }
+
+            repository.deleteById(jobCode);
+        } else {
+            throw new IllegalArgumentException("해당 JobPosting 코드가 존재하지 않습니다.");
+        }
     }
 }

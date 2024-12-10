@@ -1,7 +1,7 @@
 package com.example.devjobs.repository;
 
-import com.example.devjobs.userdummy.entity.User;
-import com.example.devjobs.userdummy.repository.UserRepository;
+import com.example.devjobs.dummyuser.entity.DummyUser;
+import com.example.devjobs.dummyuser.repository.DummyUserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,13 +12,13 @@ import java.util.Random;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class UserDummyRepositoryTest {
+public class DummyUserRepositoryTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private DummyUserRepository dummyUserRepository;
 
     @Test
-    public void testSaveAndFindUsers() {
+    public void testSaveAndFindDummyUsers() {
         // 1. 더미 데이터 생성
         Random random = new Random();
         List<String> jobCategories = List.of(
@@ -39,19 +39,19 @@ public class UserDummyRepositoryTest {
                     .toList());
             int experience = random.nextInt(6); // 0~5년 경력
 
-            // User 엔티티 생성
-            User user = User.builder()
+            // DummyUser 엔티티 생성
+            DummyUser dummyUser = DummyUser.builder()
                     .jobCategory(jobCategory)
                     .skills(skills)
                     .workExperience(experience)
                     .build();
 
             // 저장
-            userRepository.save(user);
+            dummyUserRepository.save(dummyUser);
         }
 
         // 2. 저장된 사용자 조회
-        List<User> users = userRepository.findAll();
+        List<DummyUser> users = dummyUserRepository.findAll();
 
         // 3. 검증
         assertThat(users).hasSize(30); // 저장된 사용자 수
