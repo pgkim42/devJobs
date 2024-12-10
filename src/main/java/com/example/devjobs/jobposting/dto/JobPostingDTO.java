@@ -1,7 +1,8 @@
 package com.example.devjobs.jobposting.dto;
 
+import com.example.devjobs.jobposting.entity.PostingStatus;
 import lombok.*;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,30 +13,43 @@ import java.time.LocalDateTime;
 @Builder
 public class JobPostingDTO {
 
-    String title; // 공고제목
+    private Integer jobCode; // 공고번호
 
-    String description; // 공고내용
+    private String title;  // 공고제목
 
-    String recruitJob; // 모집직무
+    private String content;  // 공고내용
 
-    int recruitField; // 모집인원
+    private String recruitJob;  // 모집직무
 
-    String salary; // 급여(옵션)
+    private int recruitField;  // 모집인원
 
-    LocalDateTime postingDate; // 공고시작일
+    private String salary;  // 급여
 
-    LocalDateTime postingDeadline; // 공고마감일
+    private LocalDateTime postingDate;  // 공고시작일
 
-    String postingStatus; // 공고상태
+    private LocalDateTime postingDeadline;  // 공고마감일
 
-    String workExprerience; // 경력
+    private String postingStatus;  // 공고상태
 
-    String tag; // 태그
-    
-    String jobCategory; // 직무 카테고리
+    private String workExperience;  // 경력
+
+    private String tag;  // 태그
+
+    private String jobCategory;  // 직무 카테고리
+
+    // imgFile 관련 ...
+    private MultipartFile uploadFile;  // 파일 스트림
+
+    private String imgFileName;  // 업로드된 파일명
+
+    private String imgPath; // 전체 파일 경로 (imgDirectory + imgFileName)
+
+    private Integer companyProfileCd; // 기업프로필코드
+
+    private String skill; // 쉼표로 구분된 스킬 문자열 (예: "Java,Spring,SQL")
 
 //    String writer; // 작성자(Members.. PK)
 //
-//    String companyProfile; // 기업프로필코드(CompanyProfile...PK)
+
 
 }

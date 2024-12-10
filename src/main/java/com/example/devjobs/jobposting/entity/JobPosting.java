@@ -1,5 +1,7 @@
 package com.example.devjobs.jobposting.entity;
 
+import com.example.devjobs.common.BaseEntity;
+import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,52 +15,65 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@AttributeOverride(name = "createdDate", column = @Column(name = "posting_date"))  // BaseEntity의 createdDate를 posting_date로 덮어쓰기
 public class JobPosting extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "job_code", nullable = false)
-    int jobCode;  // 공고코드
+    private Integer jobCode;  // 공고코드
 
     @Column(name = "title", nullable = false)
-    String title;  // 공고제목
+    private String title;  // 공고제목
 
-    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
-    String description;  // 공고내용
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    private String content;  // 공고내용
 
     @Column(name = "recruit_job", nullable = false)
-    String recruitJob;  // 모집직무
+    private String recruitJob;  // 모집직무
 
     @Column(name = "recruit_field", nullable = false)
-    int recruitField;  // 모집인원
+    private int recruitField;  // 모집인원
 
     @Column(name = "salary")
-    String salary;  // 급여
+    private String salary;  // 급여
 
-    @Column(name = "posting_deadline")
-    LocalDateTime postingDeadline;  // 공고마감일
+    @Column(name = "posting_deadline", nullable = false)
+    private LocalDateTime postingDeadline;  // 공고마감일
 
-    @Enumerated(EnumType.STRING)
+    // 공고 상태 관련...
     @Column(name = "posting_status", nullable = false)
-    PostingStatus postingStatus;  // 공고상태
+    private String postingStatus;  // 공고상태: "모집중", "마감" (String으로 관리)
 
     @Column(name = "work_experience", nullable = false)
-    String workExperience;  // 경력 (신입, 경력)
+    private String workExperience;  // 경력 (신입, 경력)
 
     @Column(name = "tag")
-    String tag;  // 태그
+    private String tag;  // 태그
 
     @Column(name = "job_category", nullable = false)
-    String jobCategory;  // 직무 카테고리
+    private String jobCategory;  // 직무 카테고리
 
+    @Column(name = "img_file_name", length = 100)
+    private String imgFileName; // 파일명
 
+    @Transient // DB에 저장되지는 않음
+    private String imgPath; // 전체 파일 경로 (imgDirectory + imgFileName)
+
+    // 추가된 skill 컬럼
+    @Column(name = "skill", nullable = false, length = 255)
+    private String skill; // 쉼표로 구분된 스킬 문자열 (예: "Java,Spring,SQL")
+
+    // 기업프로필코드
+    @ManyToOne
+    @JoinColumn(name = "company_profile_cd")
+    CompanyProfile companyProfile;  // 기업프로필코드
+
+    @Transient // DB에 저장되지 않음(유사공고에 사용할 임시 데이터)
+    private int matchScore; // 추천점수
 
     // 작성자
 //    @ManyToOne
 //    Members writer;  // 작성자
-
-    // 기업프로필코드
-//    @ManyToOne
-//    CompanyProfile companyProfile;  // 기업프로필코드
 
 }
