@@ -1,6 +1,7 @@
 package com.example.devjobs.companyprofile.entity;
 
 import com.example.devjobs.common.BaseEntity;
+import com.example.devjobs.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,5 +31,9 @@ public class CompanyProfile extends BaseEntity {
 
     @Column(name = "website_url")
     private String websiteUrl;  // 기업 사이트 URL
+
+    @ManyToOne
+    @JoinColumn(name = "user_code")
+    User userCode;
 
 }

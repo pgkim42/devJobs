@@ -27,10 +27,11 @@ public class JwtProvider {
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setSubject(userId)
-                .claim("role", role) // 사용자 역할 추가
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(expiredDate)
                 .compact();
+
     }
 
     // JWT 검증 메소드

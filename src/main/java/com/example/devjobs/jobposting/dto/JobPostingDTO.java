@@ -47,4 +47,6 @@ public class JobPostingDTO {
 
     private String skill; // 쉼표로 구분된 스킬 문자열 (예: "Java,Spring,SQL")
 
+    private String userCode; // 유저 코드
+
 }

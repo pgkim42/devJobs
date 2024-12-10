@@ -17,9 +17,6 @@ public class CompanyProfileController {
     @Autowired
     CompanyProfileService service;
 
-    @Autowired
-    CompanyProfileRepository repository;
-
     @PostMapping("/register")
     public ResponseEntity<Integer> register(@RequestBody CompanyProfileDTO dto){
         int companyProfile = service.register(dto);

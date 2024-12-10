@@ -25,4 +25,6 @@ public class CompanyProfileDTO {
 
     private LocalDateTime updateDate;  // 수정일
 
+    private String userCode;
+
 }
