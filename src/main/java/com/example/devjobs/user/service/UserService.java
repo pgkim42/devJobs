@@ -6,12 +6,13 @@ import com.example.devjobs.user.entity.User;
 
 public interface UserService {
 
-    UserResponseDto getMyPageInfo(String userId);
+    void deleteUser(String userId); // 사용자 삭제
 
-    void updateUserInfo(String userId, UpdateUserRequestDto dto);
+    User findUserById(String userId); // 사용자 조회
 
-    void deleteUser(String userId);
+    void updatePassword(String userId, String currentPassword, String newPassword); // 비밀번호 변경
 
-    User findUserById(String userId);
+    boolean checkUserPassword(String userId, String password);
 
 }
+

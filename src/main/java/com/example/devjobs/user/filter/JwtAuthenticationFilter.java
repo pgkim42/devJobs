@@ -3,6 +3,7 @@ package com.example.devjobs.user.filter;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.provider.JwtProvider;
 import com.example.devjobs.user.repository.UserRepository;
+import com.example.devjobs.user.service.implement.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +37,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String path = request.getRequestURI();
             if (path.startsWith("/api/v1/auth")) {
-                // 인증이 필요 없는 경로는 필터링 제외
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -54,15 +54,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             User user = userRepository.findByUserId(userId);
-            String role = user.getRole(); // role = ROLE_USER, ROLE_ADMIN
+            if (user == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+            UserDetailsImpl userDetails = new UserDetailsImpl(user);
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
 
-            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             AbstractAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userId, null, authorities);
+                    new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
+            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             securityContext.setAuthentication(authenticationToken);
             SecurityContextHolder.setContext(securityContext);
 
@@ -72,7 +76,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
 
     private String parseBearerToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
@@ -85,6 +88,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return null;
         }
 
-        return authorization.substring(7); // Bearer 이후의 토큰 값 반환
+        return authorization.substring(7);
     }
 }

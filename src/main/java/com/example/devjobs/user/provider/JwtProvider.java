@@ -24,33 +24,40 @@ public class JwtProvider {
         Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
-        return Jwts.builder()
+        String jwt = Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setSubject(userId)
-                .claim("role", role) // 사용자 역할 추가
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(expiredDate)
                 .compact();
+
+        System.out.println("Generated JWT: " + jwt); // 생성된 JWT를 로그로 출력
+        return jwt;
     }
 
     // JWT 검증 메소드
     public String validate(String jwt) {
-        String subject = null;
-        Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-
         try {
-            subject = Jwts.parserBuilder()
+            Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+            Claims claims = Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(jwt)  // JWT를 파싱하여 검증
-                    .getBody()
-                    .getSubject();  // JWT의 subject 값을 가져옴
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return null;
-        }
+                    .parseClaimsJws(jwt)
+                    .getBody();
 
-        return subject;
+            System.out.println("JWT Claims: " + claims); // 클레임 출력
+            return claims.getSubject(); // subject(userId) 반환
+        } catch (io.jsonwebtoken.MalformedJwtException e) {
+            System.err.println("Malformed JWT: " + e.getMessage());
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            System.err.println("Expired JWT: " + e.getMessage());
+        } catch (io.jsonwebtoken.SignatureException e) {
+            System.err.println("Invalid signature: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("JWT validation error: " + e.getMessage());
+        }
+        return null;
     }
 
     // JWT에서 클레임을 가져오는 메소드 (예: 만료 시간)
