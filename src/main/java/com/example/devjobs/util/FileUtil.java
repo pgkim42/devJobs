@@ -17,30 +17,37 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class FileUtil {
 
-    // 파일 경로는 환경에 따라 바뀔 수 있으므로
-    // 환경파일에 저장하고 클래스에서 불러다 써야함!
-    // 예: 로컬 컴퓨터 - c:/uploadfile
-    //     서버 컴퓨터 - d:/imagefile
-
-    // 이미지 파일을 저장할 경로
-    @Value("${filepath}")
-    private String filepath;
+    @Value("${filepath:C:\\uploadfile\\}")  // 기본 경로를 c드라이브 uplodafile로
+    private String filepath;  // 파일 저장 경로
 
     // 파일 업로드 메서드 (단일 파일 업로드)
-    public String fileUpload(MultipartFile multipartFile) {
+    public String fileUpload(MultipartFile multipartFile, String category) {
         if (multipartFile == null || multipartFile.isEmpty()) {
+            System.out.println("파일이 null 이거나 비어 있습니다.");
             return null;
         }
 
         try {
-            // 파일 경로와 이름 설정
-            Path copyOfLocation = Paths.get(filepath + File.separator + StringUtils.cleanPath(multipartFile.getOriginalFilename()));
+            // category에 따라 하위 폴더 생성 (jobposting, resume 등)
+            Path uploadDirectory = Paths.get(filepath, category);
+            System.out.println("업로드 디렉토리: " + uploadDirectory);
+
+            // 디렉토리가 존재하지 않으면 생성
+            if (!Files.exists(uploadDirectory)) {
+                Files.createDirectories(uploadDirectory); // 부모 디렉토리까지 함께 생성
+                System.out.println("디렉토리가 없어서 생성됨: " + uploadDirectory);
+            }
+
+            // 파일 경로 설정
+            Path copyOfLocation = uploadDirectory.resolve(StringUtils.cleanPath(multipartFile.getOriginalFilename()));
+            System.out.println("파일 경로: " + copyOfLocation);
 
             // 파일을 지정한 경로에 저장
             Files.copy(multipartFile.getInputStream(), copyOfLocation, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("파일 저장됨: " + copyOfLocation);
 
             // 업로드된 파일 이름 반환
-            return multipartFile.getOriginalFilename();
+            return copyOfLocation.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,17 +55,20 @@ public class FileUtil {
         return null;
     }
 
-    // 여러 파일 업로드 메서드 (다수 파일 업로드)
-    public List<String> fileUploadMultiple(List<MultipartFile> multipartFiles) {
-        List<String> uploadedFileNames = new ArrayList<>();
+    // 파일 삭제 메서드
+    public boolean deleteFile(String filePath) {
 
-        for (MultipartFile file : multipartFiles) {
-            String fileName = fileUpload(file);
-            if (fileName != null) {
-                uploadedFileNames.add(fileName);
+        try {
+            Path path = Paths.get(filepath, filePath);
+
+            if (Files.exists(path)) {
+                Files.delete(path); // 파일 삭제
+                return true;
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        return uploadedFileNames;
+        return false;
     }
 }
