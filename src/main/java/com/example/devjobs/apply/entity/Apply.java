@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@AttributeOverride(name = "createdDate", column = @Column(name = "submission_date"))  // BaseEntity의 createdDate를 submission_date로 덮어쓰기
+@AttributeOverride(name = "createDate", column = @Column(name = "submission_date"))  // BaseEntity의 createdDate를 submission_date로 덮어쓰기
 public class Apply extends BaseEntity {
 
     @Id
@@ -28,6 +28,6 @@ public class Apply extends BaseEntity {
     private String applyStatus;  // 지원 상태
 
     @ManyToOne
-    @JoinColumn(name = "resume_cd", referencedColumnName = "resume_cd")
-    private Resume resumeCd;  // 이력서 코드
+    @JoinColumn(name = "resume_code", referencedColumnName = "resume_code")
+    private Resume resumeCode;  // 이력서 코드
 }

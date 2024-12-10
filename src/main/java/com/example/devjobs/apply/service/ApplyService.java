@@ -14,7 +14,7 @@ public interface ApplyService {
 
     List<ApplyDTO> getList();
 
-    ApplyDTO read(int cd);
+    ApplyDTO read(int code);
 
     void modify(ApplyDTO dto);
 
@@ -24,8 +24,8 @@ public interface ApplyService {
 
             ApplyDTO dto = ApplyDTO.builder()
                 .applyCode(entity.getApplyCode()) // 지원코드
-                .submissionDate(entity.getCreatedDate()) // 등록일
-                .updateDate(entity.getUpdatedDate()) // 수정일
+                .submissionDate(entity.getCreateDate()) // 등록일
+                .updateDate(entity.getUpdateDate()) // 수정일
                 .build();
 
             // jobCode 설정
@@ -34,8 +34,8 @@ public interface ApplyService {
             }
             
             // resumeCode 설정
-            if(entity.getResumeCd() != null) {
-                dto.setResumeCd(entity.getResumeCd().getResumeCd());
+            if(entity.getResumeCode() != null) {
+                dto.setResumeCode(entity.getResumeCode().getResumeCode());
             }
 
             // applyStatus 설정
@@ -59,10 +59,10 @@ public interface ApplyService {
             entity.setJobCode(jobPosting);
         }
 
-        if(dto.getResumeCd() != null) {
+        if(dto.getResumeCode() != null) {
             Resume resume = new Resume();
-            resume.setResumeCd(dto.getResumeCd());
-            entity.setResumeCd(resume);
+            resume.setResumeCode(dto.getResumeCode());
+            entity.setResumeCode(resume);
         }
 
         // applyStatus 설정

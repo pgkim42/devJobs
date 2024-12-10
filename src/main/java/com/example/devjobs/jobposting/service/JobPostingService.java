@@ -3,7 +3,6 @@ package com.example.devjobs.jobposting.service;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.jobposting.dto.JobPostingDTO;
 import com.example.devjobs.jobposting.entity.JobPosting;
-import com.example.devjobs.jobposting.entity.PostingStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -28,7 +27,7 @@ public interface JobPostingService {
 
         // CompanyProfile 가져오기(기업프로필)
         CompanyProfile companyProfile = new CompanyProfile();
-        companyProfile.setCompanyProfileCd(dto.getCompanyProfileCd());
+        companyProfile.setCompanyProfileCode(dto.getCompanyProfileCode());
 
         // JobPosting 객체를 생성
         JobPosting jobPosting = JobPosting.builder()
@@ -59,7 +58,7 @@ public interface JobPostingService {
                 .recruitJob(entity.getRecruitJob())
                 .recruitField(entity.getRecruitField())
                 .salary(entity.getSalary())
-                .postingDate(entity.getCreatedDate())
+                .postingDate(entity.getCreateDate())
                 .postingDeadline(entity.getPostingDeadline())
                 .postingStatus(entity.getPostingStatus())
                 .workExperience(entity.getWorkExperience())
@@ -67,7 +66,7 @@ public interface JobPostingService {
                 .jobCategory(entity.getJobCategory())
                 .imgFileName(entity.getImgFileName())
                 .skill(entity.getSkill()) // 추가된 skill 필드
-                .companyProfileCd(entity.getCompanyProfile().getCompanyProfileCd())
+                .companyProfileCode(entity.getCompanyProfile().getCompanyProfileCode())
                 // imgPath 필드는 @Transient로 설정되어 데이터베이스에 저장되지 않으며,
                 // getImgPath() 메서드를 통해 imgDirectory와 imgFileName을 결합한 경로를 반환
                 .imgPath(entity.getImgPath()) // 전체 파일 경로

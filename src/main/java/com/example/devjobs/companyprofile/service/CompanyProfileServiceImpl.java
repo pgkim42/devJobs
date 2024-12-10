@@ -23,7 +23,7 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
         repository.save(entity);
 
-        return entity.getCompanyProfileCd();
+        return entity.getCompanyProfileCode();
     }
 
     @Override
@@ -37,8 +37,8 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
     }
 
     @Override
-    public CompanyProfileDTO read(int cd) {
-        Optional<CompanyProfile> result = repository.findById(cd);
+    public CompanyProfileDTO read(int code) {
+        Optional<CompanyProfile> result = repository.findById(code);
         if (result.isPresent()) {
             return entityToDTO(result.get());
         } else {
@@ -48,7 +48,7 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
     @Override
     public void modify(CompanyProfileDTO dto) {
-        Optional<CompanyProfile> result = repository.findById(dto.getCompanyProfileCd());
+        Optional<CompanyProfile> result = repository.findById(dto.getCompanyProfileCode());
         if (result.isPresent()) {
             CompanyProfile entity = result.get();
 
@@ -73,9 +73,9 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
     }
 
     @Override
-    public void remove(int cd) {
+    public void remove(int code) {
 
-        repository.deleteById(cd);
+        repository.deleteById(code);
 
     }
 

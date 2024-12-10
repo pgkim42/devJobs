@@ -141,7 +141,7 @@ public class JobPostingServiceImpl implements JobPostingService {
                 entity.setImgFileName(fileName);
             }
 
-            entity.setUpdatedDate(lastUpdated);
+            entity.setUpdateDate(lastUpdated);
 
             repository.save(entity);
 

@@ -71,8 +71,8 @@ public class JobCategoryServiceImpl implements JobCategoryService {
     }
 
     @Override
-    public void remove(int cd) {
-        repository.deleteById(cd);
+    public void remove(int code) {
+        repository.deleteById(code);
     }
 
 }

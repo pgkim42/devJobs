@@ -28,9 +28,9 @@ public class ResumeDTO {
 
     private String jobCategory; //직무
 
-    private LocalDateTime createdDate; // 생성일
+    private LocalDateTime createDate; // 생성일
 
-    private LocalDateTime updatedDate; // 수정일
+    private LocalDateTime updateDate; // 수정일
 
     // 파일 첨부 관련..
     private MultipartFile uploadFile;   // 이력서 파일 (파일명 또는 경로)

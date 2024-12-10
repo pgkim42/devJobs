@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CompanyProfileDTO {
 
-    private Integer companyProfileCd;  // 기업프로필코드
+    private Integer companyProfileCode;  // 기업프로필코드
 
     private String companyName;  // 기업 이름
 

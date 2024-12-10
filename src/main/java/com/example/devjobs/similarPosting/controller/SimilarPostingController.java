@@ -20,10 +20,10 @@ public class SimilarPostingController {
     private SimilarPostingService similarPostingService;
 
     // ResponseEntity의 제네릭 타입을 ?로 변경하여 반환할 수 있는 데이터 타입을 유연하게 처리
-    @GetMapping("/similar/{resumeCd}")
-    public ResponseEntity<?> similarPostings(@PathVariable Integer resumeCd) {
+    @GetMapping("/similar/{resumeCode}")
+    public ResponseEntity<?> similarPostings(@PathVariable Integer resumeCode) {
         // 유사 공고 추천
-        List<JobPosting> similar = similarPostingService.recommendSimilarPostings(resumeCd);
+        List<JobPosting> similar = similarPostingService.recommendSimilarPostings(resumeCode);
 
         // 유사 공고가 없을 경우 텍스트 메시지 반환
         if (similar.isEmpty()) {

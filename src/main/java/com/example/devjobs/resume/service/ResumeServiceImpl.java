@@ -69,7 +69,7 @@ public class ResumeServiceImpl implements ResumeService {
         repository.save(resume);
 
         // 저장된 이력서의 ID 반환
-        return resume.getResumeCd();
+        return resume.getResumeCode();
     }
 
     @Override
@@ -112,12 +112,12 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public void modify(Integer resumeCd, String workExperience, String education, String skill,
+    public void modify(Integer resumeCode, String workExperience, String education, String skill,
                        String certifications, String languageSkills, MultipartFile resumeFile,
                        LocalDateTime lastUpdated, String jobCategory) {
 
         // 이력서 코드로 기존 이력서 검색
-        Optional<Resume> result = repository.findById(resumeCd);
+        Optional<Resume> result = repository.findById(resumeCode);
 
         if (result.isPresent()) {
             Resume entity = result.get();
@@ -158,7 +158,7 @@ public class ResumeServiceImpl implements ResumeService {
             }
 
             // 마지막 수정일 업데이트 (BaseEntity에서 관리되므로 추가하지 않아도 됨)
-            entity.setUpdatedDate(lastUpdated);
+            entity.setUpdateDate(lastUpdated);
 
             // 수정된 엔티티 저장
             repository.save(entity);

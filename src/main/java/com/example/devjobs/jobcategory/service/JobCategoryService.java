@@ -14,7 +14,7 @@ public interface JobCategoryService {
 
     void modify(JobCategoryDTO dto);
 
-    void remove(int cd);
+    void remove(int code);
 
     default JobCategory dtoToEntity(JobCategoryDTO dto) {
         JobCategory entity = JobCategory.builder()

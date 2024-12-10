@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface SimilarPostingService {
 
-    List<JobPosting> recommendSimilarPostings(Integer resumeCd);
+    List<JobPosting> recommendSimilarPostings(Integer resumeCode);
 
 }

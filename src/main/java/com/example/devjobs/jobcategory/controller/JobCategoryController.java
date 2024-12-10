@@ -34,9 +34,9 @@ public class JobCategoryController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/remove/{cd}")
-    public ResponseEntity remove(@PathVariable("cd") int cd) {
-        service.remove(cd);
+    @DeleteMapping("/remove/{code}")
+    public ResponseEntity remove(@PathVariable("code") int code) {
+        service.remove(code);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 

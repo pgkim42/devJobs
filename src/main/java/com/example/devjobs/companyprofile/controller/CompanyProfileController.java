@@ -34,13 +34,13 @@ public class CompanyProfileController {
     }
 
     // @requestparam보다는 @pathvariable이 적합(restful api설계 원칙에 부합)
-    @GetMapping("/read/{cd}")
-    public ResponseEntity<CompanyProfileDTO> read(@PathVariable int cd){
-        CompanyProfileDTO dto = service.read(cd);
+    @GetMapping("/read/{code}")
+    public ResponseEntity<CompanyProfileDTO> read(@PathVariable int code){
+        CompanyProfileDTO dto = service.read(code);
         return new ResponseEntity<>(dto, HttpStatus.OK); // 성공시 200
     }
 
-    // 첨부파일 없어서 그냥 JSON으로, postman에서 cd값 넣어주고 호출 해야함
+    // 첨부파일 없어서 그냥 JSON으로, postman에서 code값 넣어주고 호출 해야함
     @PutMapping("/modify")
     public ResponseEntity modify(@RequestBody CompanyProfileDTO dto){
         service.modify(dto);
@@ -48,9 +48,9 @@ public class CompanyProfileController {
     }
 
     // PathVariable이 더 직관적이고 RESTful한 방식(param 보다)
-    @DeleteMapping("/remove/{cd}")
-    public ResponseEntity remove(@PathVariable("cd") int cd){
-        service.remove(cd);
+    @DeleteMapping("/remove/{code}")
+    public ResponseEntity remove(@PathVariable("code") int code){
+        service.remove(code);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 

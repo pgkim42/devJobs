@@ -15,8 +15,8 @@ public class CompanyProfile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_profile_cd")
-    private Integer companyProfileCd;  // 기업프로필코드
+    @Column(name = "company_profile_code")
+    private Integer companyProfileCode;  // 기업프로필코드
 
     @Column(name = "company_name", nullable = false)
     private String companyName;  // 기업 이름

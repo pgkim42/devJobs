@@ -1,6 +1,5 @@
 package com.example.devjobs.jobposting.dto;
 
-import com.example.devjobs.jobposting.entity.PostingStatus;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
@@ -44,12 +43,8 @@ public class JobPostingDTO {
 
     private String imgPath; // 전체 파일 경로 (imgDirectory + imgFileName)
 
-    private Integer companyProfileCd; // 기업프로필코드
+    private Integer companyProfileCode; // 기업프로필코드
 
     private String skill; // 쉼표로 구분된 스킬 문자열 (예: "Java,Spring,SQL")
-
-//    String writer; // 작성자(Members.. PK)
-//
-
 
 }

@@ -17,7 +17,7 @@ public class ApplyDTO {
 
     private String applyStatus; // 지원 상태
 
-    private Integer resumeCd; // 이력서 코드(resume PK)
+    private Integer resumeCode; // 이력서 코드(resume PK)
 
     private LocalDateTime submissionDate; // 작성일
 

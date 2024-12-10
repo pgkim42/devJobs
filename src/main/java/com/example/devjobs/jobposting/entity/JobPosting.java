@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@AttributeOverride(name = "createdDate", column = @Column(name = "posting_date"))  // BaseEntity의 createdDate를 posting_date로 덮어쓰기
+@AttributeOverride(name = "createDate", column = @Column(name = "posting_date"))  // BaseEntity의 createdDate를 posting_date로 덮어쓰기
 public class JobPosting extends BaseEntity {
 
     @Id
@@ -66,14 +66,10 @@ public class JobPosting extends BaseEntity {
 
     // 기업프로필코드
     @ManyToOne
-    @JoinColumn(name = "company_profile_cd")
+    @JoinColumn(name = "company_profile_code")
     CompanyProfile companyProfile;  // 기업프로필코드
 
     @Transient // DB에 저장되지 않음(유사공고에 사용할 임시 데이터)
     private int matchScore; // 추천점수
-
-    // 작성자
-//    @ManyToOne
-//    Members writer;  // 작성자
 
 }

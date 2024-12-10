@@ -80,9 +80,9 @@ public class JobPostingController {
         }
     }
 
-    @DeleteMapping("/remove/{cd}")
-    public ResponseEntity remove(@PathVariable("cd") Integer cd) {
-        service.remove(cd);
+    @DeleteMapping("/remove/{code}")
+    public ResponseEntity remove(@PathVariable("code") Integer code) {
+        service.remove(code);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

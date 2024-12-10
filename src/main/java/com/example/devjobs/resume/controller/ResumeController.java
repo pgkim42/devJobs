@@ -64,19 +64,19 @@ public class ResumeController {
     }
 
     // @requestparam보다는 @pathvariable이 적합(restful api설계 원칙에 부합)
-    @GetMapping("/read/{cd}")
-    public ResponseEntity<ResumeDTO> read(@PathVariable int cd){
+    @GetMapping("/read/{code}")
+    public ResponseEntity<ResumeDTO> read(@PathVariable int Code){
 
-        System.out.println("이력서코드:" + cd);
+        System.out.println("이력서코드:" + Code);
 
-        ResumeDTO dto = service.read(cd);
+        ResumeDTO dto = service.read(Code);
         return new ResponseEntity<>(dto, HttpStatus.OK);
 
     }
 
     @PatchMapping("/modify")
     public ResponseEntity<String> modify(
-            @RequestParam(required = false) Integer resumeCd,  // 이력서 코드 (Integer)
+            @RequestParam(required = false) Integer resumeCode,  // 이력서 코드 (Integer)
             @RequestParam(required = false) String workExperience,  // 경력 (String)
             @RequestParam(required = false) String education,  // 학력 (String)
             @RequestParam(required = false) String skill,  // 스킬 (String)
@@ -86,13 +86,13 @@ public class ResumeController {
             @RequestParam(required = false) MultipartFile uploadFileName,  // 이력서 파일 (MultipartFile)
             @RequestParam(required = false) LocalDateTime lastUpdated  // 마지막 수정일 (LocalDateTime)
     ) {
-        if (resumeCd == null) {
+        if (resumeCode == null) {
             return new ResponseEntity<>("Resume Code is required.", HttpStatus.BAD_REQUEST);
         }
 
         try {
             // 서비스 메소드에서 여러 매개변수를 처리하도록 전달
-            service.modify(resumeCd, workExperience, education, skill, certifications, languageSkills, uploadFileName, lastUpdated, jobCategory);
+            service.modify(resumeCode, workExperience, education, skill, certifications, languageSkills, uploadFileName, lastUpdated, jobCategory);
 
             return new ResponseEntity<>("Resume updated successfully.", HttpStatus.OK);
         } catch (Exception e) {
@@ -101,9 +101,9 @@ public class ResumeController {
         }
     }
 
-    @DeleteMapping("/remove/{cd}")
-    public ResponseEntity remove(@PathVariable("cd") int cd){
-        service.remove(cd);
+    @DeleteMapping("/remove/{code}")
+    public ResponseEntity remove(@PathVariable("code") int code){
+        service.remove(code);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 

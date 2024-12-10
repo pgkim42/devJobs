@@ -12,23 +12,23 @@ public interface CompanyProfileService {
 
     List<CompanyProfileDTO> getList();
 
-    CompanyProfileDTO read(int cd);
+    CompanyProfileDTO read(int code);
 
     void modify(CompanyProfileDTO dto);
 
-    void remove(int cd);
+    void remove(int code);
 
     default CompanyProfileDTO entityToDTO(CompanyProfile entity) {
 
         // DTO 객체 생성
         CompanyProfileDTO dto = CompanyProfileDTO.builder()
-                .companyProfileCd(entity.getCompanyProfileCd())  // 기업프로필코드
+                .companyProfileCode(entity.getCompanyProfileCode())  // 기업프로필코드
                 .companyName(entity.getCompanyName())            // 기업 이름
                 .companyContent(entity.getCompanyContent())      // 기업 내용
                 .industry(entity.getIndustry())                  // 업종
                 .websiteUrl(entity.getWebsiteUrl())              // 기업사이트 URL
-                .createDate(entity.getCreatedDate())              // 작성일
-                .updateDate(entity.getUpdatedDate())              // 수정일
+                .createDate(entity.getCreateDate())              // 작성일
+                .updateDate(entity.getUpdateDate())              // 수정일
                 .build();
 
         return dto;
@@ -38,7 +38,7 @@ public interface CompanyProfileService {
     default CompanyProfile dtoToEntity(CompanyProfileDTO dto) {
 
         CompanyProfile entity = CompanyProfile.builder()
-                .companyProfileCd(dto.getCompanyProfileCd())
+                .companyProfileCode(dto.getCompanyProfileCode())
                 .companyName(dto.getCompanyName())
                 .companyContent(dto.getCompanyContent())
                 .industry(dto.getIndustry())

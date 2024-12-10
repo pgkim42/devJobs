@@ -49,8 +49,8 @@ public class ApplyServiceImpl implements ApplyService {
     }
 
     @Override
-    public ApplyDTO read(int cd) {
-        Optional<Apply> result = applyRepository.findById(cd);
+    public ApplyDTO read(int code) {
+        Optional<Apply> result = applyRepository.findById(code);
         if(result.isPresent()) {
             return entityToDTO(result.get());
         } else {
@@ -75,9 +75,9 @@ public class ApplyServiceImpl implements ApplyService {
             }
 
             // resumeCode 업데이트
-            if(dto.getResumeCd() != null) {
-                Optional<Resume> resume = resumeRepository.findById(dto.getResumeCd());
-                resume.ifPresent(entity::setResumeCd);
+            if(dto.getResumeCode() != null) {
+                Optional<Resume> resume = resumeRepository.findById(dto.getResumeCode());
+                resume.ifPresent(entity::setResumeCode);
             }
 
             // applyStatus 업데이트

@@ -30,9 +30,9 @@ public class ApplyController {
         return new ResponseEntity<>(list, HttpStatus.OK); // 성공시 200
     }
 
-    @GetMapping("/read/{cd}")
-    public ResponseEntity<ApplyDTO> read(@PathVariable int cd) {
-        ApplyDTO dto = service.read(cd);
+    @GetMapping("/read/{code}")
+    public ResponseEntity<ApplyDTO> read(@PathVariable int code) {
+        ApplyDTO dto = service.read(code);
         return new ResponseEntity(dto, HttpStatus.OK); // 성공시 204
     }
 
@@ -42,9 +42,9 @@ public class ApplyController {
         return new ResponseEntity(dto, HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/remove/{cd}")
-    public ResponseEntity remove(@PathVariable("cd") Integer cd) {
-        service.remove(cd);
+    @DeleteMapping("/remove/{code}")
+    public ResponseEntity remove(@PathVariable("code") Integer code) {
+        service.remove(code);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 

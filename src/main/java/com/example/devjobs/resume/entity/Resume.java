@@ -11,12 +11,12 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "resume")
-public class    Resume extends BaseEntity {
+public class Resume extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "resume_cd")
-    private Integer resumeCd; // 이력서 코드
+    @Column(name = "resume_code")
+    private Integer resumeCode; // 이력서 코드
 
     @Column(length = 255)
     private String workExperience; // 경력

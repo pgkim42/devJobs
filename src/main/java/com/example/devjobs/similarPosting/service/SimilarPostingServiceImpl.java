@@ -22,10 +22,10 @@ public class SimilarPostingServiceImpl implements SimilarPostingService {
     private ResumeRepository resumeRepository;
 
     @Override
-    public List<JobPosting> recommendSimilarPostings(Integer resumeCd) {
+    public List<JobPosting> recommendSimilarPostings(Integer resumeCode) {
 
         // 이력서 정보 조회
-        Resume resume = getResumeDetails(resumeCd);
+        Resume resume = getResumeDetails(resumeCode);
 
         // 구인 공고 리스트 조회
         List<JobPosting> jobPosting = jobPostingRepository.findAll(); // DB에서 구인 공고 목록 조회
@@ -106,8 +106,8 @@ public class SimilarPostingServiceImpl implements SimilarPostingService {
     }
 
     // 이력서 조회
-    private Resume getResumeDetails(Integer resumeCd) {
-       Optional<Resume> result = resumeRepository.findById(resumeCd);
+    private Resume getResumeDetails(Integer resumeCode) {
+       Optional<Resume> result = resumeRepository.findById(resumeCode);
        if(result.isPresent()) {
            return result.get();
        }
