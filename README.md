@@ -70,3 +70,7 @@
 - 별도의 jobCategory 필드 생성 후 crud 구현
 - resume(이력서)와 현재 등록된 공고를 스킬, 경력, 직무로 매칭하여 점수를 매기고 "추천공고(혹은 유사공고)" 리스트를 반환
 
+# 1210 회원가입,로그인과 merge
+- jobposting, companyprofile, apply, resume에 user필드 추가.. user객체 필요한부분에 수정
+- 공고상태 boolean으로 변경해야함
+
