@@ -21,6 +21,12 @@ public class SignInResponseDto extends ResponseDto {
     private String name;
     private String email;
 
+    // 기업 회원 데이터 추가
+    private String companyCode;
+    private String companyType;
+    private String companyName;
+    private String ceoName;
+    private String companyAddress;
 
 
     // 성공 응답 메서드 수정
@@ -35,15 +41,16 @@ public class SignInResponseDto extends ResponseDto {
         return responseDto;
     }
 
-    // 성공 응답 메서드 수정
-    public static SignInResponseDto oauthSuccess(String token, User user) {
-        SignInResponseDto responseDto = new SignInResponseDto();
-        responseDto.setToken(token);
-        responseDto.setExpirationTime(3600);  // 예시: 1시간 만료
-        responseDto.setUserCode(user.getUserCode());
-        responseDto.setEmail(user.getEmail());
-        responseDto.setName(user.getName());
-        responseDto.setType(user.getType());  // 사용자 유형 (소셜/일반)
+    // 성공 응답 메서드 수정: 기업 회원
+    public static SignInResponseDto companySuccess(String token, User user) {
+        SignInResponseDto responseDto = success(token, user);
+
+        // 기업 회원 데이터 설정
+        responseDto.setCompanyCode(user.getCompanyCode());
+        responseDto.setCompanyType(user.getCompanyType());
+        responseDto.setCompanyName(user.getCompanyName());
+        responseDto.setCeoName(user.getCeoName());
+        responseDto.setCompanyAddress(user.getCompanyAddress());
         return responseDto;
     }
 

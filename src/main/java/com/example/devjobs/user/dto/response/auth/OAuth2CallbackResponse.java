@@ -34,4 +34,3 @@ public class OAuth2CallbackResponse {
                 '}';
     }
 }
-

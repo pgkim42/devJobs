@@ -142,35 +142,37 @@ public class AuthServiceImplement implements AuthService {
     }
 
     @Override
-    public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
+    public ResponseEntity<ResponseDto> signIn(SignInRequestDto dto) {
         String token = null;
         try {
             String userId = dto.getUserId();
             User user = userRepository.findByUserId(userId);
+
             if (user == null) {
                 return SignInResponseDto.signInFail(); // 로그인 실패 처리
             }
 
             String password = dto.getPassword();
             String encodedPassword = user.getPassword();
+
             boolean isMatched = passwordEncoder.matches(password, encodedPassword);
             if (!isMatched) {
                 return SignInResponseDto.signInFail(); // 비밀번호 불일치 처리
             }
 
-            // 사용자 역할 확인
-            String role = user.getRole(); // ROLE_USER, ROLE_ADMIN, ROLE_COMPANY 등
-
-            // JWT 토큰 생성 (userId와 role 포함)
+            String role = user.getRole();
             token = jwtProvider.create(userId, role);
 
-            // 성공적으로 로그인 시 사용자 정보와 토큰 포함하여 반환
-            return ResponseEntity.ok(SignInResponseDto.success(token, user));
+            if ("company".equals(user.getType())) {
+                return ResponseEntity.ok(SignInResponseDto.companySuccess(token, user));
+            } else {
+                return ResponseEntity.ok(SignInResponseDto.success(token, user));
+            }
 
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ResponseDto.databaseError());
+                    .body(ResponseDto.databaseError().getBody());
         }
     }
 

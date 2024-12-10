@@ -1,6 +1,7 @@
 package com.example.devjobs.user.controller;
 
 import com.example.devjobs.user.dto.request.auth.*;
+import com.example.devjobs.user.dto.response.ResponseDto;
 import com.example.devjobs.user.dto.response.auth.*;
 import com.example.devjobs.user.service.AuthService;
 import jakarta.validation.Valid;
@@ -44,20 +45,27 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<? super SignInResponseDto> signIn(@RequestBody @Valid SignInRequestDto requestBody) {
-        ResponseEntity<? super SignInResponseDto> response = authService.signIn(requestBody);
-        return response;
+    public ResponseEntity<ResponseDto> signIn(@RequestBody @Valid SignInRequestDto requestBody) {
+        return authService.signIn(requestBody);
     }
 
     @GetMapping("/oauth-response")
-    public ResponseEntity<OAuth2CallbackResponse> oauthResponse(
+    public ResponseEntity<SignInResponseDto> oauthResponse(
             @RequestParam String token,
             @RequestParam String userCode,
             @RequestParam String email,
             @RequestParam String name,
             @RequestParam String type) {
-        // OAuth2 인증 후 받은 데이터로 응답 생성
-        OAuth2CallbackResponse response = new OAuth2CallbackResponse(token, 3600L, userCode, email, name, type);
+
+        // OAuth2 인증 후 받은 데이터로 SignInResponseDto 생성
+        SignInResponseDto response = new SignInResponseDto();
+        response.setToken(token);
+        response.setExpirationTime(3600);
+        response.setUserCode(userCode);
+        response.setEmail(email);
+        response.setName(name);
+        response.setType(type);
+
         return ResponseEntity.ok(response);
     }
 

@@ -20,4 +20,3 @@ public class Certification {
     private String certificationNumber;
 
 }
-
