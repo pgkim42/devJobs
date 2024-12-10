@@ -1,4 +1,4 @@
-package com.example.devjobs.controller;
+package com.example.devjobs.apply.controller;
 
 import com.example.devjobs.apply.dto.ApplyDTO;
 import com.example.devjobs.apply.service.ApplyService;

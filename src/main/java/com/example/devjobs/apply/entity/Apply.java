@@ -1,6 +1,6 @@
 package com.example.devjobs.apply.entity;
 
-import com.example.devjobs.common.file.BaseEntity;
+import com.example.devjobs.common.BaseEntity;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.resume.entity.Resume;
 import jakarta.persistence.*;

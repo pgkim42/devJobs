@@ -1,15 +1,9 @@
-package com.example.devjobs.controller;
+package com.example.devjobs.resume.controller;
 
-import com.example.devjobs.jobcategory.entity.JobCategory;
-import com.example.devjobs.resume.dto.CertificationsDTO;
-import com.example.devjobs.resume.dto.LanguagesSkillsDTO;
 import com.example.devjobs.resume.dto.ResumeDTO;
-import com.example.devjobs.resume.entity.Resume;
 import com.example.devjobs.resume.repository.ResumeRepository;
 import com.example.devjobs.resume.service.ResumeService;
 import com.example.devjobs.util.FileUtil;
-import com.example.devjobs.util.JsonUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/resume")

@@ -1,25 +1,17 @@
-package com.example.devjobs.controller;
+package com.example.devjobs.jobposting.controller;
 
 import com.example.devjobs.jobposting.dto.JobPostingDTO;
-import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.jobposting.repository.JobPostingRepository;
 import com.example.devjobs.jobposting.service.JobPostingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/jobposting")

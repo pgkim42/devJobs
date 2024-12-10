@@ -1,4 +1,4 @@
-package com.example.devjobs.common.file;
+package com.example.devjobs.common;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

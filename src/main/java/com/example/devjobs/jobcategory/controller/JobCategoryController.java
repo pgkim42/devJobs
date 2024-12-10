@@ -1,7 +1,6 @@
-package com.example.devjobs.controller;
+package com.example.devjobs.jobcategory.controller;
 
 import com.example.devjobs.jobcategory.dto.JobCategoryDTO;
-import com.example.devjobs.jobcategory.entity.JobCategory;
 import com.example.devjobs.jobcategory.service.JobCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

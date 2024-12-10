@@ -1,6 +1,6 @@
 package com.example.devjobs.companyprofile.entity;
 
-import com.example.devjobs.common.file.BaseEntity;
+import com.example.devjobs.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

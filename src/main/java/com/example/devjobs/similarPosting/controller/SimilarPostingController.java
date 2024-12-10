@@ -1,4 +1,4 @@
-package com.example.devjobs.controller;
+package com.example.devjobs.similarPosting.controller;
 
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.similarPosting.service.SimilarPostingService;
