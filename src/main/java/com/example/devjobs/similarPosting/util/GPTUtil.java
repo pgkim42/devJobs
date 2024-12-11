@@ -18,8 +18,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+// GPT API를 호출하기 위한 유틸 클래스
 
 @Service
 public class GPTUtil {
@@ -80,35 +84,80 @@ public class GPTUtil {
             throw new RuntimeException(e);
         }
 
-        // GPT 답변 출력
-        for(GPTResponseChoice choice : gptResponse.choices) {
-            System.out.println(choice.message);
-        }
-
         // 토큰 사용량 출력
         System.out.println("사용한 토큰량:" + gptResponse.usage.totalTokens);
 
+        // GPT 답변 반환
         return gptResponse.choices.get(0).message.content;
     }
 
-    // 매개변수: 사용자의 이력서, 공고리스트
-    //
-    public void recommendPostings(int resumeCode){
+    // 매개변수: 이력서 번호
+    // 리턴값: API 질문
+    // 예시=>
+//    구직자의 jobCategory, skill, workExperience를 기준으로 가장 적합한 상위 3개의 구인공고의 jobCode를 추천해줘.
+//    구직자정보:{jobCategory=IT/개발, skill=hi,java,spring, workExperience=0}
+//    구인공고 목록:[{jobCategory=IT/개발, skill=java, ddd,d d, workExperience=2, jobCode=1}, {jobCategory=zzzzz, skill=Java, workExperience=1, jobCode=2}, {jobCategory=IT, skill=Java, workExperience=20, jobCode=3}, {jobCategory=IT/개발, skill=spring, java, a, workExperience=2, jobCode=5}]
+    public List<JobPosting> recommendPostings(int resumeCode){
+
+        // 질문 만들기 start
+        StringBuilder builder = new StringBuilder("구직자의 jobCategory, skill, workExperience를 기준으로 가장 적합한 상위 3개의 구인공고의 jobCode를 추천해줘.");
 
         // 이력서 조회
-        Optional<Resume> result = resumeRepository.findById(resumeCode);
+        Optional<Resume> optional = resumeRepository.findById(resumeCode);
         Resume resume;
-        if(result.isPresent()) {
-            resume = result.get();
-            System.out.println(resume);
+        HashMap<String,String> convertResume = new HashMap<>();
+        if(optional.isPresent()) {
+            resume = optional.get();
+            if(resume.getWorkExperience()!=null){
+                convertResume.put("workExperience", resume.getWorkExperience().toString());
+            } else {
+                convertResume.put("workExperience", "0");
+            }
+            convertResume.put("skill", resume.getSkill());
+            convertResume.put("jobCategory", resume.getJobCategory());
+
+            builder.append("구직자정보:");
+            builder.append(convertResume);
         }
         
         // 공고 리스트 조회
+        // 질문이 길면 토큰량이 많아져요! 구인공고정보를 요약해주세요!
         List<JobPosting> jobPostingList = jobPostingRepository.findAll();
+        List<HashMap<String,String>> convertJob = new ArrayList<>();
         for(JobPosting posting : jobPostingList){
-            System.out.println(posting);
+            HashMap<String,String> map = new HashMap<>();
+            map.put("jobCode", posting.getJobCode().toString());
+            map.put("workExperience", posting.getWorkExperience().toString());
+            map.put("skill", posting.getSkill());
+            map.put("jobCategory", posting.getJobCategory());
+            convertJob.add(map);
+        }
+        builder.append("구인공고 목록:");
+        builder.append(convertJob);
+
+        builder.append("답변은 이런식으로 해줘: 1,2,3");
+        System.out.println(builder);
+        // 질문 만들기 end
+
+        // 위에서 만들 질문으로 API 호출
+        String answer = apicall(builder.toString());
+        System.out.println(answer);
+
+        // 답변
+        String[] arr = answer.split(",");
+
+        // 답변에 해당하는 구인공고 리스트
+        List<JobPosting> result = new ArrayList<>();
+
+        for(String code : arr){
+            for(JobPosting job : jobPostingList){
+                if(job.getJobCode() == Integer.parseInt(code)){
+                    result.add(job);
+                }
+            }
         }
 
+        return result;
     }
 
 }
