@@ -31,12 +31,13 @@ public class SimilarPostingServiceImpl implements SimilarPostingService {
         // 추천 점수 계산
         List<JobPosting> recommendedJobs = new ArrayList<>();
         for (JobPosting job : jobPosting) {
-            int matchScore = calculateMatchScore(resume, job);
-            if (matchScore >= 5) {  // 5점 이상만 추천
-                job.setMatchScore(matchScore);
-                recommendedJobs.add(job);
+            if (job.isPostingStatus()) { // 모집 중인 공고만 고려
+                int matchScore = calculateMatchScore(resume, job);
+                if (matchScore >= 5) {  // 5점 이상만 추천
+                    job.setMatchScore(matchScore);
+                    recommendedJobs.add(job);
+                }
             }
-
         }
 
         // 추천 공고를 matchScore 내림차순으로 정렬
@@ -44,7 +45,7 @@ public class SimilarPostingServiceImpl implements SimilarPostingService {
 
         return recommendedJobs.stream()
                 .limit(10) // 추천 공고 10개로 제한
-                .collect(Collectors.toList());// ;
+                .collect(Collectors.toList());
     }
 
     // 추천 점수 계산
@@ -79,36 +80,22 @@ public class SimilarPostingServiceImpl implements SimilarPostingService {
         return matchCount * 5; // 매칭되는 스킬 수에 비례한 점수 부여
     }
 
-    private int matchExperience(String resumeExperience, String jobExperience) {
-        int resumeExp = extractExperience(resumeExperience);  // 경력 추출
-        int jobExp = extractExperience(jobExperience);        // 경력 추출
-
-        if (resumeExp >= jobExp) {
+    private int matchExperience(Integer resumeExperience, Integer jobExperience) {
+        if (resumeExperience == null || jobExperience == null) {
+            return 0; // 경력이 null인 경우 매칭 점수 0 반환
+        }
+        if (resumeExperience >= jobExperience) {
             return 10;  // 경력이 요구 사항 이상일 경우 점수 부여
         }
         return 0;
     }
 
-    // 경력에서 숫자만 추출하는 메서드
-    private int extractExperience(String experience) {
-        if (experience == null || experience.trim().isEmpty()) {
-            return 0;  // 경력이 없으면 0으로 처리
-        }
-        try {
-            // 숫자만 추출하고 변환
-            return Integer.parseInt(experience.replaceAll("[^0-9]", ""));
-        } catch (NumberFormatException e) {
-            // 변환 오류가 발생하면 0 반환
-            return 0;
-        }
-    }
-
     // 이력서 조회
     private Resume getResumeDetails(Integer resumeCode) {
-       Optional<Resume> result = resumeRepository.findById(resumeCode);
-       if(result.isPresent()) {
-           return result.get();
-       }
+        Optional<Resume> result = resumeRepository.findById(resumeCode);
+        if(result.isPresent()) {
+            return result.get();
+        }
         throw new IllegalArgumentException("이력서를 찾을 수 없습니다.");
 
     }

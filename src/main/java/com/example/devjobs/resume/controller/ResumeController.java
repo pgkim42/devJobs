@@ -77,7 +77,7 @@ public class ResumeController {
     @PatchMapping("/modify")
     public ResponseEntity<String> modify(
             @RequestParam(required = false) Integer resumeCode,  // 이력서 코드 (Integer)
-            @RequestParam(required = false) String workExperience,  // 경력 (String)
+            @RequestParam(required = false) Integer workExperience,  // 경력 (String)
             @RequestParam(required = false) String education,  // 학력 (String)
             @RequestParam(required = false) String skill,  // 스킬 (String)
             @RequestParam(required = false) String jobCategory, // 직무

@@ -16,7 +16,7 @@ public class ResumeDTO {
 
     private Integer resumeCode;         // 이력서 코드
 
-    private String workExperience;    // 경력
+    private Integer workExperience;    // 경력
 
     private String education;         // 학력
 

@@ -44,10 +44,10 @@ public class JobPosting extends BaseEntity {
 
     // 공고 상태 관련...
     @Column(name = "posting_status", nullable = false)
-    private String postingStatus;  // 공고상태: "모집중", "마감" (String으로 관리)
+    private boolean postingStatus;  // 공고상태: true(모집중), false(마감)
 
     @Column(name = "work_experience", nullable = false)
-    private String workExperience;  // 경력 (신입, 경력)
+    private Integer workExperience;  // 경력 (년 단위)
 
     @Column(name = "tag")
     private String tag;  // 태그

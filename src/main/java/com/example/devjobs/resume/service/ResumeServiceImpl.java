@@ -65,7 +65,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public void modify(Integer resumeCode, String workExperience, String education, String skill,
+    public void modify(Integer resumeCode, Integer workExperience, String education, String skill,
                        String certifications, String languageSkills, MultipartFile resumeFile,
                        LocalDateTime lastUpdated, String jobCategory) {
         Resume resume = validateOwnership(resumeCode);

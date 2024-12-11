@@ -21,7 +21,7 @@ public interface ResumeService {
     ResumeDTO read(Integer resumeCode);
 
     // 이력서 수정 메소드 추가
-    void modify(Integer resumeCode, String workExperience, String education, String skill,
+    void modify(Integer resumeCode, Integer workExperience, String education, String skill,
                 String certifications, String languageSkills, MultipartFile resumeFile,
                 LocalDateTime lastUpdated, String jobCategory);
 

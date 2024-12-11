@@ -116,8 +116,8 @@ public class JobPostingServiceImpl implements JobPostingService {
 
     @Override
     public void modify(Integer jobCode, String title, String content, String recruitJob,
-                       Integer recruitField, String salary, String postingStatus,
-                       String workExperience, String tag, String jobCategory,
+                       Integer recruitField, String salary, boolean postingStatus,
+                       Integer workExperience, String tag, String jobCategory,
                        String skill, LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated) {
 
         // 현재 로그인된 사용자 정보 가져오기
@@ -159,9 +159,10 @@ public class JobPostingServiceImpl implements JobPostingService {
             if (salary != null) {
                 entity.setSalary(salary);
             }
-            if (postingStatus != null) {
-                entity.setPostingStatus(postingStatus);
-            }
+            
+            // boolean은 null값 가질 수 없음
+            entity.setPostingStatus(postingStatus);
+            
             if (workExperience != null) {
                 entity.setWorkExperience(workExperience);
             }

@@ -28,9 +28,9 @@ public class JobPostingDTO {
 
     private LocalDateTime postingDeadline;  // 공고마감일
 
-    private String postingStatus;  // 공고상태
+    private boolean postingStatus;  // 공고상태
 
-    private String workExperience;  // 경력
+    private Integer workExperience;  // 경력
 
     private String tag;  // 태그
 

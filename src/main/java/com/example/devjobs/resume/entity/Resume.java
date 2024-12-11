@@ -20,7 +20,7 @@ public class Resume extends BaseEntity {
     private Integer resumeCode; // 이력서 코드
 
     @Column(length = 255)
-    private String workExperience; // 경력
+    private Integer workExperience; // 경력
 
     @Column(length = 255)
     private String education; // 학력

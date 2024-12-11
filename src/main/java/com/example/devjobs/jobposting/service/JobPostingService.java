@@ -20,9 +20,9 @@ public interface JobPostingService {
     void remove(Integer jobCode);
 
     void modify(Integer jobCode, String title, String content, String recruitJob,
-                      Integer recruitField, String salary, String postingStatus,
-                      String workExperience, String tag, String jobCategory,
-                      String skill, LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated);
+                Integer recruitField, String salary, boolean postingStatus,
+                Integer workExperience, String tag, String jobCategory,
+                String skill, LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated);
 
     default JobPosting dtoToEntity(JobPostingDTO dto) {
 
@@ -43,7 +43,7 @@ public interface JobPostingService {
                 .recruitField(dto.getRecruitField())
                 .salary(dto.getSalary())
                 .postingDeadline(dto.getPostingDeadline())
-                .postingStatus(dto.getPostingStatus())
+                .postingStatus(dto.isPostingStatus())
                 .workExperience(dto.getWorkExperience())
                 .tag(dto.getTag())
                 .jobCategory(dto.getJobCategory())
@@ -66,7 +66,7 @@ public interface JobPostingService {
                 .salary(entity.getSalary())
                 .postingDate(entity.getCreateDate())
                 .postingDeadline(entity.getPostingDeadline())
-                .postingStatus(entity.getPostingStatus())
+                .postingStatus(entity.isPostingStatus())
                 .workExperience(entity.getWorkExperience())
                 .tag(entity.getTag())
                 .jobCategory(entity.getJobCategory())
