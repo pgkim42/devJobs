@@ -79,10 +79,19 @@ public class JobPostingServiceImpl implements JobPostingService {
         }
     }
 
+    // KAKOMAP API용
     @Override
     public Optional<JobPosting> getbyId(Integer jobCode) {
         return repository.findById(jobCode);
     }
+
+//    @Override
+//    public List<JobPostingDTO> search(String title, String jobCategory, Integer workExperience) {
+//        QJobPosting
+//
+//
+//        return null;
+//    }
 
     @Override
     public int register(JobPostingDTO dto, MultipartFile jobPostingFolder) {

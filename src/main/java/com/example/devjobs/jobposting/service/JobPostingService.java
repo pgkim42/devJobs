@@ -20,7 +20,11 @@ public interface JobPostingService {
 
     void remove(Integer jobCode);
 
+    // KAKOMAP API용
     Optional<JobPosting> getbyId(Integer jobCode);
+
+    // 검색 메서드 추가
+//    List<JobPostingDTO> search(String title, String jobCategory, Integer workExperience);
 
     void modify(Integer jobCode, String title, String content, String recruitJob,
                 Integer recruitField, String salary, boolean postingStatus,
