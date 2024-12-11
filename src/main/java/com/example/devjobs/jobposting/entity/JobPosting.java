@@ -78,4 +78,14 @@ public class JobPosting extends BaseEntity {
     @Transient // DB에 저장되지 않음(유사공고에 사용할 임시 데이터)
     private int matchScore; // 추천점수
 
+    // 추가된 필드: 주소 및 좌표 정보
+    @Column(name = "address", nullable = false)
+    private String address;  // 근무지
+
+    @Column(name = "latitude")
+    private Double latitude;  // 근무지 위도
+
+    @Column(name = "longitude")
+    private Double longitude;  // 근무지 경도
+
 }

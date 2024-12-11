@@ -49,4 +49,10 @@ public class JobPostingDTO {
 
     private String userCode; // 유저 코드
 
+    private String address;  // 공고 주소
+
+    private Double latitude;  // 위도
+
+    private Double longitude;  // 경도
+
 }

@@ -24,7 +24,6 @@ public class JobPostingController {
     @Autowired
     private JobPostingRepository repository;
 
-
     @PostMapping("/register")
     public ResponseEntity<Integer> register(
             JobPostingDTO dto,
@@ -74,18 +73,15 @@ public class JobPostingController {
             @RequestParam(required = false) MultipartFile uploadFile,
             @RequestParam(required = false) LocalDateTime lastUpdated,
             @RequestParam(required = false) String skill,
+            @RequestParam(required = false) String address, // 추가된 주소 필드
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime postingDeadline
     ) {
         try {
-            // 서비스 메소드 호출
-//            service.modify(jobCode, title, content, recruitJob, recruitField, salary,
-//                    postingStatus, workExperience, tag, jobCategory, skill,
-//                    postingDeadline, uploadFile, lastUpdated);
 
             // 서비스 계층 호출
             service.modify(jobCode, title, content, recruitJob, recruitField, salary,
-                    postingStatus, workExperience, tag, jobCategory, skill, postingDeadline, uploadFile, LocalDateTime.now());
+                    postingStatus, workExperience, tag, jobCategory, skill, postingDeadline, uploadFile, LocalDateTime.now(), address);
 
             return new ResponseEntity<>("JobPosting updated successfully.", HttpStatus.OK);
         } catch (Exception e) {
