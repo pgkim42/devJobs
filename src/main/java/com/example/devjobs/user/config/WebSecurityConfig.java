@@ -59,7 +59,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/", "/api/v1/auth/**", "/oauth2/**", "/jobcategory/**").permitAll()
                         .requestMatchers("/api/v1/company/**", "/companyprofile/**", "/jobposting/**").hasRole("COMPANY")
-                        .requestMatchers("/simlilarposting/**", "/resume/**", "/apply/**", "/api/v1/check-password", "/api/v1/change-password").hasRole("USER")
+                        .requestMatchers("/api/v1/check-password", "/api/v1/change-password").hasAnyRole("USER", "COMPANY")
+                        .requestMatchers("/simlilarposting/**", "/resume/**", "/apply/**").hasRole("USER")
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
