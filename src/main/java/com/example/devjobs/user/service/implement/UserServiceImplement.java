@@ -1,7 +1,5 @@
 package com.example.devjobs.user.service.implement;
 
-import com.example.devjobs.user.dto.request.auth.UpdateUserRequestDto;
-import com.example.devjobs.user.dto.response.auth.UserResponseDto;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.repository.UserRepository;
 import com.example.devjobs.user.service.UserService;
@@ -9,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,14 +27,17 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public User findUserById(String userId) {
-        return findUserOrThrow(userId);
-    }
-
-
-    @Override
     public void deleteUser(String userId) {
         User user = findUserOrThrow(userId);
+        userRepository.delete(user);
+    }
+
+    @Override
+    public void deleteUserByCode(String userCode) {
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null) {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+        }
         userRepository.delete(user);
     }
 
@@ -59,6 +62,13 @@ public class UserServiceImplement implements UserService {
             throw new UsernameNotFoundException("User not found");
         }
         return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    @Override
+    public boolean removeFromSocialPlatform(String name) {
+        // 소셜 플랫폼 해제 로직 (예시)
+        System.out.println(name + " 사용자의 소셜 플랫폼 연동 해제 완료");
+        return true;
     }
 
 }

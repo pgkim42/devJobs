@@ -148,6 +148,7 @@ public class AuthServiceImplement implements AuthService {
             String userId = dto.getUserId();
             User user = userRepository.findByUserId(userId);
 
+
             if (user == null) {
                 return SignInResponseDto.signInFail(); // 로그인 실패 처리
             }
@@ -161,7 +162,8 @@ public class AuthServiceImplement implements AuthService {
             }
 
             String role = user.getRole();
-            token = jwtProvider.create(userId, role);
+            String userCode = user.getUserCode();
+            token = jwtProvider.create(userId, role, userCode);
 
             if ("company".equals(user.getType())) {
                 return ResponseEntity.ok(SignInResponseDto.companySuccess(token, user));

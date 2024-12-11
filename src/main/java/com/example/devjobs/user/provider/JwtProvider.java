@@ -1,6 +1,7 @@
 package com.example.devjobs.user.provider;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -20,25 +21,31 @@ public class JwtProvider {
     private String secretKey;
 
     // JWT 생성 메소드
-    public String create(String userId, String role) {
+// JwtProvider 클래스 내 create 메서드 수정
+    public String create(String userId, String role, String userCode) {
         Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
-        String jwt = Jwts.builder()
+        JwtBuilder builder = Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setSubject(userId)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(expiredDate)
-                .compact();
+                .setExpiration(expiredDate);
+
+        if (userCode != null && !userCode.isEmpty()) {
+            builder.claim("userCode", userCode);
+        }
+
+        String jwt = builder.compact();
 
         System.out.println("Generated JWT: " + jwt); // 생성된 JWT를 로그로 출력
         return jwt;
     }
 
+
     // JWT 검증 메소드
     public String validate(String jwt) {
-        try {
             Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -46,19 +53,12 @@ public class JwtProvider {
                     .parseClaimsJws(jwt)
                     .getBody();
 
-            System.out.println("JWT Claims: " + claims); // 클레임 출력
-            return claims.getSubject(); // subject(userId) 반환
-        } catch (io.jsonwebtoken.MalformedJwtException e) {
-            System.err.println("Malformed JWT: " + e.getMessage());
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            System.err.println("Expired JWT: " + e.getMessage());
-        } catch (io.jsonwebtoken.SignatureException e) {
-            System.err.println("Invalid signature: " + e.getMessage());
-        } catch (Exception e) {
-            System.err.println("JWT validation error: " + e.getMessage());
-        }
-        return null;
+            // 소셜 회원은 userCode, 일반 회원은 userId 반환
+            return claims.get("userCode", String.class) != null
+                    ? claims.get("userCode", String.class)
+                    : claims.getSubject(); // 일반 회원은 sub 반환
     }
+
 
     // JWT에서 클레임을 가져오는 메소드 (예: 만료 시간)
     public Claims getClaims(String jwt) {
