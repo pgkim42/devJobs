@@ -36,4 +36,7 @@ public class CompanyProfile extends BaseEntity {
     @JoinColumn(name = "user_code")
     User userCode;
 
+    @Column(name = "logo_file_name", length = 255) // 로고 파일명 저장
+    private String uploadFileName; // 저장된 로고 파일명
+
 }

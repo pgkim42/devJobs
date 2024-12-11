@@ -3,19 +3,20 @@ package com.example.devjobs.companyprofile.service;
 import com.example.devjobs.companyprofile.dto.CompanyProfileDTO;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.user.entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CompanyProfileService {
 
-    int register(CompanyProfileDTO dto);
+    int register(CompanyProfileDTO dto, MultipartFile logoFile);
 
     List<CompanyProfileDTO> getList();
 
     CompanyProfileDTO read(int code);
 
-    void modify(CompanyProfileDTO dto);
+    void modify(CompanyProfileDTO dto, MultipartFile logoFile);
 
     void remove(int code);
 
@@ -31,6 +32,7 @@ public interface CompanyProfileService {
                 .createDate(entity.getCreateDate())              // 작성일
                 .updateDate(entity.getUpdateDate())              // 수정일
                 .userCode(entity.getUserCode().getUserCode())   // 유저
+                .uploadFileName(entity.getUploadFileName())     // 기업로고 파일
                 .build();
 
         return dto;
@@ -50,6 +52,7 @@ public interface CompanyProfileService {
                 .industry(dto.getIndustry())
                 .websiteUrl(dto.getWebsiteUrl())
                 .userCode(user) // User 설정
+                .uploadFileName(dto.getUploadFileName())
                 .build();
 
         return entity;
