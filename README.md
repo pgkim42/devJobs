@@ -74,3 +74,7 @@
 - jobposting, companyprofile, apply, resume에 user필드 추가.. user객체 필요한부분에 수정
 - 공고상태 boolean으로 변경해야함
 
+# 1211 kakaomapapi, springbatch
+- kakaomapapi 구현 -> api로 해당 게시글 호출 시 json객체로 불러오기까지 확인
+- springbatch로 마감시간이 현재시간 이전일 경우 true(모집중) -> false로 변경 .. 5분 단위로 스케쥴링
+
