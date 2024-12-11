@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface JobPostingService {
 
@@ -18,6 +19,8 @@ public interface JobPostingService {
     JobPostingDTO read(Integer jobCode);
 
     void remove(Integer jobCode);
+
+    Optional<JobPosting> getbyId(Integer jobCode);
 
     void modify(Integer jobCode, String title, String content, String recruitJob,
                 Integer recruitField, String salary, boolean postingStatus,

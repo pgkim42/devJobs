@@ -80,6 +80,11 @@ public class JobPostingServiceImpl implements JobPostingService {
     }
 
     @Override
+    public Optional<JobPosting> getbyId(Integer jobCode) {
+        return repository.findById(jobCode);
+    }
+
+    @Override
     public int register(JobPostingDTO dto, MultipartFile jobPostingFolder) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -226,6 +231,8 @@ public class JobPostingServiceImpl implements JobPostingService {
             throw new IllegalArgumentException("해당 JobPosting 코드가 존재하지 않습니다.");
         }
     }
+
+
 }
 
 
