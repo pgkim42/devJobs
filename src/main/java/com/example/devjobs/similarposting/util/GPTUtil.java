@@ -1,13 +1,12 @@
-package com.example.devjobs.similarPosting.util;
+package com.example.devjobs.similarposting.util;
 
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.jobposting.repository.JobPostingRepository;
 import com.example.devjobs.resume.entity.Resume;
 import com.example.devjobs.resume.repository.ResumeRepository;
-import com.example.devjobs.similarPosting.dto.ChatGPTRequestMsg;
-import com.example.devjobs.similarPosting.dto.GPTRequest;
-import com.example.devjobs.similarPosting.dto.GPTResponse;
-import com.example.devjobs.similarPosting.dto.GPTResponseChoice;
+import com.example.devjobs.similarposting.dto.ChatGPTRequestMsg;
+import com.example.devjobs.similarposting.dto.GPTRequest;
+import com.example.devjobs.similarposting.dto.GPTResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 // GPT API를 호출하기 위한 유틸 클래스
 

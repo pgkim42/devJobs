@@ -1,4 +1,4 @@
-package com.example.devjobs.similarPosting.service;
+package com.example.devjobs.similarposting.service;
 
 import com.example.devjobs.jobposting.entity.JobPosting;
 

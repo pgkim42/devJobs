@@ -1,9 +1,8 @@
-package com.example.devjobs.similarPosting.controller;
+package com.example.devjobs.similarposting.controller;
 
 import com.example.devjobs.jobposting.entity.JobPosting;
-import com.example.devjobs.similarPosting.service.SimilarPostingService;
-import com.example.devjobs.similarPosting.util.GPTUtil;
-import jdk.jshell.execution.Util;
+import com.example.devjobs.similarposting.service.SimilarPostingService;
+import com.example.devjobs.similarposting.util.GPTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

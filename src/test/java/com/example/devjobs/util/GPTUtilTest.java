@@ -1,7 +1,7 @@
 package com.example.devjobs.util;
 
 import com.example.devjobs.jobposting.entity.JobPosting;
-import com.example.devjobs.similarPosting.util.GPTUtil;
+import com.example.devjobs.similarposting.util.GPTUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

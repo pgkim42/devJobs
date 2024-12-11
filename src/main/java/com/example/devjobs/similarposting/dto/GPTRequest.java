@@ -1,4 +1,4 @@
-package com.example.devjobs.similarPosting.dto;
+package com.example.devjobs.similarposting.dto;
 
 import java.util.List;
 
