@@ -60,11 +60,16 @@
 # 1209 Appliy(지원)
 - Apply - CRUD구현, ApplyStatus <- enum으로 AVAILABLE("지원가능"), COMPLETED("지원완료");
 
-# 1209 SimilarPosting(유사공고)
+# 1210 SimilarPosting(유사공고)
 - User더미 entity 생성
 - 더미데이터 단위테스트 수정 및 유사추천공고 기능 구현 등
 - jobPosting에 skill필드 추가, resume에 jobCategory 추가
 - skill 데이터를 "," 기준으로 split하여 List<String> 형태로 처리(변환된 리스트 데이터를 join하여 다시 문자열 형태로 데이터베이스에 저장)
 - 별도의 jobCategory 필드 생성 후 crud 구현
 - resume(이력서)와 현재 등록된 공고를 스킬, 경력, 직무로 매칭하여 점수를 매기고 "추천공고(혹은 유사공고)" 리스트를 반환
+
+# 1211 kakaomap(카카오맵api), springbatch
+- kakaomapapi 구현 완료(jobposting -> address - 근무지 : controller로 {{host}}/kakao-map/coordinates/21 로 JSON 객체 불러오기까지 확인)
+- spring batch, scheduler 구현(jobposting -> deadline - 마감일 : 마감일이 현재시간 이전이면 jobpostingStatus의 true(모집중) 값이 false(마감)으로 변경 되도록.. 5분마다 스케쥴링)
+
 
