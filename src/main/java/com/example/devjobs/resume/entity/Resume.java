@@ -5,6 +5,7 @@ import com.example.devjobs.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+@ToString
 @Getter
 @Setter
 @Builder
