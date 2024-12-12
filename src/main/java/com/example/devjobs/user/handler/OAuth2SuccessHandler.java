@@ -38,7 +38,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = type.equals("company") ? "ROLE_COMPANY" : "ROLE_USER";
 
         // JWT 토큰 생성
-        String token = jwtProvider.create(userId, role);
+        String token = jwtProvider.create(userId, role, userCode);
 
         try {
             // URL 인코딩 적용

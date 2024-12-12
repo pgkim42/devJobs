@@ -1,13 +1,14 @@
 package com.example.devjobs.user.service.implement;
 
-import com.example.devjobs.user.dto.request.auth.UpdateUserRequestDto;
-import com.example.devjobs.user.dto.response.auth.UserResponseDto;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.repository.UserRepository;
 import com.example.devjobs.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,55 +17,46 @@ public class UserServiceImplement implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public User findUserById(String userId) {
-        return userRepository.findByUserId(userId);
-    }
-
-    @Override
-    public UserResponseDto getMyPageInfo(String userId) {
+    // 공통 메서드: 사용자 조회 및 예외 처리
+    private User findUserOrThrow(String userId) {
         User user = userRepository.findByUserId(userId);
         if (user == null) {
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
-
-        // UserResponseDto를 생성하여 반환
-        return new UserResponseDto(user);
+        return user;
     }
 
     @Override
-    public void updateUserInfo(String userId, UpdateUserRequestDto dto) {
-        User user = userRepository.findByUserId(userId);
+    public void deleteUserByCode(String userCode) {
+        User user = userRepository.findByUserCode(userCode);
         if (user == null) {
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
+        userRepository.delete(user);
+    }
 
-        // 사용자 정보 업데이트
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
-        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
-            user.setPassword(dto.getPassword()); // 비밀번호 암호화 필요
+    @Override
+    public void updatePassword(String userId, String currentPassword, String newPassword) {
+        User user = findUserOrThrow(userId);
+
+        // 현재 비밀번호 검증
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 올바르지 않습니다.");
         }
 
-        // 기업 회원 정보 업데이트
-        if ("company".equals(user.getType())) {
-            user.setCompanyCode(dto.getCompanyCode());
-            user.setCompanyType(dto.getCompanyType());
-            user.setCompanyName(dto.getCompanyName());
-            user.setCeoName(dto.getCeoName());
-            user.setCompanyAddress(dto.getCompanyAddress());
-        }
-
+        // 새 비밀번호 설정 및 저장
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 
     @Override
-    public void deleteUser(String userId) {
+    public boolean checkUserPassword(String userId, String password) {
         User user = userRepository.findByUserId(userId);
         if (user == null) {
-            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+            throw new UsernameNotFoundException("User not found");
         }
-
-        userRepository.delete(user);
+        return passwordEncoder.matches(password, user.getPassword());
     }
+
+
 }
