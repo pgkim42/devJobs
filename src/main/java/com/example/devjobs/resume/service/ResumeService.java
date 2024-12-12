@@ -5,9 +5,8 @@ import com.example.devjobs.resume.dto.CertificationsDTO;
 import com.example.devjobs.resume.dto.LanguagesSkillsDTO;
 import com.example.devjobs.resume.dto.ResumeDTO;
 import com.example.devjobs.resume.entity.Resume;
+import com.example.devjobs.user.entity.User;
 import com.example.devjobs.util.JsonUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -22,7 +21,7 @@ public interface ResumeService {
     ResumeDTO read(Integer resumeCode);
 
     // 이력서 수정 메소드 추가
-    void modify(Integer resumeCode, String workExperience, String education, String skill,
+    void modify(Integer resumeCode, Integer workExperience, String education, String skill,
                 String certifications, String languageSkills, MultipartFile resumeFile,
                 LocalDateTime lastUpdated, String jobCategory);
 
@@ -30,6 +29,10 @@ public interface ResumeService {
 
     // 자격증, 언어능력 >> List에서 Json으로 변환 필요 (DB에 JSON 형태로로 저장) 직렬화?
     default Resume dtoToEntity(ResumeDTO dto) {
+
+        User user = new User();
+        user.setUserCode(dto.getUserCode());
+
         Resume entity = Resume.builder()
                 .resumeCode(dto.getResumeCode())                     // 이력서 코드
                 .workExperience(dto.getWorkExperience())         // 경력
@@ -39,6 +42,7 @@ public interface ResumeService {
                 .jobCategory(dto.getJobCategory())              // 직무
                 .languageSkills(JsonUtil.convertListToJson(dto.getLanguageSkills()))  // 언어능력 JSON으로 변환
                 .uploadFileName(dto.getUploadFileName())         // 이력서 파일
+                .userCode(user) // 유저코드
                 .build();
 
         return entity;
@@ -57,6 +61,7 @@ public interface ResumeService {
                 .uploadFileName(entity.getUploadFileName())          // 이력서 파일
                 .createDate(entity.getCreateDate())                // 생성일
                 .updateDate(entity.getUpdateDate())                // 수정일
+                .userCode(entity.getUserCode().getUserCode())
                 .build();
 
         return dto;

@@ -62,7 +62,7 @@
 # 1209 Appliy(지원)
 - Apply - CRUD구현, ApplyStatus <- enum으로 AVAILABLE("지원가능"), COMPLETED("지원완료");
 
-# 1209 SimilarPosting(유사공고)
+# 1210 SimilarPosting(유사공고)
 - User더미 entity 생성
 - 더미데이터 단위테스트 수정 및 유사추천공고 기능 구현 등
 - jobPosting에 skill필드 추가, resume에 jobCategory 추가
@@ -70,11 +70,5 @@
 - 별도의 jobCategory 필드 생성 후 crud 구현
 - resume(이력서)와 현재 등록된 공고를 스킬, 경력, 직무로 매칭하여 점수를 매기고 "추천공고(혹은 유사공고)" 리스트를 반환
 
-# 1210 회원가입,로그인과 merge
-- jobposting, companyprofile, apply, resume에 user필드 추가.. user객체 필요한부분에 수정
-- 공고상태 boolean으로 변경해야함
 
-# 1211 kakaomapapi, springbatch
-- kakaomapapi 구현 -> api로 해당 게시글 호출 시 json객체로 불러오기까지 확인
-- springbatch로 마감시간이 현재시간 이전일 경우 true(모집중) -> false로 변경 .. 5분 단위로 스케쥴링
 

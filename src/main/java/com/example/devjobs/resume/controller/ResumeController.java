@@ -65,11 +65,11 @@ public class ResumeController {
 
     // @requestparam보다는 @pathvariable이 적합(restful api설계 원칙에 부합)
     @GetMapping("/read/{code}")
-    public ResponseEntity<ResumeDTO> read(@PathVariable int Code){
+    public ResponseEntity<ResumeDTO> read(@PathVariable int code){
 
-        System.out.println("이력서코드:" + Code);
+        System.out.println("이력서코드:" + code);
 
-        ResumeDTO dto = service.read(Code);
+        ResumeDTO dto = service.read(code);
         return new ResponseEntity<>(dto, HttpStatus.OK);
 
     }
@@ -77,7 +77,7 @@ public class ResumeController {
     @PatchMapping("/modify")
     public ResponseEntity<String> modify(
             @RequestParam(required = false) Integer resumeCode,  // 이력서 코드 (Integer)
-            @RequestParam(required = false) String workExperience,  // 경력 (String)
+            @RequestParam(required = false) Integer workExperience,  // 경력 (String)
             @RequestParam(required = false) String education,  // 학력 (String)
             @RequestParam(required = false) String skill,  // 스킬 (String)
             @RequestParam(required = false) String jobCategory, // 직무

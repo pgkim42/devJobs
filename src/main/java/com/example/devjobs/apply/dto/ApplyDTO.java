@@ -23,4 +23,6 @@ public class ApplyDTO {
 
     private LocalDateTime updateDate; // 수정일
 
+    private String userCode; // 유저 코드
+
 }

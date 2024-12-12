@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +45,8 @@ public class WebSecurityConfig {
     }
 
 
+
+
     @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
 
@@ -57,7 +60,7 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/api/v1/auth/**", "/oauth2/**", "/jobcategory/**").permitAll()
+                        .requestMatchers("/", "/api/v1/auth/**", "/oauth2/**", "/jobcategory/**", "/companyprofile/read/", "/similarposting/**").permitAll()
                         .requestMatchers("/api/v1/company/**", "/companyprofile/**", "/jobposting/**").hasRole("COMPANY")
                         .requestMatchers("/api/v1/user/**", "/simlilarposting/**", "/resume/**", "/apply/**").hasRole("USER")
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")

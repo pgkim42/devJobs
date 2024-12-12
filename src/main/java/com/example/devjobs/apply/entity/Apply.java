@@ -3,6 +3,7 @@ package com.example.devjobs.apply.entity;
 import com.example.devjobs.common.BaseEntity;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.resume.entity.Resume;
+import com.example.devjobs.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,4 +31,9 @@ public class Apply extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "resume_code", referencedColumnName = "resume_code")
     private Resume resumeCode;  // 이력서 코드
+
+    @ManyToOne
+    @JoinColumn(name = "user_code")
+    User userCode;
+
 }

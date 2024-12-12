@@ -28,9 +28,9 @@ public class JobPostingDTO {
 
     private LocalDateTime postingDeadline;  // 공고마감일
 
-    private String postingStatus;  // 공고상태
+    private boolean postingStatus;  // 공고상태
 
-    private String workExperience;  // 경력
+    private Integer workExperience;  // 경력
 
     private String tag;  // 태그
 
@@ -46,5 +46,13 @@ public class JobPostingDTO {
     private Integer companyProfileCode; // 기업프로필코드
 
     private String skill; // 쉼표로 구분된 스킬 문자열 (예: "Java,Spring,SQL")
+
+    private String userCode; // 유저 코드
+
+    private String address;  // 공고 주소
+
+    private Double latitude;  // 위도
+
+    private Double longitude;  // 경도
 
 }
