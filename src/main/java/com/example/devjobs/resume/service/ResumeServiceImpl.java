@@ -1,26 +1,21 @@
 package com.example.devjobs.resume.service;
 
-import com.example.devjobs.resume.dto.CertificationsDTO;
-import com.example.devjobs.resume.dto.LanguagesSkillsDTO;
 import com.example.devjobs.resume.dto.ResumeDTO;
 import com.example.devjobs.resume.entity.Resume;
 import com.example.devjobs.resume.repository.ResumeRepository;
+import com.example.devjobs.user.entity.User;
+import com.example.devjobs.user.repository.UserRepository;
 import com.example.devjobs.util.FileUtil;
-import com.example.devjobs.util.JsonUtil;
-import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ResumeServiceImpl implements ResumeService {
@@ -29,162 +24,146 @@ public class ResumeServiceImpl implements ResumeService {
     ResumeRepository repository;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     FileUtil fileUtil;
 
-    // skill부분 list형태로 파싱
-    private List<String> parseSkills(String skillString) {
+    /**
+     * Skills 문자열을 파싱하여 List<String>으로 변환
+     */
+    public List<String> parseSkills(String skillString) {
         if (skillString == null || skillString.isEmpty()) {
             return new ArrayList<>();
         }
-        return Arrays.stream(skillString.split(",")) // 콤마로 분리
-                .map(String::trim) // 각 항목 공백 제거
-                .collect(Collectors.toList());
+        return List.of(skillString.split(",")).stream()
+                .map(String::trim) // 공백 제거
+                .toList();
     }
+
     @Override
     public int register(ResumeDTO dto, MultipartFile resumeFolder) {
+        User loggedInUser = getLoggedInUser();
 
-        // 파일 업로드 처리 (폴더 category: resume)
         String fileName = null;
         if (resumeFolder != null && !resumeFolder.isEmpty()) {
             fileName = fileUtil.fileUpload(resumeFolder, "resume");
-            System.out.println("파일 업로드 완료: " + fileName);
         }
 
-        // 애플리케이션에서는 받은 dto를 List 형태로 담은 뒤(split), DB에는 join으로 문자열 형태로 전송(join)
-        // DTO에서 skill 문자열을 리스트로 변환
-        List<String> skillList = parseSkills(dto.getSkill());
-
-        // DTO를 Entity로 변환
         Resume resume = dtoToEntity(dto);
+        resume.setUserCode(loggedInUser); // userCode 설정
 
-        // 엔티티에 skill 리스트를 다시 문자열로 설정
-        resume.setSkill(String.join(",", skillList)); // "java,spring,sql"
+        List<String> skillList = parseSkills(dto.getSkill());
+        resume.setSkill(String.join(",", skillList));
 
-        // 업로드된 파일명을 설정
         if (fileName != null) {
             resume.setUploadFileName(fileName);
         }
 
-        // DB에 저장
         repository.save(resume);
-
-        // 저장된 이력서의 ID 반환
         return resume.getResumeCode();
     }
 
     @Override
-    public List<ResumeDTO> getList() {
-
-        List<Resume> entityList = repository.findAll();
-        List<ResumeDTO> dtoList = entityList.stream()
-                .map(entity -> {
-                    ResumeDTO dto = entityToDTO(entity);
-
-                    if (entity.getCertifications() != null) {
-                        dto.setCertifications(JsonUtil.convertJsonToList(entity.getCertifications(), CertificationsDTO.class));
-                    }
-
-                    if (entity.getLanguageSkills() != null) {
-                        dto.setLanguageSkills(JsonUtil.convertJsonToList(entity.getLanguageSkills(), LanguagesSkillsDTO.class));
-                    }
-
-                    return dto;
-
-                })
-
-                .collect(Collectors.toList());
-
-        return dtoList;
-    }
-
-    @Override
-    public ResumeDTO read(Integer resumeCode) {
-
-        Optional<Resume> result = repository.findById(resumeCode);
-
-        if (result.isPresent()) {
-            Resume resume = result.get();
-            return entityToDTO(resume);
-        } else {
-            throw new IllegalArgumentException("해당 이력서 코드가 존재하지 않습니다.");
-        }
-
-    }
-
-    @Override
-    public void modify(Integer resumeCode, String workExperience, String education, String skill,
+    public void modify(Integer resumeCode, Integer workExperience, String education, String skill,
                        String certifications, String languageSkills, MultipartFile resumeFile,
                        LocalDateTime lastUpdated, String jobCategory) {
+        Resume resume = validateOwnership(resumeCode);
 
-        // 이력서 코드로 기존 이력서 검색
-        Optional<Resume> result = repository.findById(resumeCode);
-
-        if (result.isPresent()) {
-            Resume entity = result.get();
-
-            // 수정할 필드들 업데이트
-            if (workExperience != null) {
-                entity.setWorkExperience(workExperience);
-            }
-
-            if (education != null) {
-                entity.setEducation(education);
-            }
-
-            if (skill != null) {
-                entity.setSkill(skill);
-            }
-
-            if (jobCategory != null) {
-                entity.setJobCategory(jobCategory);
-            }
-
-            // 자격증 JSON 문자열을 List로 변환 후 저장
-            if (certifications != null) {
-                List<CertificationsDTO> certList = JsonUtil.convertJsonToList(certifications, CertificationsDTO.class);
-                entity.setCertifications(JsonUtil.convertListToJson(certList));
-            }
-
-            // 언어 능력 JSON 문자열을 List로 변환 후 저장
-            if (languageSkills != null) {
-                List<LanguagesSkillsDTO> langSkillsList = JsonUtil.convertJsonToList(languageSkills, LanguagesSkillsDTO.class);
-                entity.setLanguageSkills(JsonUtil.convertListToJson(langSkillsList));
-            }
-
-            // 이력서 파일 업데이트
-            if (resumeFile != null && !resumeFile.isEmpty()) {
-                String fileName = fileUtil.fileUpload(resumeFile, "resume");
-                entity.setUploadFileName(fileName);
-            }
-
-            // 마지막 수정일 업데이트 (BaseEntity에서 관리되므로 추가하지 않아도 됨)
-            entity.setUpdateDate(lastUpdated);
-
-            // 수정된 엔티티 저장
-            repository.save(entity);
-        } else {
-            throw new IllegalArgumentException("해당 이력서 코드가 존재하지 않습니다.");
+        // 전달된 값만 업데이트
+        if (workExperience != null) {
+            resume.setWorkExperience(workExperience);
         }
+        if (education != null) {
+            resume.setEducation(education);
+        }
+        if (skill != null) {
+            List<String> skillList = parseSkills(skill);
+            resume.setSkill(String.join(",", skillList));
+        }
+        if (jobCategory != null) {
+            resume.setJobCategory(jobCategory);
+        }
+        if (certifications != null) {
+            resume.setCertifications(certifications);
+        }
+        if (languageSkills != null) {
+            resume.setLanguageSkills(languageSkills);
+        }
+        if (resumeFile != null && !resumeFile.isEmpty()) {
+            String fileName = fileUtil.fileUpload(resumeFile, "resume");
+            resume.setUploadFileName(fileName);
+        }
+
+        resume.setUpdateDate(lastUpdated);
+        repository.save(resume);
     }
 
     @Override
     public void remove(Integer resumeCode) {
-
-        Optional<Resume> result = repository.findById(resumeCode);
-
-        if (result.isPresent()) {
-            // 파일 삭제 처리
-            Resume entity = result.get();
-
-            if (entity.getUploadFileName() != null) {
-                fileUtil.deleteFile(entity.getUploadFileName()); // 파일 삭제
-            }
-
-            repository.deleteById(resumeCode);
-        } else {
-            throw new IllegalArgumentException("resume코드가 존재하지 않습니다");
-        }
-
+        Resume resume = validateOwnership(resumeCode);
+        repository.delete(resume);
     }
 
+    @Override
+    public List<ResumeDTO> getList() {
+        List<Resume> resumes = repository.findAll();
+        List<ResumeDTO> resumeDTOs = new ArrayList<>();
+
+        for (Resume resume : resumes) {
+            if (resume.getUserCode() == null) {
+                System.out.println("Skipping resume with null userCode: " + resume.getResumeCode());
+                continue;
+            }
+            ResumeDTO dto = entityToDTO(resume);
+            resumeDTOs.add(dto);
+        }
+        return resumeDTOs;
+    }
+
+    @Override
+    public ResumeDTO read(Integer resumeCode) {
+        Resume resume = repository.findById(resumeCode)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이력서 코드가 존재하지 않습니다."));
+
+        if (resume.getUserCode() == null) {
+            throw new SecurityException("해당 이력서의 작성자 정보가 없습니다.");
+        }
+
+        return entityToDTO(resume);
+    }
+
+    /**
+     * 현재 로그인된 사용자 정보 가져오기
+     */
+    private User getLoggedInUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
+        }
+
+        String currentUserName = authentication.getName();
+        User user = userRepository.findByUserId(currentUserName);
+        if (user == null) {
+            throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
+        }
+
+        return user;
+    }
+
+    /**
+     * Resume 소유권 검증
+     */
+    private Resume validateOwnership(Integer resumeCode) {
+        User loggedInUser = getLoggedInUser();
+
+        Resume resume = repository.findById(resumeCode)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이력서 코드가 존재하지 않습니다."));
+
+        if (resume.getUserCode() == null || !resume.getUserCode().getUserCode().equals(loggedInUser.getUserCode())) {
+            throw new SecurityException("작성자만 이력서를 수정하거나 삭제할 수 있습니다.");
+        }
+
+        return resume;
+    }
 }

@@ -1,7 +1,8 @@
-package com.example.devjobs.similarPosting.controller;
+package com.example.devjobs.similarposting.controller;
 
 import com.example.devjobs.jobposting.entity.JobPosting;
-import com.example.devjobs.similarPosting.service.SimilarPostingService;
+import com.example.devjobs.similarposting.service.SimilarPostingService;
+import com.example.devjobs.similarposting.util.GPTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/simlilarposting")
+@RequestMapping("/similarposting")
 public class SimilarPostingController {
 
     @Autowired
     private SimilarPostingService similarPostingService;
+
+    @Autowired
+    private GPTUtil util;
 
     // ResponseEntity의 제네릭 타입을 ?로 변경하여 반환할 수 있는 데이터 타입을 유연하게 처리
     @GetMapping("/similar/{resumeCode}")
@@ -32,6 +36,13 @@ public class SimilarPostingController {
 
         return new ResponseEntity<>(similar, HttpStatus.OK);
 
+    }
+
+    // GPT API를 사용한 구인 공고 추천
+    @GetMapping("/{resumeCode}")
+    public ResponseEntity<?> similarPostings2(@PathVariable int resumeCode) {
+        List<JobPosting> result = util.recommendPostings(resumeCode);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }

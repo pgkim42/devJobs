@@ -3,14 +3,16 @@ package com.example.devjobs.user.filter;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.provider.JwtProvider;
 import com.example.devjobs.user.repository.UserRepository;
-import com.example.devjobs.user.service.implement.UserDetailsImpl;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -30,51 +34,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
+            String path = request.getRequestURI();
+            if (path.startsWith("/api/v1/auth")) {
+                // 인증이 필요 없는 경로는 필터링 제외
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String token = parseBearerToken(request);
             if (token == null) {
-                System.out.println("JWT 토큰이 누락되었습니다.");
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            Claims claims = jwtProvider.getClaims(token);
-            if (claims == null) {
-                System.out.println("JWT 검증 실패: " + token);
+            String userId = jwtProvider.validate(token);
+            if (userId == null) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            String userCode = claims.get("userCode", String.class);
-            User user;
-            if (userCode != null && !userCode.isEmpty()) {
-                user = userRepository.findByUserCode(userCode);
-                if (user == null) {
-                    System.out.println("유효한 사용자 Code를 찾을 수 없습니다: " + userCode);
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-            } else {
-                String userId = claims.getSubject();
-                user = userRepository.findByUserId(userId);
-                if (user == null) {
-                    System.out.println("유효한 사용자 ID를 찾을 수 없습니다: " + userId);
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-            }
+            User user = userRepository.findByUserId(userId);
+            String role = user.getRole(); // role = ROLE_USER, ROLE_ADMIN
 
-            UserDetailsImpl userDetails = new UserDetailsImpl(user);
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+
+            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+            AbstractAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userId, null, authorities);
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        } catch (Exception e) {
-            System.out.println("인증 처리 중 오류 발생: " + e.getMessage());
-            e.printStackTrace();
+
+            securityContext.setAuthentication(authenticationToken);
+            SecurityContextHolder.setContext(securityContext);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
         filterChain.doFilter(request, response);
     }
+
 
     private String parseBearerToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
@@ -87,6 +85,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return null;
         }
 
-        return authorization.substring(7);
+        return authorization.substring(7); // Bearer 이후의 토큰 값 반환
     }
 }

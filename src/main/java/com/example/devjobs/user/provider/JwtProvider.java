@@ -46,17 +46,17 @@ public class JwtProvider {
 
     // JWT 검증 메소드
     public String validate(String jwt) {
-            Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(jwt)
-                    .getBody();
+        Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody();
 
-            // 소셜 회원은 userCode, 일반 회원은 userId 반환
-            return claims.get("userCode", String.class) != null
-                    ? claims.get("userCode", String.class)
-                    : claims.getSubject(); // 일반 회원은 sub 반환
+        // 소셜 회원은 userCode, 일반 회원은 userId 반환
+        return claims.get("userCode", String.class) != null
+                ? claims.get("userCode", String.class)
+                : claims.getSubject(); // 일반 회원은 sub 반환
     }
 
 

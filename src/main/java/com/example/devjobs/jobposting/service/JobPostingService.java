@@ -3,10 +3,12 @@ package com.example.devjobs.jobposting.service;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.jobposting.dto.JobPostingDTO;
 import com.example.devjobs.jobposting.entity.JobPosting;
+import com.example.devjobs.user.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface JobPostingService {
 
@@ -18,16 +20,26 @@ public interface JobPostingService {
 
     void remove(Integer jobCode);
 
+    // KAKOMAP API용
+    Optional<JobPosting> getbyId(Integer jobCode);
+
+    // 검색 메서드 추가
+//    List<JobPostingDTO> search(String title, String jobCategory, Integer workExperience);
+
     void modify(Integer jobCode, String title, String content, String recruitJob,
-                      Integer recruitField, String salary, String postingStatus,
-                      String workExperience, String tag, String jobCategory,
-                      String skill, LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated);
+                Integer recruitField, String salary, boolean postingStatus,
+                Integer workExperience, String tag, String jobCategory,
+                String skill, LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated, String address);
 
     default JobPosting dtoToEntity(JobPostingDTO dto) {
 
         // CompanyProfile 가져오기(기업프로필)
         CompanyProfile companyProfile = new CompanyProfile();
         companyProfile.setCompanyProfileCode(dto.getCompanyProfileCode());
+
+        // UserCode 가져오기
+        User user = new User();
+        user.setUserCode(dto.getUserCode());
 
         // JobPosting 객체를 생성
         JobPosting jobPosting = JobPosting.builder()
@@ -38,13 +50,15 @@ public interface JobPostingService {
                 .recruitField(dto.getRecruitField())
                 .salary(dto.getSalary())
                 .postingDeadline(dto.getPostingDeadline())
-                .postingStatus(dto.getPostingStatus())
+                .postingStatus(dto.isPostingStatus())
                 .workExperience(dto.getWorkExperience())
                 .tag(dto.getTag())
                 .jobCategory(dto.getJobCategory())
                 .imgFileName(dto.getImgFileName())
                 .skill(dto.getSkill())
+                .address(dto.getAddress()) // 주소만 매핑
                 .companyProfile(companyProfile)
+                .userCode(user)
                 .build();
 
         return jobPosting;
@@ -60,13 +74,17 @@ public interface JobPostingService {
                 .salary(entity.getSalary())
                 .postingDate(entity.getCreateDate())
                 .postingDeadline(entity.getPostingDeadline())
-                .postingStatus(entity.getPostingStatus())
+                .postingStatus(entity.isPostingStatus())
                 .workExperience(entity.getWorkExperience())
                 .tag(entity.getTag())
                 .jobCategory(entity.getJobCategory())
                 .imgFileName(entity.getImgFileName())
                 .skill(entity.getSkill()) // 추가된 skill 필드
+                .address(entity.getAddress()) // 주소 매핑
+                .latitude(entity.getLatitude()) // 위도 매핑
+                .longitude(entity.getLongitude()) // 경도 매핑
                 .companyProfileCode(entity.getCompanyProfile().getCompanyProfileCode())
+                .userCode(entity.getUserCode().getUserCode())
                 // imgPath 필드는 @Transient로 설정되어 데이터베이스에 저장되지 않으며,
                 // getImgPath() 메서드를 통해 imgDirectory와 imgFileName을 결합한 경로를 반환
                 .imgPath(entity.getImgPath()) // 전체 파일 경로

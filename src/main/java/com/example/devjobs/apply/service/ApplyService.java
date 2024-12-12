@@ -2,9 +2,9 @@ package com.example.devjobs.apply.service;
 
 import com.example.devjobs.apply.dto.ApplyDTO;
 import com.example.devjobs.apply.entity.Apply;
-import com.example.devjobs.apply.entity.ApplyStatusValidator;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.resume.entity.Resume;
+import com.example.devjobs.user.entity.User;
 
 import java.util.List;
 
@@ -18,61 +18,47 @@ public interface ApplyService {
 
     void modify(ApplyDTO dto);
 
-    void remove(Integer dto);
+    void remove(Integer code);
 
     default ApplyDTO entityToDTO(Apply entity) {
-
-            ApplyDTO dto = ApplyDTO.builder()
+        // ApplyDTO 객체 생성
+        ApplyDTO dto = ApplyDTO.builder()
                 .applyCode(entity.getApplyCode()) // 지원코드
                 .submissionDate(entity.getCreateDate()) // 등록일
                 .updateDate(entity.getUpdateDate()) // 수정일
+                .userCode(entity.getUserCode().getUserCode()) // 유저코드
+                .jobCode(entity.getJobCode().getJobCode()) // JobPosting의 코드
+                .resumeCode(entity.getResumeCode().getResumeCode()) // Resume의 코드
+                .applyStatus(entity.getApplyStatus()) // 지원 상태
                 .build();
 
-            // jobCode 설정
-            if(entity.getJobCode() != null) {
-                dto.setJobCode(entity.getJobCode().getJobCode());
-            }
-            
-            // resumeCode 설정
-            if(entity.getResumeCode() != null) {
-                dto.setResumeCode(entity.getResumeCode().getResumeCode());
-            }
-
-            // applyStatus 설정
-            if (entity.getApplyStatus() != null) {
-                dto.setApplyStatus(entity.getApplyStatus());
-            }
-
-            return dto;
-
+        return dto;
     }
 
     default Apply dtoToEntity(ApplyDTO dto) {
-
-        Apply entity = Apply.builder()
-                .applyCode(dto.getApplyCode()) // 지원코드
+        // JobPosting 객체 가져오기
+        JobPosting jobPosting = JobPosting.builder()
+                .jobCode(dto.getJobCode())
                 .build();
 
-        if(dto.getJobCode() != null) {
-            JobPosting jobPosting = new JobPosting();
-            jobPosting.setJobCode(dto.getJobCode());
-            entity.setJobCode(jobPosting);
-        }
+        // Resume 객체 가져오기
+        Resume resume = Resume.builder()
+                .resumeCode(dto.getResumeCode())
+                .build();
 
-        if(dto.getResumeCode() != null) {
-            Resume resume = new Resume();
-            resume.setResumeCode(dto.getResumeCode());
-            entity.setResumeCode(resume);
-        }
+        // User 객체 가져오기
+        User user = User.builder()
+                .userCode(dto.getUserCode())
+                .build();
 
-        // applyStatus 설정
-        if (dto.getApplyStatus() != null) {
-            // 입력 값 검증 (유효한 상태값만 허용)
-            if (!ApplyStatusValidator.isValid(dto.getApplyStatus())) {
-                throw new IllegalArgumentException("Invalid apply status: " + dto.getApplyStatus());
-            }
-            entity.setApplyStatus(dto.getApplyStatus());
-        }
+        // Apply 객체 생성
+        Apply entity = Apply.builder()
+                .applyCode(dto.getApplyCode()) // 지원코드
+                .jobCode(jobPosting) // JobPosting 설정
+                .resumeCode(resume) // Resume 설정
+                .userCode(user) // User 설정
+                .applyStatus(dto.getApplyStatus()) // 지원 상태 설정
+                .build();
 
         return entity;
     }

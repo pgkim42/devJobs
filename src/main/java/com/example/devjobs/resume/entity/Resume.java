@@ -1,9 +1,11 @@
 package com.example.devjobs.resume.entity;
 
 import com.example.devjobs.common.BaseEntity;
+import com.example.devjobs.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+@ToString
 @Getter
 @Setter
 @Builder
@@ -19,7 +21,7 @@ public class Resume extends BaseEntity {
     private Integer resumeCode; // 이력서 코드
 
     @Column(length = 255)
-    private String workExperience; // 경력
+    private Integer workExperience; // 경력
 
     @Column(length = 255)
     private String education; // 학력
@@ -39,5 +41,9 @@ public class Resume extends BaseEntity {
 
     @Column(name = "upload_file_name", length = 255)
     private String uploadFileName; // 이력서 파일 (파일명 또는 경로)
+
+    @ManyToOne
+    @JoinColumn(name = "user_code", nullable = false)
+    private User userCode; // 유저 코드
 
 }

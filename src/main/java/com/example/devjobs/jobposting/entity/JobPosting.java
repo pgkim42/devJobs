@@ -2,6 +2,7 @@ package com.example.devjobs.jobposting.entity;
 
 import com.example.devjobs.common.BaseEntity;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
+import com.example.devjobs.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,10 +44,10 @@ public class JobPosting extends BaseEntity {
 
     // 공고 상태 관련...
     @Column(name = "posting_status", nullable = false)
-    private String postingStatus;  // 공고상태: "모집중", "마감" (String으로 관리)
+    private boolean postingStatus;  // 공고상태: true(모집중), false(마감)
 
     @Column(name = "work_experience", nullable = false)
-    private String workExperience;  // 경력 (신입, 경력)
+    private Integer workExperience;  // 경력 (년 단위)
 
     @Column(name = "tag")
     private String tag;  // 태그
@@ -69,7 +70,22 @@ public class JobPosting extends BaseEntity {
     @JoinColumn(name = "company_profile_code")
     CompanyProfile companyProfile;  // 기업프로필코드
 
+    // 유저코드
+    @ManyToOne
+    @JoinColumn(name = "user_code")
+    User userCode;
+
     @Transient // DB에 저장되지 않음(유사공고에 사용할 임시 데이터)
     private int matchScore; // 추천점수
+
+    // 추가된 필드: 주소 및 좌표 정보
+    @Column(name = "address", nullable = false)
+    private String address;  // 근무지
+
+    @Column(name = "latitude")
+    private Double latitude;  // 근무지 위도
+
+    @Column(name = "longitude")
+    private Double longitude;  // 근무지 경도
 
 }
