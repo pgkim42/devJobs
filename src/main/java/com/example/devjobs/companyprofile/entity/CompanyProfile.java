@@ -1,9 +1,12 @@
 package com.example.devjobs.companyprofile.entity;
 
 import com.example.devjobs.common.BaseEntity;
+import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -38,5 +41,9 @@ public class CompanyProfile extends BaseEntity {
 
     @Column(name = "logo_file_name", length = 255) // 로고 파일명 저장
     private String uploadFileName; // 저장된 로고 파일명
+
+    // jobPosting이 companyProfile의 code를 참조하고 있기에 cascade로 jobposting의 게시글까지 삭제됨
+    @OneToMany(mappedBy = "companyProfile", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<JobPosting> jobPostings;
 
 }

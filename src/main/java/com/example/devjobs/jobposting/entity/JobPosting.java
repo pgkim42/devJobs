@@ -1,5 +1,6 @@
 package com.example.devjobs.jobposting.entity;
 
+import com.example.devjobs.apply.entity.Apply;
 import com.example.devjobs.common.BaseEntity;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.user.entity.User;
@@ -7,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -87,5 +89,9 @@ public class JobPosting extends BaseEntity {
 
     @Column(name = "longitude")
     private Double longitude;  // 근무지 경도
+
+    // JobPosting이 여러 Apply를 참조
+    @OneToMany(mappedBy = "jobCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Apply> applies;
 
 }

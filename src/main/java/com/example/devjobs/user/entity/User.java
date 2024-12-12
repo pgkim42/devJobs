@@ -1,12 +1,15 @@
 package com.example.devjobs.user.entity;
 
+import com.example.devjobs.apply.entity.Apply;
 import com.example.devjobs.common.BaseEntity;
+import com.example.devjobs.companyprofile.entity.CompanyProfile;
+import com.example.devjobs.jobposting.entity.JobPosting;
+import com.example.devjobs.resume.entity.Resume;
 import com.example.devjobs.user.dto.request.auth.SignUpRequestDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -78,5 +81,18 @@ public class User extends BaseEntity {
         this.type = type;
         this.role = "ROLE_USER";
     }
+
+    // (cascade를 위한 @OneToMany)
+    @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<CompanyProfile> companyProfiles;
+
+    @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Resume> resumes;
+
+    @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Apply> applies;
+
+    @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<JobPosting> jobPostings;
 
 }

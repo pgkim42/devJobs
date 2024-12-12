@@ -38,4 +38,6 @@ public class Apply extends BaseEntity {
     @JoinColumn(name = "user_code")
     User userCode;
 
+
+
 }
