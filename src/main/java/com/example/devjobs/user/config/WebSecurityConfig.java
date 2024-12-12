@@ -2,6 +2,7 @@ package com.example.devjobs.user.config;
 
 import com.example.devjobs.user.filter.JwtAuthenticationFilter;
 import com.example.devjobs.user.handler.OAuth2SuccessHandler;
+import com.example.devjobs.user.provider.JwtProvider;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,9 +44,6 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
-
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {

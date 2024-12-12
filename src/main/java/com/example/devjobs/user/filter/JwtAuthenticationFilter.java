@@ -3,6 +3,8 @@ package com.example.devjobs.user.filter;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.provider.JwtProvider;
 import com.example.devjobs.user.repository.UserRepository;
+import com.example.devjobs.user.service.implement.UserDetailsImpl;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,77 +35,55 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            String path = request.getRequestURI();
-            System.out.println("Incoming Request Path: " + path);
-
-            if (path.startsWith("/api/v1/auth")) {
-                System.out.println("Path does not require authentication. Skipping filter.");
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            // 요청에서 Bearer Token 추출
             String token = parseBearerToken(request);
-            System.out.println("Authorization Header: " + request.getHeader("Authorization"));
-            System.out.println("Extracted Token: " + token);
-
             if (token == null) {
-                System.out.println("No token found. Proceeding without authentication.");
+                System.out.println("JWT 토큰이 누락되었습니다.");
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            // 토큰 검증 후 userId 추출
-            String userId = jwtProvider.validate(token);
-            System.out.println("Validated User ID: " + userId);
-
-            if (userId == null) {
-                System.out.println("Token validation failed. Proceeding without authentication.");
+            Claims claims = jwtProvider.getClaims(token);
+            if (claims == null) {
+                System.out.println("JWT 검증 실패: " + token);
                 filterChain.doFilter(request, response);
                 return;
             }
-
-            // User 객체를 DB에서 찾기
-            User user = userRepository.findByUserId(userId);
-            System.out.println("Fetched User from DB: " + user);
-
-            if (user == null) {
-                System.out.println("No user found for the given token. Proceeding without authentication.");
-                filterChain.doFilter(request, response);
-                return;
+            String userCode = claims.get("userCode", String.class);
+            User user;
+            if (userCode != null && !userCode.isEmpty()) {
+                user = userRepository.findByUserCode(userCode);
+                if (user == null) {
+                    System.out.println("유효한 사용자 Code를 찾을 수 없습니다: " + userCode);
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+            } else {
+                String userId = claims.getSubject();
+                user = userRepository.findByUserId(userId);
+                if (user == null) {
+                    System.out.println("유효한 사용자 ID를 찾을 수 없습니다: " + userId);
+                    filterChain.doFilter(request, response);
+                    return;
+                }
             }
 
-            // 역할에 "ROLE_" 접두사를 추가
-            String role = user.getRole();
-            System.out.println("Decoded Token User ID: " + userId);
-            System.out.println("Decoded Token Role: " + role);
-            System.out.println("Expected Role: ROLE_COMPANY");
+            UserDetailsImpl userDetails = new UserDetailsImpl(user);
 
-            // 권한 설정
-            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
-            AbstractAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userId, null, authorities);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            // SecurityContext에 인증 설정
-            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-            securityContext.setAuthentication(authenticationToken);
-            SecurityContextHolder.setContext(securityContext);
-
-            System.out.println("Authentication successfully set for user: " + userId);
-
-        } catch (Exception exception) {
-            System.out.println("Exception occurred in JwtAuthenticationFilter: " + exception.getMessage());
-            exception.printStackTrace();
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        } catch (Exception e) {
+            System.out.println("인증 처리 중 오류 발생: " + e.getMessage());
+            e.printStackTrace();
         }
 
-        // 요청을 다음 필터로 전달
         filterChain.doFilter(request, response);
     }
 
+
     private String parseBearerToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
-        System.out.println("Authorization Header: " + authorization);
 
         if (!StringUtils.hasText(authorization)) {
             return null;

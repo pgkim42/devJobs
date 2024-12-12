@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, String> {
 
@@ -15,6 +16,9 @@ public interface UserRepository extends JpaRepository<User, String> {
     User findByUserCode(String userCode);
 
     User findByUserId(String userId);
+
+    Optional<User> findByUserIdOrUserCode(String userId, String userCode);
+
 
 }
 
