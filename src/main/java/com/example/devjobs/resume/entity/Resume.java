@@ -1,9 +1,12 @@
 package com.example.devjobs.resume.entity;
 
+import com.example.devjobs.apply.entity.Apply;
 import com.example.devjobs.common.BaseEntity;
 import com.example.devjobs.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @ToString
 @Getter
@@ -45,5 +48,8 @@ public class Resume extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_code", nullable = false)
     private User userCode; // 유저 코드
+
+    @OneToMany(mappedBy = "resumeCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Apply> applies;
 
 }
