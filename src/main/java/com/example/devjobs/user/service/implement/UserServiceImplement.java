@@ -27,12 +27,6 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public void deleteUser(String userId) {
-        User user = findUserOrThrow(userId);
-        userRepository.delete(user);
-    }
-
-    @Override
     public void deleteUserByCode(String userCode) {
         User user = userRepository.findByUserCode(userCode);
         if (user == null) {
@@ -64,11 +58,5 @@ public class UserServiceImplement implements UserService {
         return passwordEncoder.matches(password, user.getPassword());
     }
 
-    @Override
-    public boolean removeFromSocialPlatform(String name) {
-        // 소셜 플랫폼 해제 로직 (예시)
-        System.out.println(name + " 사용자의 소셜 플랫폼 연동 해제 완료");
-        return true;
-    }
 
 }

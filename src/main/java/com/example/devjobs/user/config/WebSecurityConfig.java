@@ -59,8 +59,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/", "/api/v1/auth/**", "/oauth2/**", "/jobcategory/**").permitAll()
                         .requestMatchers("/api/v1/company/**", "/companyprofile/**", "/jobposting/**").hasRole("COMPANY")
-                        .requestMatchers("/api/v1/check-password", "/api/v1/change-password").hasAnyRole("USER", "COMPANY")
-                        .requestMatchers("/simlilarposting/**", "/resume/**", "/apply/**", "/api/v1/social-remove").hasRole("USER")
+                        .requestMatchers("/api/v1/check-password", "/api/v1/change-password","/api/v1/social-remove").hasAnyRole("USER", "COMPANY")
+                        .requestMatchers("/simlilarposting/**", "/resume/**", "/apply/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
