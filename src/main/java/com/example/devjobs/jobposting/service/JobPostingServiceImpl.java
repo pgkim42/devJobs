@@ -85,13 +85,17 @@ public class JobPostingServiceImpl implements JobPostingService {
         return repository.findById(jobCode);
     }
 
-//    @Override
-//    public List<JobPostingDTO> search(String title, String jobCategory, Integer workExperience) {
-//        QJobPosting
-//
-//
-//        return null;
-//    }
+    // 전체 공고 카운트
+    @Override
+    public long countAllJobPostings() {
+        return repository.countAllJobPostings();
+    }
+
+    // 진행중인 공고
+    @Override
+    public long countActiveJobPostings() {
+        return repository.countActiveJobPostings();
+    }
 
     @Override
     public int register(JobPostingDTO dto, MultipartFile jobPostingFolder) {

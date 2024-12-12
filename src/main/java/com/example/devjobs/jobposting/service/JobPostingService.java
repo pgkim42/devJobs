@@ -23,8 +23,11 @@ public interface JobPostingService {
     // KAKOMAP API용
     Optional<JobPosting> getbyId(Integer jobCode);
 
-    // 검색 메서드 추가
-//    List<JobPostingDTO> search(String title, String jobCategory, Integer workExperience);
+    // 전체 공고 조회
+    long countAllJobPostings();
+
+    // 진행중인 공고 조회
+    long countActiveJobPostings();
 
     void modify(Integer jobCode, String title, String content, String recruitJob,
                 Integer recruitField, String salary, boolean postingStatus,
