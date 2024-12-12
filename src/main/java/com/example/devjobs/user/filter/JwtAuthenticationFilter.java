@@ -20,7 +20,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -35,47 +34,76 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String path = request.getRequestURI();
+            System.out.println("Incoming Request Path: " + path);
+
             if (path.startsWith("/api/v1/auth")) {
-                // 인증이 필요 없는 경로는 필터링 제외
+                System.out.println("Path does not require authentication. Skipping filter.");
                 filterChain.doFilter(request, response);
                 return;
             }
 
+            // 요청에서 Bearer Token 추출
             String token = parseBearerToken(request);
+            System.out.println("Authorization Header: " + request.getHeader("Authorization"));
+            System.out.println("Extracted Token: " + token);
+
             if (token == null) {
+                System.out.println("No token found. Proceeding without authentication.");
                 filterChain.doFilter(request, response);
                 return;
             }
 
+            // 토큰 검증 후 userId 추출
             String userId = jwtProvider.validate(token);
+            System.out.println("Validated User ID: " + userId);
+
             if (userId == null) {
+                System.out.println("Token validation failed. Proceeding without authentication.");
                 filterChain.doFilter(request, response);
                 return;
             }
 
+            // User 객체를 DB에서 찾기
             User user = userRepository.findByUserId(userId);
-            String role = user.getRole(); // role = ROLE_USER, ROLE_ADMIN
+            System.out.println("Fetched User from DB: " + user);
 
+            if (user == null) {
+                System.out.println("No user found for the given token. Proceeding without authentication.");
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // 역할에 "ROLE_" 접두사를 추가
+            String role = user.getRole();
+            System.out.println("Decoded Token User ID: " + userId);
+            System.out.println("Decoded Token Role: " + role);
+            System.out.println("Expected Role: ROLE_COMPANY");
+
+            // 권한 설정
             List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
-
-            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             AbstractAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(userId, null, authorities);
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
+            // SecurityContext에 인증 설정
+            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             securityContext.setAuthentication(authenticationToken);
             SecurityContextHolder.setContext(securityContext);
 
+            System.out.println("Authentication successfully set for user: " + userId);
+
         } catch (Exception exception) {
+            System.out.println("Exception occurred in JwtAuthenticationFilter: " + exception.getMessage());
             exception.printStackTrace();
         }
 
+        // 요청을 다음 필터로 전달
         filterChain.doFilter(request, response);
     }
 
-
     private String parseBearerToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
+        System.out.println("Authorization Header: " + authorization);
 
         if (!StringUtils.hasText(authorization)) {
             return null;

@@ -35,6 +35,7 @@ public class SignInResponseDto extends ResponseDto {
         responseDto.setToken(token);
         responseDto.setExpirationTime(3600);  // 예시: 1시간 만료
         responseDto.setUserId(user.getUserId());
+        responseDto.setUserCode(user.getUserCode());
         responseDto.setType(user.getType());  // 사용자 유형 (소셜/일반)
         responseDto.setName(user.getName());
         responseDto.setEmail(user.getEmail());
