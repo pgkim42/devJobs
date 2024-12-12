@@ -26,6 +26,11 @@ public class AuthController {
         return response;
     }
 
+    @PostMapping("/email-check")
+    public ResponseEntity<? super EmailCheckResponseDto> emailCheck(@RequestBody @Valid EmailCheckRequestDto requestDto) {
+        return authService.emailCheck(requestDto);
+    }
+
     @PostMapping("/email-certification")
     public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(@RequestBody @Valid EmailCertificationRequestDto requestBody) {
         ResponseEntity<? super EmailCertificationResponseDto> response = authService.emailCertification(requestBody);

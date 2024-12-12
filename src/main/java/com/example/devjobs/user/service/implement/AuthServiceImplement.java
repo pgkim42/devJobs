@@ -51,6 +51,22 @@ public class AuthServiceImplement implements AuthService {
 
     }
 
+    @Override
+    public ResponseEntity<? super EmailCheckResponseDto> emailCheck(EmailCheckRequestDto dto) {
+        try {
+            String email = dto.getEmail();
+            boolean isExistEmail = userRepository.existsByEmail(email);
+
+            if(isExistEmail) return EmailCheckResponseDto.duplicatedEmail();
+
+        } catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return EmailCheckResponseDto.success();
+    }
+
 
     @Override
     public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto) {
