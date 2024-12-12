@@ -26,7 +26,7 @@ import java.util.Optional;
 @Service
 public class GPTUtil {
 
-    // API 주소와 모델
+    // API 주소와 모델 d
     String apiURL = "https://api.openai.com/v1/chat/completions";
 
     String model = "gpt-3.5-turbo";
