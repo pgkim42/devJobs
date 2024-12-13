@@ -32,7 +32,31 @@ public class UserServiceImplement implements UserService {
         if (user == null) {
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
+
+        // 외래 키가 걸린 데이터를 먼저 삭제
+        System.out.println("[INFO] 외래 키 데이터 삭제 시작: userCode = " + userCode);
+
+        if (user.getJobPostings() != null) {
+            user.getJobPostings().clear();
+        }
+
+        if (user.getResumes() != null) {
+            user.getResumes().clear();
+        }
+
+        if (user.getApplies() != null) {
+            user.getApplies().clear();
+        }
+
+        if (user.getCompanyProfiles() != null) {
+            user.getCompanyProfiles().clear();
+        }
+
+        System.out.println("[INFO] 외래 키 데이터 삭제 완료: userCode = " + userCode);
+
+        // 사용자 삭제
         userRepository.delete(user);
+        System.out.println("[INFO] 사용자 삭제 완료: userCode = " + userCode);
     }
 
     @Override
