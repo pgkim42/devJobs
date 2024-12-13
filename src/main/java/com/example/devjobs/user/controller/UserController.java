@@ -63,12 +63,4 @@ public class UserController {
                     .body(Map.of("success", false, "message", "회원 탈퇴 중 오류가 발생했습니다.", "error", e.getMessage()));
         }
     }
-
-//    @PostMapping("/id-search")
-//    public ResponseEntity<?> idSearch(@RequestBody UserDetailsImpl userDetails) {
-//        if (userDetails == null) {
-//
-//        }
-//    }
-
 }
