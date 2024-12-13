@@ -68,6 +68,20 @@ public class ApplyServiceImpl implements ApplyService {
         return dtoList;
     }
 
+    @Override
+    public List<ApplyDTO> getUserApplications(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
+        }
+
+        List<Apply> applications = applyRepository.findByUserCode(user);
+        return applications.stream()
+                .map(this::entityToDTO)
+                .collect(Collectors.toList());
+    }
+
+
     // 지원서 단일 조회
     @Override
     public ApplyDTO read(int code) {

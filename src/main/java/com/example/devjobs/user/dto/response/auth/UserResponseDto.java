@@ -1,5 +1,6 @@
 package com.example.devjobs.user.dto.response.auth;
 
+import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,19 +24,28 @@ public class UserResponseDto {
     private String ceoName;
     private String companyAddress;
 
+    // 일반 회원 생성자
     public UserResponseDto(User user) {
         this.name = user.getName();
         this.email = user.getEmail();
         this.userId = user.getUserId();
         this.type = user.getType();
+    }
 
-        // 기업 회원일 경우 추가 데이터 설정
-        if ("company".equals(user.getType())) {
-            this.companyCode = user.getCompanyCode();
-            this.companyType = user.getCompanyType();
-            this.companyName = user.getCompanyName();
-            this.ceoName = user.getCeoName();
-            this.companyAddress = user.getCompanyAddress();
+    // 기업 회원 생성자 (CompanyProfile 포함)
+    public UserResponseDto(User user, CompanyProfile companyProfile) {
+        this.name = user.getName();
+        this.email = user.getEmail();
+        this.userId = user.getUserId();
+        this.type = user.getType();
+
+        // 기업 회원일 경우 CompanyProfile 데이터 추가
+        if (companyProfile != null) {
+            this.companyCode = companyProfile.getCompanyCode();
+            this.companyType = companyProfile.getCompanyType();
+            this.companyName = companyProfile.getCompanyName();
+            this.ceoName = companyProfile.getCeoName();
+            this.companyAddress = companyProfile.getCompanyAddress();
         }
     }
 }

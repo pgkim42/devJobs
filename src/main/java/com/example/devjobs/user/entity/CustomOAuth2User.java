@@ -15,7 +15,7 @@ import java.util.Map;
 @Setter
 public class CustomOAuth2User implements OAuth2User {
 
-    private String userCode;  // userCode -> userId로 수정
+    private String userCode;
     private String email;
     private String name;
     private String type;
@@ -31,7 +31,7 @@ public class CustomOAuth2User implements OAuth2User {
     @Override
     public Map<String, Object> getAttributes() {
         Map<String, Object> attributes = new HashMap<>();
-        attributes.put("userCode", userCode);  // userCode -> userId로 수정
+        attributes.put("userCode", userCode);
         attributes.put("email", email);
         attributes.put("name", name);
         attributes.put("type", type);

@@ -22,10 +22,10 @@ public class User extends BaseEntity {
 
     @Id
     @Column(name = "user_code")
-    private String userCode; // 소셜 회원가입 시 사용되는 고유ID
+    private String userCode; // 고유ID
 
     @Column(unique = true)
-    private String userId;   // 일반 회원가입 시 사용되는 고유ID
+    private String userId;   // 일반 회원 로그인 시 사용되는 ID
 
     private String name;
 
@@ -38,17 +38,6 @@ public class User extends BaseEntity {
 
     private String role;
 
-    @Column(name = "company_code", unique = true)
-    private String companyCode; // 사업자 등록번호
-
-    private String companyType; // 기업형태 (중소기업, 중견기업)
-
-    private String companyName; // 회사 이름
-
-    private String ceoName; // 대표 이름
-
-    private String companyAddress; // 회사 주소
-
     public User(SignUpRequestDto dto) {
         this.userId = dto.getUserId();
         this.name = dto.getName();
@@ -56,17 +45,15 @@ public class User extends BaseEntity {
         this.email = dto.getEmail();
         this.type = dto.getType();
         this.role = dto.getType().equals("company") ? "ROLE_COMPANY" : "ROLE_USER";
-        this.userCode = "dev_" + dto.getUserId();
 
-        // 기업 회원 정보 매핑
+        // userCode 설정
         if ("company".equals(dto.getType())) {
-            this.companyCode = dto.getCompanyCode();
-            this.companyType = dto.getCompanyType();
-            this.companyName = dto.getCompanyName();
-            this.ceoName = dto.getCeoName();
-            this.companyAddress = dto.getCompanyAddress();
+            this.userCode = "com_" + dto.getUserId();
+        } else {
+            this.userCode = "dev_" + dto.getUserId();
         }
     }
+
 
     public User( String userCode, String email, String name, String type){
         this.userCode = userCode;
@@ -83,8 +70,8 @@ public class User extends BaseEntity {
     }
 
     // (cascade를 위한 @OneToMany)
-    @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<CompanyProfile> companyProfiles;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private CompanyProfile companyProfile;
 
     @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Resume> resumes;

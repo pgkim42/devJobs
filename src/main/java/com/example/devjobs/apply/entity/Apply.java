@@ -9,7 +9,6 @@ import lombok.*;
 
 @Entity
 @Table(name = "apply")
-//@Data
 @Setter
 @Getter
 @Builder
@@ -36,7 +35,7 @@ public class Apply extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_code")
-    User userCode;
+    private User userCode;
 
 
 

@@ -13,6 +13,7 @@ public interface ApplyService {
     int register(ApplyDTO dto);
 
     List<ApplyDTO> getList();
+    List<ApplyDTO> getUserApplications(String userId);
 
     ApplyDTO read(int code);
 
@@ -22,17 +23,16 @@ public interface ApplyService {
 
     default ApplyDTO entityToDTO(Apply entity) {
         // ApplyDTO 객체 생성
-        ApplyDTO dto = ApplyDTO.builder()
+        return ApplyDTO.builder()
                 .applyCode(entity.getApplyCode()) // 지원코드
                 .submissionDate(entity.getCreateDate()) // 등록일
                 .updateDate(entity.getUpdateDate()) // 수정일
                 .userCode(entity.getUserCode().getUserCode()) // 유저코드
                 .jobCode(entity.getJobCode().getJobCode()) // JobPosting의 코드
                 .resumeCode(entity.getResumeCode().getResumeCode()) // Resume의 코드
+                .companyName(entity.getJobCode().getCompanyProfile().getCompanyName()) // 회사 이름 설정
                 .applyStatus(entity.getApplyStatus()) // 지원 상태
                 .build();
-
-        return dto;
     }
 
     default Apply dtoToEntity(ApplyDTO dto) {
