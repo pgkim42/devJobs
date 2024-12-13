@@ -10,11 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -22,7 +18,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -48,23 +43,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
+
             String userCode = claims.get("userCode", String.class);
-            User user;
-            if (userCode != null && !userCode.isEmpty()) {
-                user = userRepository.findByUserCode(userCode);
-                if (user == null) {
-                    System.out.println("유효한 사용자 Code를 찾을 수 없습니다: " + userCode);
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-            } else {
-                String userId = claims.getSubject();
-                user = userRepository.findByUserId(userId);
-                if (user == null) {
-                    System.out.println("유효한 사용자 ID를 찾을 수 없습니다: " + userId);
-                    filterChain.doFilter(request, response);
-                    return;
-                }
+            if (userCode == null || userCode.isEmpty()) {
+                System.out.println("JWT에 userCode가 없습니다: " + token);
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            User user = userRepository.findByUserCode(userCode);
+            if (user == null) {
+                System.out.println("유효한 사용자 Code를 찾을 수 없습니다: " + userCode);
+                filterChain.doFilter(request, response);
+                return;
             }
 
             UserDetailsImpl userDetails = new UserDetailsImpl(user);
@@ -80,7 +71,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
 
     private String parseBearerToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");

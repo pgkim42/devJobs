@@ -21,40 +21,34 @@ public interface CompanyProfileService {
     void remove(int code);
 
     default CompanyProfileDTO entityToDTO(CompanyProfile entity) {
-
-        // DTO 객체 생성
-        CompanyProfileDTO dto = CompanyProfileDTO.builder()
-                .companyProfileCode(entity.getCompanyProfileCode())  // 기업프로필코드
-                .companyName(entity.getCompanyName())            // 기업 이름
-                .companyContent(entity.getCompanyContent())      // 기업 내용
-                .industry(entity.getIndustry())                  // 업종
-                .websiteUrl(entity.getWebsiteUrl())              // 기업사이트 URL
-                .createDate(entity.getCreateDate())              // 작성일
-                .updateDate(entity.getUpdateDate())              // 수정일
-                .userCode(entity.getUserCode().getUserCode())   // 유저
-                .uploadFileName(entity.getUploadFileName())     // 기업로고 파일
+        return CompanyProfileDTO.builder()
+                .companyProfileCode(entity.getCompanyProfileCode())
+                .companyDescription(entity.getCompanyDescription())
+                .industry(entity.getIndustry())
+                .websiteUrl(entity.getWebsiteUrl())
+                .companyCode(entity.getCompanyCode())
+                .companyType(entity.getCompanyType())
+                .companyName(entity.getCompanyName())
+                .ceoName(entity.getCeoName())
+                .companyAddress(entity.getCompanyAddress())
+                .userCode(entity.getUser().getUserCode())
+                .uploadFileName(entity.getUploadFileName())
                 .build();
-
-        return dto;
-
     }
 
-    default CompanyProfile dtoToEntity(CompanyProfileDTO dto) {
-
-        // User 객체 생성
-        User user = new User();
-        user.setUserCode(dto.getUserCode());
-
-        CompanyProfile entity = CompanyProfile.builder()
+    default CompanyProfile dtoToEntity(CompanyProfileDTO dto, User user) {
+        return CompanyProfile.builder()
                 .companyProfileCode(dto.getCompanyProfileCode())
-                .companyName(dto.getCompanyName())
-                .companyContent(dto.getCompanyContent())
+                .companyDescription(dto.getCompanyDescription())
                 .industry(dto.getIndustry())
                 .websiteUrl(dto.getWebsiteUrl())
-                .userCode(user) // User 설정
+                .companyCode(dto.getCompanyCode())
+                .companyType(dto.getCompanyType())
+                .companyName(dto.getCompanyName())
+                .ceoName(dto.getCeoName())
+                .companyAddress(dto.getCompanyAddress())
                 .uploadFileName(dto.getUploadFileName())
+                .user(user) // User 설정
                 .build();
-
-        return entity;
     }
 }

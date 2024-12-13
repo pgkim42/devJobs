@@ -21,17 +21,16 @@ import java.util.stream.Collectors;
 public class CompanyProfileServiceImpl implements CompanyProfileService {
 
     @Autowired
-    CompanyProfileRepository repository;
+    private CompanyProfileRepository repository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    FileUtil fileUtil;
+    private FileUtil fileUtil;
 
     @Override
     public int register(CompanyProfileDTO dto, MultipartFile logoFile) {
-        // 현재 로그인된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -45,88 +44,42 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
 
-        CompanyProfile entity = dtoToEntity(dto);
-        entity.setUserCode(user); // 로그인한 사용자의 User 설정
+        if ("company".equals(user.getType())) {
+            CompanyProfile entity = dtoToEntity(dto, user);
 
-        if(logoFile != null && !logoFile.isEmpty()) {
-            String uploadedFileName = fileUtil.fileUpload(logoFile, "companyLogo");
-            entity.setUploadFileName(uploadedFileName);
-        }
-
-        repository.save(entity);
-
-        return entity.getCompanyProfileCode();
-    }
-
-    @Override
-    public List<CompanyProfileDTO> getList() {
-        List<CompanyProfile> entityList = repository.findAll();
-        List<CompanyProfileDTO> dtoList = entityList.stream()
-                .map(entity -> entityToDTO(entity))
-                .collect(Collectors.toList());
-
-        return dtoList;
-    }
-
-    @Override
-    public CompanyProfileDTO read(int code) {
-        Optional<CompanyProfile> result = repository.findById(code);
-        if (result.isPresent()) {
-            return entityToDTO(result.get());
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public void modify(CompanyProfileDTO dto, MultipartFile logoFile) {
-        // 게시글 번호 확인
-        if (dto.getCompanyProfileCode() == null) {
-            throw new IllegalArgumentException("기업 프로필 코드가 필요합니다.");
-        }
-
-        Optional<CompanyProfile> result = repository.findById(dto.getCompanyProfileCode());
-        if (result.isPresent()) {
-            CompanyProfile entity = result.get();
-
-            // 인증된 사용자 정보 가져오기
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !authentication.isAuthenticated()) {
-                throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
-            }
-
-            String currentUserName = authentication.getName();
-            User loggedInUser = userRepository.findByUserId(currentUserName);
-            if (loggedInUser == null || !entity.getUserCode().getUserCode().equals(loggedInUser.getUserCode())) {
-                throw new SecurityException("작성자만 게시글을 수정할 수 있습니다.");
-            }
-
-            // 수정 작업 수행
-            if (dto.getCompanyName() != null) entity.setCompanyName(dto.getCompanyName());
-            if (dto.getCompanyContent() != null) entity.setCompanyContent(dto.getCompanyContent());
-            if (dto.getIndustry() != null) entity.setIndustry(dto.getIndustry());
-            if (dto.getWebsiteUrl() != null) entity.setWebsiteUrl(dto.getWebsiteUrl());
-
-            // 파일 업데이트 처리
             if (logoFile != null && !logoFile.isEmpty()) {
-                if (entity.getUploadFileName() != null) {
-                    fileUtil.deleteFile(entity.getUploadFileName());
-                }
+                validateFile(logoFile); // 파일 유효성 검사
                 String uploadedFileName = fileUtil.fileUpload(logoFile, "companyLogo");
                 entity.setUploadFileName(uploadedFileName);
             }
 
             repository.save(entity);
+            return entity.getCompanyProfileCode();
         } else {
-            throw new IllegalArgumentException("해당 기업 프로필 코드가 존재하지 않습니다.");
+            throw new IllegalArgumentException("기업 회원만 프로필을 등록할 수 있습니다.");
         }
     }
 
     @Override
-    public void remove(int code) {
-        // 현재 로그인된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public List<CompanyProfileDTO> getList() {
+        return repository.findAll().stream()
+                .map(this::entityToDTO)
+                .collect(Collectors.toList());
+    }
 
+    @Override
+    public CompanyProfileDTO read(int code) {
+        return repository.findById(code)
+                .map(this::entityToDTO)
+                .orElseThrow(() -> new IllegalArgumentException("해당 프로필 코드가 존재하지 않습니다."));
+    }
+
+    @Override
+    public void modify(CompanyProfileDTO dto, MultipartFile logoFile) {
+        CompanyProfile entity = repository.findById(dto.getCompanyProfileCode())
+                .orElseThrow(() -> new IllegalArgumentException("해당 프로필 코드가 존재하지 않습니다."));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
         }
@@ -134,26 +87,59 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
         String currentUserName = authentication.getName();
         User loggedInUser = userRepository.findByUserId(currentUserName);
 
-        if (loggedInUser == null) {
+        if (!entity.getUser().getUserCode().equals(loggedInUser.getUserCode())) {
+            throw new SecurityException("작성자만 수정할 수 있습니다.");
+        }
+
+        // 수정 로직
+        if (dto.getCompanyDescription() != null) entity.setCompanyDescription(dto.getCompanyDescription());
+        if (dto.getIndustry() != null) entity.setIndustry(dto.getIndustry());
+        if (dto.getWebsiteUrl() != null) entity.setWebsiteUrl(dto.getWebsiteUrl());
+        if (logoFile != null && !logoFile.isEmpty()) {
+            validateFile(logoFile);
+            if (entity.getUploadFileName() != null) {
+                fileUtil.deleteFile(entity.getUploadFileName());
+            }
+            String uploadedFileName = fileUtil.fileUpload(logoFile, "companyLogo");
+            entity.setUploadFileName(uploadedFileName);
+        }
+
+        repository.save(entity);
+    }
+
+    @Override
+    public void remove(int code) {
+        CompanyProfile entity = repository.findById(code)
+                .orElseThrow(() -> new IllegalArgumentException("해당 프로필 코드가 존재하지 않습니다."));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
             throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
         }
 
-        // 삭제하려는 게시글 검색
-        Optional<CompanyProfile> result = repository.findById(code);
+        String currentUserName = authentication.getName();
+        User loggedInUser = userRepository.findByUserId(currentUserName);
 
-        if (result.isPresent()) {
-            CompanyProfile entity = result.get();
-
-            // 게시글 작성자와 로그인한 사용자 비교
-            if (!entity.getUserCode().getUserCode().equals(loggedInUser.getUserCode())) {
-                throw new SecurityException("작성자만 게시글을 삭제할 수 있습니다.");
-            }
-
-            // 게시글 삭제
-            repository.deleteById(code);
-        } else {
-            throw new IllegalArgumentException("해당 기업프로필 코드가 존재하지 않습니다.");
+        if (!entity.getUser().getUserCode().equals(loggedInUser.getUserCode())) {
+            throw new SecurityException("작성자만 삭제할 수 있습니다.");
         }
+
+        if (entity.getUploadFileName() != null) {
+            fileUtil.deleteFile(entity.getUploadFileName());
+        }
+
+        repository.deleteById(code);
     }
 
+    private void validateFile(MultipartFile file) {
+        if (file != null && !file.isEmpty()) {
+            String contentType = file.getContentType();
+            if (!contentType.startsWith("image/")) {
+                throw new IllegalArgumentException("이미지 파일만 업로드할 수 있습니다.");
+            }
+            if (file.getSize() > 5 * 1024 * 1024) { // 5MB 제한
+                throw new IllegalArgumentException("파일 크기는 5MB를 초과할 수 없습니다.");
+            }
+        }
+    }
 }

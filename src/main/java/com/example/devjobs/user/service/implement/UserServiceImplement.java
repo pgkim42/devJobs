@@ -1,5 +1,7 @@
 package com.example.devjobs.user.service.implement;
 
+import com.example.devjobs.companyprofile.entity.CompanyProfile;
+import com.example.devjobs.companyprofile.repository.CompanyProfileRepository;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.repository.UserRepository;
 import com.example.devjobs.user.service.UserService;
@@ -16,6 +18,7 @@ public class UserServiceImplement implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CompanyProfileRepository companyProfileRepository;
 
     // 공통 메서드: 사용자 조회 및 예외 처리
     private User findUserOrThrow(String userId) {
@@ -33,31 +36,16 @@ public class UserServiceImplement implements UserService {
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
 
-        // 외래 키가 걸린 데이터를 먼저 삭제
-        System.out.println("[INFO] 외래 키 데이터 삭제 시작: userCode = " + userCode);
-
-        if (user.getJobPostings() != null) {
-            user.getJobPostings().clear();
+        // CompanyProfile 삭제
+        CompanyProfile companyProfile = companyProfileRepository.findByUser(user);
+        if (companyProfile != null) {
+            companyProfileRepository.delete(companyProfile);
         }
 
-        if (user.getResumes() != null) {
-            user.getResumes().clear();
-        }
-
-        if (user.getApplies() != null) {
-            user.getApplies().clear();
-        }
-
-        if (user.getCompanyProfiles() != null) {
-            user.getCompanyProfiles().clear();
-        }
-
-        System.out.println("[INFO] 외래 키 데이터 삭제 완료: userCode = " + userCode);
-
-        // 사용자 삭제
+        // User 삭제
         userRepository.delete(user);
-        System.out.println("[INFO] 사용자 삭제 완료: userCode = " + userCode);
     }
+
 
     @Override
     public void updatePassword(String userId, String currentPassword, String newPassword) {
