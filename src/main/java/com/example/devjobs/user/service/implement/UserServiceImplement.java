@@ -5,6 +5,8 @@ import com.example.devjobs.companyprofile.repository.CompanyProfileRepository;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.repository.UserRepository;
 import com.example.devjobs.user.service.UserService;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +21,7 @@ public class UserServiceImplement implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CompanyProfileRepository companyProfileRepository;
+    private final EntityManager entityManager;
 
     // 공통 메서드: 사용자 조회 및 예외 처리
     private User findUserOrThrow(String userId) {
@@ -29,6 +32,7 @@ public class UserServiceImplement implements UserService {
         return user;
     }
 
+    @Transactional
     @Override
     public void deleteUserByCode(String userCode) {
         User user = userRepository.findByUserCode(userCode);
@@ -36,13 +40,18 @@ public class UserServiceImplement implements UserService {
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
 
-        // CompanyProfile 삭제
-        CompanyProfile companyProfile = companyProfileRepository.findByUser(user);
-        if (companyProfile != null) {
-            companyProfileRepository.delete(companyProfile);
+        // 기업 회원인 경우 관련 CompanyProfile 삭제
+        if ("company".equals(user.getType())) {
+            CompanyProfile companyProfile = companyProfileRepository.findByUser(user);
+            if (companyProfile != null) {
+                // 영속성 컨텍스트에 포함되지 않았을 경우 merge
+                if (!entityManager.contains(companyProfile)) {
+                    companyProfile = entityManager.merge(companyProfile);
+                }
+                companyProfileRepository.delete(companyProfile);
+            }
         }
 
-        // User 삭제
         userRepository.delete(user);
     }
 
