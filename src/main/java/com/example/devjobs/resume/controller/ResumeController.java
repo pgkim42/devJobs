@@ -6,6 +6,7 @@ import com.example.devjobs.resume.service.ResumeService;
 import com.example.devjobs.util.FileUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,28 +33,26 @@ public class ResumeController {
 
     @PostMapping("/register")
     public ResponseEntity<Integer> register(
-            @RequestPart("dto") String dtoJson, // DTO JSON 데이터를 String으로 받음 // required = false (필수적이지 않음)
+            @RequestPart("dto") String dtoJson,
             @RequestPart(value = "resumeFolder", required = false) MultipartFile resumeFolder
     ) {
         try {
-            // JSON 문자열을 로그로 출력
-            System.out.println("Received DTO JSON: " + dtoJson);
-
-            // JSON 문자열을 ResumeDTO로 변환
+            // "dto" 키 내부 데이터를 추출
             ObjectMapper objectMapper = new ObjectMapper();
-            ResumeDTO dto = objectMapper.readValue(dtoJson, ResumeDTO.class);
+            JsonNode rootNode = objectMapper.readTree(dtoJson);
+            JsonNode actualDtoNode = rootNode.get("dto");
 
-            System.out.println("Parsed DTO: " + dto);
+            // 실제 데이터로 ResumeDTO 변환
+            ResumeDTO dto = objectMapper.treeToValue(actualDtoNode, ResumeDTO.class);
 
             if (resumeFolder != null && !resumeFolder.isEmpty()) {
                 dto.setUploadFileName(resumeFolder.getOriginalFilename());
-                System.out.println("Resume file name: " + resumeFolder.getOriginalFilename());
             }
 
             int no = service.register(dto, resumeFolder);
             return new ResponseEntity<>(no, HttpStatus.CREATED);
         } catch (Exception e) {
-            e.printStackTrace(); // 예외 로그 출력
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

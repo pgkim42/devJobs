@@ -23,7 +23,7 @@ public class JwtProvider {
     // JWT 생성 메소드
     // JwtProvider 클래스 내 create 메서드 수정
     public String create(String userId, String role, String userCode) {
-        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
+        Date expiredDate = Date.from(Instant.now().plus(24*7, ChronoUnit.HOURS));
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
         JwtBuilder builder = Jwts.builder()
@@ -85,13 +85,13 @@ public class JwtProvider {
         }
     }
 
-    // JWT의 만료 시간을 초 단위로 반환하는 메소드
-    public long getExpirationTime(String jwt) {
-        Claims claims = getClaims(jwt);
-        if (claims != null) {
-            Date expirationDate = claims.getExpiration();
-            return (expirationDate.getTime() - System.currentTimeMillis()) / 1000;  // 만료 시간을 초 단위로 계산
-        }
-        return -1;  // 만약 클레임이 없으면 -1 반환
-    }
+//    // JWT의 만료 시간을 초 단위로 반환하는 메소드
+//    public long getExpirationTime(String jwt) {
+//        Claims claims = getClaims(jwt);
+//        if (claims != null) {
+//            Date expirationDate = claims.getExpiration();
+//            return (expirationDate.getTime() - System.currentTimeMillis()) / 1;  // 만료 시간을 초 단위로 계산
+//        }
+//        return -1;  // 만약 클레임이 없으면 -1 반환
+//    }
 }
