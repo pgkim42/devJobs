@@ -19,7 +19,7 @@
         ResumeDTO read(Integer resumeCode);
 
         // 이력서 수정 메소드 추가
-        void modify(ResumeDTO dto);
+        void modify(ResumeDTO dto, MultipartFile resumeFolder);
 
         void remove(Integer resumeCode);
 
