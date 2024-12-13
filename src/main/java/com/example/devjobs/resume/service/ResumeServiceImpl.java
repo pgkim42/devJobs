@@ -70,7 +70,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Transactional
     @Override
-    public void modify(ResumeDTO dto) {
+    public void modify(ResumeDTO dto, MultipartFile uploadFile) {
         Resume resume = validateOwnership(dto.getResumeCode());
         ObjectMapper mapper = new ObjectMapper();
 
@@ -123,10 +123,10 @@ public class ResumeServiceImpl implements ResumeService {
                 throw new RuntimeException(e);
             }
         }
-//        if (uploadFile != null && !uploadFile.isEmpty()) {
-//            String fileName = fileUtil.fileUpload(uploadFile, "resume");
-//            resume.setUploadFileName(fileName);
-//        }
+        if (uploadFile != null && !uploadFile.isEmpty()) {
+            String fileName = fileUtil.fileUpload(uploadFile, "resume");
+            resume.setUploadFileName(fileName);
+        }
 
         System.out.println("Resume 데이터 확인: " + resume);
         repository.save(resume);

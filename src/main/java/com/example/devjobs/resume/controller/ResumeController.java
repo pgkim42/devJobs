@@ -105,7 +105,7 @@ public class ResumeController {
 
         try {
             // 서비스 메소드 호출
-            service.modify(dto);
+            service.modify(dto, uploadFile);
 
             return new ResponseEntity<>("Resume updated successfully.", HttpStatus.OK);
         } catch (Exception e) {
