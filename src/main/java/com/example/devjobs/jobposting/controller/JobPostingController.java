@@ -24,6 +24,18 @@ public class JobPostingController {
     @Autowired
     private JobPostingRepository repository;
 
+    // 전체 공고 카운트
+    @GetMapping("/countall")
+    public ResponseEntity<Long> countAllJobPostings() {
+        return ResponseEntity.ok(service.countAllJobPostings());
+    }
+
+    // 진행중인 공고
+    @GetMapping("/countactive")
+    public ResponseEntity<Long> countActiveJobPostings() {
+        return ResponseEntity.ok(service.countActiveJobPostings());
+    }
+
     @PostMapping("/register")
     public ResponseEntity<Integer> register(
             JobPostingDTO dto,

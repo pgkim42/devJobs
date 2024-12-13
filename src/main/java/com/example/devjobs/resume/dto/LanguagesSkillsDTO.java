@@ -1,16 +1,16 @@
-package com.example.devjobs.resume.dto;
+    package com.example.devjobs.resume.dto;
 
-import lombok.*;
+    import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@ToString
-public class LanguagesSkillsDTO {
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @ToString
+    public class LanguagesSkillsDTO {
 
-    private String language;   // 언어
-    private String level;      // 능력 수준
+        private String language;   // 언어
+        private String level;      // 능력 수준(유창함, 비즈니스회화, 일상회화)
 
-}
+    }

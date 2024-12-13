@@ -2,6 +2,7 @@ package com.example.devjobs.resume.dto;
 
 import lombok.*;
 
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
