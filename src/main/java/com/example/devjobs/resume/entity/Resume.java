@@ -23,11 +23,23 @@ public class Resume extends BaseEntity {
     @Column(name = "resume_code")
     private Integer resumeCode; // 이력서 코드
 
-    @Column(length = 255)
-    private Integer workExperience; // 경력
+    @Column(columnDefinition = "TEXT")
+    private String introduce;  // 소개글
 
-    @Column(length = 255)
-    private String education; // 학력
+    @Column(columnDefinition = "TEXT")
+    private String work;  // 담당업무
+
+    @Column
+    private String link;  // 링크 (ex. 깃허브 등)
+
+    @Column
+    private Integer workExperience;  // 경력 (년차, JSON)
+
+    @Column(columnDefinition = "json")
+    private String experienceDetail;  // 세부경력 (JSON)
+
+    @Column(columnDefinition = "json")
+    private String education;  // 학력 (JSON)
 
     // columnDefinition은 해당 컬럼을 JSON 형태로 저장하겠다고 명시하는 것
     @Column(columnDefinition = "json")

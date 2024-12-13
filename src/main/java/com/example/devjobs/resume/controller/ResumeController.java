@@ -4,6 +4,8 @@ import com.example.devjobs.resume.dto.ResumeDTO;
 import com.example.devjobs.resume.repository.ResumeRepository;
 import com.example.devjobs.resume.service.ResumeService;
 import com.example.devjobs.util.FileUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -74,31 +76,43 @@ public class ResumeController {
 
     }
 
-    @PatchMapping("/modify")
-    public ResponseEntity<String> modify(
-            @RequestParam(required = false) Integer resumeCode,  // 이력서 코드 (Integer)
-            @RequestParam(required = false) Integer workExperience,  // 경력 (String)
-            @RequestParam(required = false) String education,  // 학력 (String)
-            @RequestParam(required = false) String skill,  // 스킬 (String)
-            @RequestParam(required = false) String jobCategory, // 직무
-            @RequestParam(required = false) String certifications,  // 자격증 (JSON String)
-            @RequestParam(required = false) String languageSkills,  // 언어 능력 (JSON String)
-            @RequestParam(required = false) MultipartFile uploadFileName,  // 이력서 파일 (MultipartFile)
-            @RequestParam(required = false) LocalDateTime lastUpdated  // 마지막 수정일 (LocalDateTime)
-    ) {
-        if (resumeCode == null) {
+//    @PatchMapping("/modify")
+//    public ResponseEntity<String> modify(
+//            @RequestParam(required = false) Integer resumeCode,         // 이력서 코드
+//            @RequestParam(required = false) Integer workExperience,    // 경력
+//            @RequestParam(required = false) String education,          // 학력
+//            @RequestParam(required = false) String skill,              // 스킬
+//            @RequestParam(required = false) String jobCategory,        // 직무
+//            @RequestParam(required = false) String certifications,     // 자격증
+//            @RequestParam(required = false) String languageSkills,     // 언어 능력
+//            @RequestParam(required = false) String introduce,          // 자기소개
+//            @RequestParam(required = false) String work,               // 담당업무
+//            @RequestParam(required = false) String link,               // 링크
+//            @RequestParam(required = false) String experienceDetail,   // 세부 경력
+//            @RequestParam(required = false) MultipartFile uploadFileName, // 이력서 파일
+//            @RequestParam(required = false) LocalDateTime lastUpdated  // 마지막 수정일
+//    ) {
+        @PatchMapping("/modify")
+        public ResponseEntity<String> modify(@RequestParam(required = false) String dtoJson, @RequestParam(required = false) MultipartFile uploadFile) throws JsonProcessingException {
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            ResumeDTO dto = objectMapper.readValue(dtoJson, ResumeDTO.class);
+
+            if (dto.getResumeCode() == null) {
             return new ResponseEntity<>("Resume Code is required.", HttpStatus.BAD_REQUEST);
         }
 
         try {
-            // 서비스 메소드에서 여러 매개변수를 처리하도록 전달
-            service.modify(resumeCode, workExperience, education, skill, certifications, languageSkills, uploadFileName, lastUpdated, jobCategory);
+            // 서비스 메소드 호출
+            service.modify(dto);
 
             return new ResponseEntity<>("Resume updated successfully.", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>("Failed to update resume.", HttpStatus.BAD_REQUEST);
         }
+
     }
 
     @DeleteMapping("/remove/{code}")

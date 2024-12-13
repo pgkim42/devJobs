@@ -6,10 +6,13 @@ import com.example.devjobs.resume.repository.ResumeRepository;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.repository.UserRepository;
 import com.example.devjobs.util.FileUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ResumeServiceImpl implements ResumeService {
 
     @Autowired
@@ -64,38 +68,67 @@ public class ResumeServiceImpl implements ResumeService {
         return resume.getResumeCode();
     }
 
+    @Transactional
     @Override
-    public void modify(Integer resumeCode, Integer workExperience, String education, String skill,
-                       String certifications, String languageSkills, MultipartFile resumeFile,
-                       LocalDateTime lastUpdated, String jobCategory) {
-        Resume resume = validateOwnership(resumeCode);
+    public void modify(ResumeDTO dto) {
+        Resume resume = validateOwnership(dto.getResumeCode());
+        ObjectMapper mapper = new ObjectMapper();
 
         // 전달된 값만 업데이트
-        if (workExperience != null) {
-            resume.setWorkExperience(workExperience);
+        if (dto.getWorkExperience() != null) {
+            resume.setWorkExperience(dto.getWorkExperience());
         }
-        if (education != null) {
-            resume.setEducation(education);
+        if (dto.getEducation() != null) {
+            resume.setEducation(dto.getEducation().toString());
         }
-        if (skill != null) {
-            List<String> skillList = parseSkills(skill);
+        if (dto.getSkill() != null) {
+            List<String> skillList = parseSkills(dto.getSkill());
             resume.setSkill(String.join(",", skillList));
         }
-        if (jobCategory != null) {
-            resume.setJobCategory(jobCategory);
+        if (dto.getJobCategory() != null) {
+            resume.setJobCategory(dto.getJobCategory());
         }
-        if (certifications != null) {
-            resume.setCertifications(certifications);
+        if (dto.getIntroduce() != null) {
+            resume.setIntroduce(dto.getIntroduce());
         }
-        if (languageSkills != null) {
-            resume.setLanguageSkills(languageSkills);
+        if (dto.getWork() != null) {
+            resume.setWork(dto.getWork());
         }
-        if (resumeFile != null && !resumeFile.isEmpty()) {
-            String fileName = fileUtil.fileUpload(resumeFile, "resume");
-            resume.setUploadFileName(fileName);
+        if (dto.getLink() != null) {
+            resume.setLink(dto.getLink());
         }
+        if (dto.getExperienceDetail() != null) {
 
-        resume.setUpdateDate(lastUpdated);
+            try {
+                String str =  mapper.writeValueAsString(dto.getExperienceDetail());
+                resume.setExperienceDetail(str);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (dto.getCertifications() != null) {
+            try {
+                String str =  mapper.writeValueAsString(dto.getCertifications());
+                resume.setCertifications(str);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (dto.getLanguageSkills() != null) {
+            String str = null;
+            try {
+                str = mapper.writeValueAsString(dto.getLanguageSkills());
+                resume.setLanguageSkills(str);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+//        if (uploadFile != null && !uploadFile.isEmpty()) {
+//            String fileName = fileUtil.fileUpload(uploadFile, "resume");
+//            resume.setUploadFileName(fileName);
+//        }
+
+        System.out.println("Resume 데이터 확인: " + resume);
         repository.save(resume);
     }
 
