@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -202,6 +203,28 @@ public class AuthServiceImplement implements AuthService {
             exception.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResponseDto.databaseError().getBody());
+        }
+    }
+
+    @Override
+    public UserInfoResponseDto getUserInfo(String token) {
+        try {
+            // 토큰에서 사용자 ID 추출
+            String userId = jwtProvider.getUserIdFromToken(token.replace("Bearer ", ""));
+
+            // 사용자 정보 조회
+            User user = userRepository.findByUserId(userId);
+            if (user == null) {
+                throw new RuntimeException("User not found");
+            }
+
+            // 회사 정보 조회
+            CompanyProfile companyProfile = user.getCompanyProfile();
+
+            // DTO 생성 및 반환
+            return UserInfoResponseDto.fromUserAndCompany(user, companyProfile);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch user info", e);
         }
     }
 }
