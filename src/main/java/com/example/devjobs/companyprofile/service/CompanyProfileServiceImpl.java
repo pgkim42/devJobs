@@ -1,6 +1,7 @@
 package com.example.devjobs.companyprofile.service;
 
 import com.example.devjobs.companyprofile.dto.CompanyProfileDTO;
+import com.example.devjobs.companyprofile.dto.CompanyProfileUpdateDTO;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.companyprofile.repository.CompanyProfileRepository;
 import com.example.devjobs.user.entity.User;
@@ -98,10 +99,12 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
     }
 
     @Override
-    public void modify(CompanyProfileDTO dto, MultipartFile logoFile) {
-        CompanyProfile entity = repository.findById(dto.getCompanyProfileCode())
+    public void modify(CompanyProfileUpdateDTO updateDTO) {
+        // 1. 기존 데이터 조회
+        CompanyProfile entity = repository.findById(updateDTO.getCompanyProfileCode())
                 .orElseThrow(() -> new IllegalArgumentException("해당 프로필 코드가 존재하지 않습니다."));
 
+        // 2. 인증된 사용자 확인
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
@@ -114,21 +117,33 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
             throw new SecurityException("작성자만 수정할 수 있습니다.");
         }
 
-        // 수정 로직
-        if (dto.getCompanyDescription() != null) entity.setCompanyDescription(dto.getCompanyDescription());
-        if (dto.getIndustry() != null) entity.setIndustry(dto.getIndustry());
-        if (dto.getWebsiteUrl() != null) entity.setWebsiteUrl(dto.getWebsiteUrl());
-        if (logoFile != null && !logoFile.isEmpty()) {
-            validateFile(logoFile);
-            if (entity.getUploadFileName() != null) {
-                fileUtil.deleteFile(entity.getUploadFileName());
-            }
-            String uploadedFileName = fileUtil.fileUpload(logoFile, "companyLogo");
-            entity.setUploadFileName(uploadedFileName);
+        // 3. 수정 데이터 반영
+        if (updateDTO.getCompanyName() != null) {
+            entity.setCompanyName(updateDTO.getCompanyName());
+        }
+        if (updateDTO.getCompanyType() != null) {
+            entity.setCompanyType(updateDTO.getCompanyType());
+        }
+        if (updateDTO.getCeoName() != null) {
+            entity.setCeoName(updateDTO.getCeoName());
+        }
+        if (updateDTO.getCompanyAddress() != null) {
+            entity.setCompanyAddress(updateDTO.getCompanyAddress());
+        }
+        if (updateDTO.getCompanyDescription() != null) {
+            entity.setCompanyDescription(updateDTO.getCompanyDescription());
+        }
+        if (updateDTO.getIndustry() != null) {
+            entity.setIndustry(updateDTO.getIndustry());
+        }
+        if (updateDTO.getWebsiteUrl() != null) {
+            entity.setWebsiteUrl(updateDTO.getWebsiteUrl());
         }
 
+        // 4. 저장
         repository.save(entity);
     }
+
 
     @Override
     public void remove(int code) {
