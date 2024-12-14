@@ -37,13 +37,11 @@ public class ResumeController {
             @RequestPart(value = "resumeFolder", required = false) MultipartFile resumeFolder
     ) {
         try {
-            // "dto" 키 내부 데이터를 추출
             ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(dtoJson);
-            JsonNode actualDtoNode = rootNode.get("dto");
+            ResumeDTO dto = objectMapper.readValue(dtoJson, ResumeDTO.class);
 
-            // 실제 데이터로 ResumeDTO 변환
-            ResumeDTO dto = objectMapper.treeToValue(actualDtoNode, ResumeDTO.class);
+            // 강제로 resumeCode를 null로 설정
+            dto.setResumeCode(null);
 
             if (resumeFolder != null && !resumeFolder.isEmpty()) {
                 dto.setUploadFileName(resumeFolder.getOriginalFilename());

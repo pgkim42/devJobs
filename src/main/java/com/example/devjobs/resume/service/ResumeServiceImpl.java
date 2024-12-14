@@ -54,8 +54,12 @@ public class ResumeServiceImpl implements ResumeService {
             fileName = fileUtil.fileUpload(resumeFolder, "resume");
         }
 
+        // 엔티티로 변환
         Resume resume = dtoToEntity(dto);
-        resume.setUserCode(loggedInUser); // userCode 설정
+
+        // 강제로 새 엔티티로 등록
+        resume.setResumeCode(null); // 새로 생성하기 위해 null 설정
+        resume.setUserCode(loggedInUser);
 
         List<String> skillList = parseSkills(dto.getSkill());
         resume.setSkill(String.join(",", skillList));
@@ -64,7 +68,7 @@ public class ResumeServiceImpl implements ResumeService {
             resume.setUploadFileName(fileName);
         }
 
-        repository.save(resume);
+        repository.save(resume); // 새로운 엔티티 저장
         return resume.getResumeCode();
     }
 
