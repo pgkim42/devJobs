@@ -78,9 +78,7 @@ public class ResumeServiceImpl implements ResumeService {
         if (dto.getWorkExperience() != null) {
             resume.setWorkExperience(dto.getWorkExperience());
         }
-        if (dto.getEducation() != null) {
-            resume.setEducation(dto.getEducation().toString());
-        }
+
         if (dto.getSkill() != null) {
             List<String> skillList = parseSkills(dto.getSkill());
             resume.setSkill(String.join(",", skillList));
@@ -97,6 +95,18 @@ public class ResumeServiceImpl implements ResumeService {
         if (dto.getLink() != null) {
             resume.setLink(dto.getLink());
         }
+
+        if (dto.getEducation() != null) {
+
+            try {
+                String str = mapper.writeValueAsString(dto.getEducation());
+                resume.setEducation(str);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
         if (dto.getExperienceDetail() != null) {
 
             try {

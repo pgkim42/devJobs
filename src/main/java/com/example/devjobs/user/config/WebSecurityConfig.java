@@ -58,8 +58,8 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/api/v1/auth/**", "/oauth2/**", "/jobcategory/**", "/companyprofile/**", "/similarposting/**", "/uploadfile/**").permitAll()
-                        .requestMatchers("/api/v1/company/**", "/jobposting/**").hasRole("COMPANY")
+                        .requestMatchers("/", "/api/v1/auth/**", "/oauth2/**", "/companyprofile/**", "/jobcategory/**", "/companyprofile/read/", "/similarposting/**", "/jobposting/list", "/jobposting/read/**", "/uploadfile/**").permitAll()
+                        .requestMatchers("/api/v1/company/**", "/jobposting/register", "/jobposting/modify", "/jobposting/remove/**").hasRole("COMPANY")
                         .requestMatchers("/api/v1/social-remove","/api/v1/change-password", "/api/v1/check-password").hasAnyRole("USER", "COMPANY")
                         .requestMatchers("/simlilarposting/**", "/resume/**", "/apply/**").hasRole("USER")
                         .anyRequest().authenticated()
