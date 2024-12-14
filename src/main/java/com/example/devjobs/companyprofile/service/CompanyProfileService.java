@@ -20,6 +20,8 @@ public interface CompanyProfileService {
 
     void remove(int code);
 
+    int getCurrentCompanyProfileCode();
+
     default CompanyProfileDTO entityToDTO(CompanyProfile entity) {
         return CompanyProfileDTO.builder()
                 .companyProfileCode(entity.getCompanyProfileCode())
