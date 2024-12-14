@@ -30,6 +30,29 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
     private FileUtil fileUtil;
 
     @Override
+    public int getCurrentCompanyProfileCode() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new SecurityException("사용자가 인증되지 않았습니다.");
+        }
+
+        String currentUserName = authentication.getName();
+        User user = userRepository.findByUserId(currentUserName);
+
+        if (user == null) {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+        }
+
+        CompanyProfile companyProfile = repository.findByUser(user);
+        if (companyProfile == null) {
+            throw new IllegalArgumentException("사용자와 연결된 회사 프로필이 없습니다.");
+        }
+
+        return companyProfile.getCompanyProfileCode();
+    }
+
+    @Override
     public int register(CompanyProfileDTO dto, MultipartFile logoFile) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
