@@ -1,6 +1,7 @@
 package com.example.devjobs.companyprofile.service;
 
 import com.example.devjobs.companyprofile.dto.CompanyProfileDTO;
+import com.example.devjobs.companyprofile.dto.CompanyProfileUpdateDTO;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.user.entity.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +17,7 @@ public interface CompanyProfileService {
 
     CompanyProfileDTO read(int code);
 
-    void modify(CompanyProfileDTO dto, MultipartFile logoFile);
+    void modify(CompanyProfileUpdateDTO updateDTO);
 
     void remove(int code);
 

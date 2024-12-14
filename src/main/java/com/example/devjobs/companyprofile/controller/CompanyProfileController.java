@@ -1,6 +1,7 @@
 package com.example.devjobs.companyprofile.controller;
 
 import com.example.devjobs.companyprofile.dto.CompanyProfileDTO;
+import com.example.devjobs.companyprofile.dto.CompanyProfileUpdateDTO;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.companyprofile.repository.CompanyProfileRepository;
 import com.example.devjobs.companyprofile.service.CompanyProfileService;
@@ -96,17 +97,14 @@ public class CompanyProfileController {
     }
 
     @PutMapping("/modify")
-    public ResponseEntity<String> modify(
-            @RequestPart("dto") String dtoJson,
-            @RequestPart(value = "logoFile", required = false) MultipartFile logoFile) {
+    public ResponseEntity<String> modify(@RequestBody CompanyProfileUpdateDTO updateDTO) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            CompanyProfileDTO dto = objectMapper.readValue(dtoJson, CompanyProfileDTO.class);
-            service.modify(dto, logoFile);
-            return ResponseEntity.noContent().build();
+            System.out.println("수신한 수정 요청 데이터: {}" + updateDTO);
+            service.modify(updateDTO); // Service 호출
+            return ResponseEntity.noContent().build(); // 성공 시 204 반환
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(e.getMessage());
+            System.out.println("기업 정보 수정 중 오류: {}" + e.getMessage());
+            return ResponseEntity.badRequest().body("수정 중 오류 발생: " + e.getMessage());
         }
     }
 
