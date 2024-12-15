@@ -138,8 +138,10 @@ public class ResumeServiceImpl implements ResumeService {
             }
         }
         if (uploadFile != null && !uploadFile.isEmpty()) {
-            String fileName = fileUtil.fileUpload(uploadFile, "resume");
-            resume.setUploadFileName(fileName);
+//            String fileName = fileUtil.fileUpload(uploadFile, "resume");
+//            resume.setUploadFileName(fileName);
+            String newFileName = fileUtil.fileUpload(uploadFile, "resume");
+            resume.setUploadFileName(newFileName);
         }
 
         System.out.println("Resume 데이터 확인: " + resume);
@@ -177,7 +179,13 @@ public class ResumeServiceImpl implements ResumeService {
             throw new SecurityException("해당 이력서의 작성자 정보가 없습니다.");
         }
 
-        return entityToDTO(resume);
+        // 기존 DTO 생성 로직
+        ResumeDTO dto = entityToDTO(resume);
+
+        // uploadFileName 추가
+        dto.setUploadFileName(resume.getUploadFileName());
+
+        return dto;
     }
 
     /**
