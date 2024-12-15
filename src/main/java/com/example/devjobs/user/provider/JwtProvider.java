@@ -1,9 +1,6 @@
 package com.example.devjobs.user.provider;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -45,6 +42,11 @@ public class JwtProvider {
 
     // JWT 검증 메소드
     public String validate(String jwt) {
+
+        if (jwt == null || jwt.isEmpty() || jwt.split("\\.").length != 3) {
+            throw new MalformedJwtException("유효하지 않은 JWT 형식입니다.");
+        }
+
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -60,12 +62,12 @@ public class JwtProvider {
 
         // 소셜 회원은 userCode, 일반 회원은 userId 반환
         if (userCode != null && (userCode.startsWith("kakao_") || userCode.startsWith("naver_"))) {
-            System.out.println("Returning userCode (Social): " + userCode);
             return userCode; // 소셜 회원
+        } else if (userId != null) {
+            return userId; // 일반 회원
+        } else {
+            throw new IllegalArgumentException("JWT에 userCode나 userId가 없습니다.");
         }
-
-        System.out.println("Returning userId (General): " + userId);
-        return userId; // 일반 회원
     }
 
 
@@ -85,13 +87,12 @@ public class JwtProvider {
         }
     }
 
-//    // JWT의 만료 시간을 초 단위로 반환하는 메소드
-//    public long getExpirationTime(String jwt) {
-//        Claims claims = getClaims(jwt);
-//        if (claims != null) {
-//            Date expirationDate = claims.getExpiration();
-//            return (expirationDate.getTime() - System.currentTimeMillis()) / 1;  // 만료 시간을 초 단위로 계산
-//        }
-//        return -1;  // 만약 클레임이 없으면 -1 반환
-//    }
+    public String getUserIdFromToken(String jwt) {
+        Claims claims = getClaims(jwt);
+        if (claims != null) {
+            return claims.getSubject(); // Subject는 userId로 설정됨
+        }
+        throw new IllegalArgumentException("JWT에 userId가 포함되어 있지 않습니다.");
+    }
+
 }

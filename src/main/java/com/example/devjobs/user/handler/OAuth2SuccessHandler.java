@@ -40,24 +40,23 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // JWT 토큰 생성
         String token = jwtProvider.create(userId, role, userCode);
 
-        try {
-            // URL 인코딩 적용
-            String encodedToken = URLEncoder.encode(token, "UTF-8");
-            String encodedUserCode = URLEncoder.encode(userCode, "UTF-8");
-            String encodedEmail = URLEncoder.encode(email, "UTF-8");
-            String encodedName = URLEncoder.encode(name, "UTF-8");
-            String encodedType = URLEncoder.encode(type, "UTF-8");
+        System.out.println("OAuth2 Success Handler Debug:");
+        System.out.println("userId: " + userId);
+        System.out.println("userCode: " + userCode);
+        System.out.println("email: " + email);
+        System.out.println("name: " + name);
+        System.out.println("type: " + type);
+        System.out.println("Generated Token: " + token);
 
-            // URL 리디렉션에 인코딩된 값들을 포함
-            String redirectUrl = String.format("http://localhost:3000/auth/oauth-response/%s/%s/%s/%s/%s/%s",
-                    encodedToken, encodedUserCode, encodedEmail, encodedName, encodedType, 3600);
+        String redirectUrl = String.format("http://localhost:3000/auth/oauth-response/%s/%s/%s/%s/%s/%s",
+                URLEncoder.encode(token, "UTF-8"),
+                URLEncoder.encode(userCode, "UTF-8"),
+                URLEncoder.encode(email, "UTF-8"),
+                URLEncoder.encode(name, "UTF-8"),
+                URLEncoder.encode(type, "UTF-8"),
+                3600);
 
-            // 리디렉션
-            response.sendRedirect(redirectUrl);
-
-        } catch (UnsupportedEncodingException e) {
-            // 예외 처리
-            response.sendRedirect("http://localhost:3000/error");
-        }
+        System.out.println("Redirect URL: " + redirectUrl);
+        response.sendRedirect(redirectUrl);
     }
 }
