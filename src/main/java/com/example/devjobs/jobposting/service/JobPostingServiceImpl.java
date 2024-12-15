@@ -7,6 +7,7 @@ import com.example.devjobs.kakaomap.service.KakaoMapService;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.repository.UserRepository;
 import com.example.devjobs.util.FileUtil;
+import com.example.devjobs.util.S3FileUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,11 @@ public class JobPostingServiceImpl implements JobPostingService {
     @Autowired
     UserRepository userRepository;
 
+//    @Autowired
+//    FileUtil fileUtil;
+
     @Autowired
-    FileUtil fileUtil;
+    S3FileUtil fileUtil;
 
     @Autowired
     KakaoMapService kakaoMapService;
@@ -119,8 +123,15 @@ public class JobPostingServiceImpl implements JobPostingService {
         updateCoordinates(jobPosting);
 
         // 파일 업로드 처리
+//        if (dto.getUploadFile() != null && !dto.getUploadFile().isEmpty()) {
+//            String imgFileName = fileUtil.fileUpload(dto.getUploadFile(), "jobposting");
+//            jobPosting.setImgFileName(imgFileName);
+//        }
+
+        // 파일 업로드 처리
         if (dto.getUploadFile() != null && !dto.getUploadFile().isEmpty()) {
-            String imgFileName = fileUtil.fileUpload(dto.getUploadFile(), "jobposting");
+            // S3 업로드
+            String imgFileName = fileUtil.fileUpload(dto.getUploadFile());
             jobPosting.setImgFileName(imgFileName);
         }
 
@@ -203,8 +214,13 @@ public class JobPostingServiceImpl implements JobPostingService {
             }
 
             // 파일 업데이트
+//            if (uploadFile != null && !uploadFile.isEmpty()) {
+//                String fileName = fileUtil.fileUpload(uploadFile, "jobposting");
+//                entity.setImgFileName(fileName);
+//            }
             if (uploadFile != null && !uploadFile.isEmpty()) {
-                String fileName = fileUtil.fileUpload(uploadFile, "jobposting");
+                // S3 업로드
+                String fileName = fileUtil.fileUpload(uploadFile);
                 entity.setImgFileName(fileName);
             }
 

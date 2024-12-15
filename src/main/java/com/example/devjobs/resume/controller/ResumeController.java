@@ -55,11 +55,17 @@ public class ResumeController {
         }
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<ResumeDTO>> list(){
-        List<ResumeDTO> list = service.getList();
-        return new ResponseEntity<>(list, HttpStatus.OK);
+//    @GetMapping("/list")
+//    public ResponseEntity<List<ResumeDTO>> list(){
+//        List<ResumeDTO> list = service.getList();
+//        return new ResponseEntity<>(list, HttpStatus.OK);
+//
+//    }
 
+    @GetMapping("/list")
+    public List<ResumeDTO> getResumesByUserCode(@RequestParam("userCode") String userCode) {
+        // userCode를 기준으로 Resume 리스트 조회
+        return service.getResumesByUserCode(userCode);
     }
 
     // @requestparam보다는 @pathvariable이 적합(restful api설계 원칙에 부합)

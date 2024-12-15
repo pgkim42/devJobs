@@ -6,6 +6,7 @@ import com.example.devjobs.resume.repository.ResumeRepository;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.repository.UserRepository;
 import com.example.devjobs.util.FileUtil;
+import com.example.devjobs.util.S3FileUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -31,7 +33,10 @@ public class ResumeServiceImpl implements ResumeService {
     UserRepository userRepository;
 
     @Autowired
-    FileUtil fileUtil;
+    S3FileUtil fileUtil;
+
+//    @Autowired
+//    FileUtil fileUtil;
 
     /**
      * Skills 문자열을 파싱하여 List<String>으로 변환
@@ -45,13 +50,28 @@ public class ResumeServiceImpl implements ResumeService {
                 .toList();
     }
 
+    // UserCode가져오기(유저코드로 리스트 조회를 위한)
+    @Override
+    public List<ResumeDTO> getResumesByUserCode(String userCode) {
+        return repository.findByUserCode_UserCode(userCode).stream()
+                .map(resume -> entityToDTO(resume))
+                .collect(Collectors.toList());
+    }
+
     @Override
     public int register(ResumeDTO dto, MultipartFile resumeFolder) {
         User loggedInUser = getLoggedInUser();
 
+//        String fileName = null;
+//        if (resumeFolder != null && !resumeFolder.isEmpty()) {
+//            fileName = fileUtil.fileUpload(resumeFolder, "resume");
+//        }
+
+        // S3에 파일 업로드
         String fileName = null;
         if (resumeFolder != null && !resumeFolder.isEmpty()) {
-            fileName = fileUtil.fileUpload(resumeFolder, "resume");
+            // S3에 파일 업로드
+            fileName = fileUtil.fileUpload(resumeFolder);
         }
 
         // 엔티티로 변환
@@ -137,10 +157,14 @@ public class ResumeServiceImpl implements ResumeService {
                 throw new RuntimeException(e);
             }
         }
+//        if (uploadFile != null && !uploadFile.isEmpty()) {
+//            String newFileName = fileUtil.fileUpload(uploadFile, "resume");
+//            resume.setUploadFileName(newFileName);
+//        }
+
         if (uploadFile != null && !uploadFile.isEmpty()) {
-//            String fileName = fileUtil.fileUpload(uploadFile, "resume");
-//            resume.setUploadFileName(fileName);
-            String newFileName = fileUtil.fileUpload(uploadFile, "resume");
+            // S3에 파일 업로드
+            String newFileName = fileUtil.fileUpload(uploadFile);
             resume.setUploadFileName(newFileName);
         }
 

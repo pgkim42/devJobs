@@ -12,6 +12,9 @@
 
     public interface ResumeService {
 
+        // userCode를 기반으로 Resume 리스트 조회
+        List<ResumeDTO> getResumesByUserCode(String userCode);
+
         int register(ResumeDTO dto, MultipartFile resumeFolder);
 
         List<ResumeDTO> getList();
