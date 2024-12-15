@@ -41,7 +41,7 @@ public class JobPostingDTO {
 
     private String imgFileName;  // 업로드된 파일명
 
-    private String imgPath; // 전체 파일 경로 (imgDirectory + imgFileName)
+    private String imgPath; // s3 저장 (URL)
 
     private Integer companyProfileCode; // 기업프로필코드
 

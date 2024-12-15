@@ -60,8 +60,8 @@ public class JobPosting extends BaseEntity {
     @Column(name = "img_file_name", length = 100)
     private String imgFileName; // 파일명
 
-    @Transient // DB에 저장되지는 않음
-    private String imgPath; // 전체 파일 경로 (imgDirectory + imgFileName)
+    @Column(name = "img_path")
+    private String imgPath; // S3 URL을 저장할 필드
 
     // 추가된 skill 컬럼
     @Column(name = "skill", nullable = false, length = 255)

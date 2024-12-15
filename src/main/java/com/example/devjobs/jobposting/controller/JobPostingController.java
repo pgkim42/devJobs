@@ -39,12 +39,12 @@ public class JobPostingController {
     @PostMapping("/register")
     public ResponseEntity<Integer> register(
             JobPostingDTO dto,
-            @RequestParam(value = "jobPostingFolder", required = false) MultipartFile jobPostingFolder) {
+            @RequestParam(value = "uploadFile", required = false) MultipartFile uploadFile) {
         try {
             System.out.println("Incoming DTO: " + dto);
-            System.out.println("Incoming File: " + (jobPostingFolder != null ? jobPostingFolder.getOriginalFilename() : "No File"));
+            System.out.println("Incoming File: " + (uploadFile != null ? uploadFile.getOriginalFilename() : "No File"));
 
-            int no = service.register(dto, jobPostingFolder);
+            int no = service.register(dto, uploadFile);
             System.out.println("JobPosting registered with ID: " + no);
 
             return new ResponseEntity<>(no, HttpStatus.CREATED);

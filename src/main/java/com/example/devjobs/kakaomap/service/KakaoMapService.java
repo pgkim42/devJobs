@@ -35,15 +35,30 @@ public class KakaoMapService {
         // HTTP 요청 엔티티 생성 (헤더만 포함)
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        // REST API 호출 (GET 요청)
-        ResponseEntity<String> response = restTemplate.exchange(
-                url,                             // 요청 URL
-                org.springframework.http.HttpMethod.GET, // HTTP 메서드 (GET)
-                entity,                          // HTTP 요청 엔티티
-                String.class                     // 응답 타입 (String)
-        );
+        try {
+            // 요청 URL과 헤더 출력
+            System.out.println("Kakao API Request URL: " + url);
+            System.out.println("Kakao API Request Headers: " + headers);
 
-        // API 응답 본문(JSON 문자열) 반환
-        return response.getBody();
+            // REST API 호출 (GET 요청)
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,                             // 요청 URL
+                    org.springframework.http.HttpMethod.GET, // HTTP 메서드 (GET)
+                    entity,                          // HTTP 요청 엔티티
+                    String.class                     // 응답 타입 (String)
+            );
+
+            // 응답 상태 코드와 본문 출력
+            System.out.println("Kakao API Response Status: " + response.getStatusCode());
+            System.out.println("Kakao API Response Body: " + response.getBody());
+
+            // API 응답 본문(JSON 문자열) 반환
+            return response.getBody();
+        } catch (Exception e) {
+            // 예외 발생 시 에러 메시지 출력
+            System.err.println("Kakao API Request Failed: " + e.getMessage());
+            throw new RuntimeException("카카오 API 요청 중 오류 발생: " + e.getMessage());
+
+        }
     }
 }
