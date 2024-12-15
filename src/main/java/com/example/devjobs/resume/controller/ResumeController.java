@@ -73,7 +73,7 @@ public class ResumeController {
 
     }
 
-//    @PatchMapping("/modify")
+    //    @PatchMapping("/modify")
 //    public ResponseEntity<String> modify(
 //            @RequestParam(required = false) Integer resumeCode,         // 이력서 코드
 //            @RequestParam(required = false) Integer workExperience,    // 경력
@@ -89,14 +89,14 @@ public class ResumeController {
 //            @RequestParam(required = false) MultipartFile uploadFileName, // 이력서 파일
 //            @RequestParam(required = false) LocalDateTime lastUpdated  // 마지막 수정일
 //    ) {
-        @PatchMapping("/modify")
-        public ResponseEntity<String> modify(@RequestParam(required = false) String dtoJson, @RequestParam(required = false) MultipartFile uploadFile) throws JsonProcessingException {
+    @PatchMapping("/modify")
+    public ResponseEntity<String> modify(@RequestParam(required = false) String dtoJson, @RequestParam(required = false) MultipartFile uploadFile) throws JsonProcessingException {
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            ResumeDTO dto = objectMapper.readValue(dtoJson, ResumeDTO.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        ResumeDTO dto = objectMapper.readValue(dtoJson, ResumeDTO.class);
 
-            if (dto.getResumeCode() == null) {
+        if (dto.getResumeCode() == null) {
             return new ResponseEntity<>("Resume Code is required.", HttpStatus.BAD_REQUEST);
         }
 

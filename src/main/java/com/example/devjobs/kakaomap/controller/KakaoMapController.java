@@ -21,7 +21,6 @@ public class KakaoMapController {
     private JobPostingService jobPostingService;
 
    // 주소를 받아 좌표를 반환 [ @param address 사용자 입력 주소, @return 위도 및 경도 정보 ]
-
     @GetMapping("/coordinates/{jobCode}")
     public ResponseEntity<?> getCoordinatesForJobPosting(@PathVariable Integer jobCode) {
         Optional<JobPosting> jobPostingOptional = jobPostingService.getbyId(jobCode);
