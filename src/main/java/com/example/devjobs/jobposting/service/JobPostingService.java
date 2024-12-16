@@ -38,6 +38,10 @@ public interface JobPostingService {
                 Integer workExperience, String tag, String jobCategory,
                 String skill, LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated, String address);
 
+    List<String> getCompanyNamesFromJobPostings();
+
+    Integer getCompanyProfileCodeByJobCode(Integer jobCode);
+
     default JobPosting dtoToEntity(JobPostingDTO dto) {
 
         // CompanyProfile 가져오기(기업프로필)

@@ -108,7 +108,7 @@ public class JobPostingServiceImpl implements JobPostingService {
     }
 
     @Override
-    public int register(JobPostingDTO dto, MultipartFile jobPostingFolder) {
+    public int register(JobPostingDTO dto, MultipartFile uploadFile) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
@@ -125,15 +125,34 @@ public class JobPostingServiceImpl implements JobPostingService {
         updateCoordinates(jobPosting);
 
         // 파일 업로드 처리
+<<<<<<< HEAD
         if (dto.getUploadFile() != null && !dto.getUploadFile().isEmpty()) {
             // S3 업로드
             String imgFileName = fileUtil.fileUpload(dto.getUploadFile());
             jobPosting.setImgFileName(imgFileName);
+=======
+//        if (dto.getUploadFile() != null && !dto.getUploadFile().isEmpty()) {
+//            String imgFileName = fileUtil.fileUpload(dto.getUploadFile(), "jobposting");
+//            jobPosting.setImgFileName(imgFileName);
+//        }
+
+        // 파일 업로드 처리
+        if (uploadFile != null && !uploadFile.isEmpty()) {
+            String imgPath = fileUtil.fileUpload(uploadFile); // S3 업로드 후 URL 반환
+            System.out.println("S3 업로드 결과: " + imgPath);
+            jobPosting.setImgPath(imgPath); // URL 저장
+            jobPosting.setImgFileName(uploadFile.getOriginalFilename()); // 원본 파일 이름 저장
+>>>>>>> 1b9319b (merge)
         }
+
+        System.out.println("DB 저장 전 imgPath: " + jobPosting.getImgPath());
+        System.out.println("DB 저장 전 imgFileName: " + jobPosting.getImgFileName());
 
         repository.save(jobPosting);
         return jobPosting.getJobCode();
     }
+
+
 
 
     @Override
