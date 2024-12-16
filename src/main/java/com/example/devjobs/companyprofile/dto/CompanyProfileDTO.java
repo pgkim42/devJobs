@@ -41,4 +41,14 @@ public class CompanyProfileDTO {
     private String createDate; // 생성일 (포맷팅된 값, 필요 시)
 
     private String updateDate; // 수정일 (포맷팅된 값, 필요 시)
+
+    public CompanyProfileDTO(String companyName, String companyDescription, String industry, String websiteUrl, String ceoName) {
+        this.companyName = companyName;
+        this.companyDescription = companyDescription;
+        this.industry = industry;
+        this.websiteUrl = websiteUrl;
+        this.ceoName = ceoName;
+    }
+
+
 }

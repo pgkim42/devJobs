@@ -12,6 +12,6 @@ public interface CompanyProfileRepository extends JpaRepository<CompanyProfile, 
 
     CompanyProfile findByUser(User user);
 
-    Optional<CompanyProfile> findByCompanyCode(String companyCode);
+    Optional<CompanyProfile> findByUser_UserCode(String userCode);
 
 }
