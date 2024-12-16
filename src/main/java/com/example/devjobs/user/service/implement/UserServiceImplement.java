@@ -90,5 +90,10 @@ public class UserServiceImplement implements UserService {
         return user.getCompanyProfile();
     }
 
+    @Override
+    public User getUserId(String userId) {
+        return userRepository.findByUserId(userId);
+    }
+
 
 }

@@ -20,6 +20,8 @@ public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByUserIdOrUserCode(String userId, String userCode);
 
 
+
+
 }
 
 
