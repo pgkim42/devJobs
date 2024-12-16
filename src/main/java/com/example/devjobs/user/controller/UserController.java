@@ -7,7 +7,9 @@ import com.example.devjobs.user.service.implement.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,4 +65,19 @@ public class UserController {
                     .body(Map.of("success", false, "message", "회원 탈퇴 중 오류가 발생했습니다.", "error", e.getMessage()));
         }
     }
+
+    @GetMapping("/company-profile-code")
+    public ResponseEntity<Integer> getCompanyProfileCode() {
+        // SecurityContext에서 로그인된 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Principal을 UserDetailsImpl로 변환
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        String userCode = userDetails.getUserCode(); // UserDetailsImpl에서 userCode가져옴
+
+        Integer companyProfileCode = userService.getCompanyProfileCodeByUserCode(userCode);
+        return ResponseEntity.ok(companyProfileCode);
+    }
+
+
 }

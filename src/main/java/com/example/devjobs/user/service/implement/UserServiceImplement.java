@@ -91,6 +91,15 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
+    public Integer getCompanyProfileCodeByUserCode(String userCode) {
+        User user = userRepository.findByUserCode(userCode);
+        if(user == null || user.getCompanyProfile() == null) {
+            throw new IllegalArgumentException("유효한 사용자 또는 기업 프로필이 없습니다.");
+        }
+
+        return user.getCompanyProfile().getCompanyProfileCode();
+      }
+
     public User getUserId(String userId) {
         return userRepository.findByUserId(userId);
     }

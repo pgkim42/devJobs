@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -63,8 +64,18 @@ public class User extends BaseEntity {
     }
 
 
+//    public User( String userCode, String userId, String email, String name, String type){
+//        this.userCode = userCode;
+//        this.userId = userId;
+//        this.email = email;
+//        this.name = name;
+//        this.type = type;
+//        this.role = "ROLE_USER";
+//    }
+
     public User( String userCode, String email, String name, String type){
         this.userCode = userCode;
+        this.userId = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
         this.email = email;
         this.name = name;
         this.type = type;
