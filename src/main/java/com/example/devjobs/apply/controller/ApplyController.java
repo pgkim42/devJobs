@@ -2,6 +2,9 @@ package com.example.devjobs.apply.controller;
 
 import com.example.devjobs.apply.dto.ApplyDTO;
 import com.example.devjobs.apply.service.ApplyService;
+import com.example.devjobs.user.entity.User;
+import com.example.devjobs.user.service.AuthService;
+import com.example.devjobs.user.service.UserService;
 import com.example.devjobs.user.service.implement.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,9 @@ public class ApplyController {
     ApplyService service;
     @Autowired
     private ApplyService applyService;
+
+    @Autowired
+    UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<Integer> register(@RequestBody ApplyDTO dto) {
@@ -76,8 +82,12 @@ public class ApplyController {
             @RequestParam Integer resumeCode,
             Principal principal) {
 
-        // 인증된 사용자 ID 가져오기
-        String userCode = principal.getName();
+        // 인증된 사용자 id 가져오기
+        String userId = principal.getName();
+
+        User user = userService.getUserId(userId);
+
+        String userCode = user.getUserCode();
 
         try {
             // 지원하기 서비스 호출

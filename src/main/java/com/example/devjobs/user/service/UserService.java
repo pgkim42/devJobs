@@ -17,6 +17,8 @@ public interface UserService {
 
     Integer getCompanyProfileCodeByUserCode(String userCode);
 
+    // 유저아이디로 유저정보를 조회
+    User getUserId(String userId);
 
 }
 

@@ -98,6 +98,10 @@ public class UserServiceImplement implements UserService {
         }
 
         return user.getCompanyProfile().getCompanyProfileCode();
+      }
+
+    public User getUserId(String userId) {
+        return userRepository.findByUserId(userId);
     }
 
 
