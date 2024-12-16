@@ -15,5 +15,8 @@ public interface UserService {
 
     CompanyProfile getUserCompanyProfile(String userCode);
 
+    Integer getCompanyProfileCodeByUserCode(String userCode);
+
+
 }
 
