@@ -178,34 +178,43 @@ public class ApplyServiceImpl implements ApplyService {
     // 지원하기
     @Transactional
     @Override
-    public void applyTo(Integer jobCode, String userCode, ApplyDTO dto) {
+    public void applyTo(Integer jobCode, String userCode, Integer resumeCode) {
 
         if (jobCode == null) {
             throw new IllegalArgumentException("공고 코드가 null입니다.");
         }
 
-        if (!jobPostingRepository.findById(jobCode).isPresent()) {
+        // 공고 확인
+        Optional<JobPosting> optionalJobPosting = jobPostingRepository.findById(jobCode);
+        if (!optionalJobPosting.isPresent()) {
             throw new IllegalArgumentException("해당 공고가 존재하지 않습니다.");
         }
-        JobPosting jobPosting = jobPostingRepository.findById(jobCode).get();
 
-        if (userCode == null || !userRepository.findById(userCode).isPresent()) {
+        JobPosting jobPosting = optionalJobPosting.get();
+
+        // 사용자 확인
+        Optional<User> optionalUser = userRepository.findById(userCode);
+        if (!optionalUser.isPresent()) {
             throw new IllegalArgumentException("해당 사용자가 존재하지 않습니다.");
         }
-        User user = userRepository.findByUserCode(userCode);
+        User user = optionalUser.get();
 
-        if (dto.getResumeCode() == null || !resumeRepository.findById(dto.getResumeCode()).isPresent()) {
+        // 이력서 확인
+        Optional<Resume> optionalResume = resumeRepository.findById(resumeCode);
+        if (!optionalResume.isPresent()) {
             throw new IllegalArgumentException("해당 이력서가 존재하지 않습니다.");
         }
-        Resume resume = resumeRepository.findById(dto.getResumeCode()).get();
+        Resume resume = optionalResume.get();
 
+        // Apply 엔티티 생성
         Apply apply = Apply.builder()
-                .jobCode(jobPosting)
-                .userCode(user)
-                .resumeCode(resume)
-                .applyStatus(ApplyStatus.APPLIED)
+                .jobCode(jobPosting)     // 연관된 공고
+                .userCode(user)          // 연관된 사용자
+                .resumeCode(resume)      // 연관된 이력서
+                .applyStatus(ApplyStatus.APPLIED) // 지원 상태
                 .build();
 
+        // Apply 엔티티 저장
         applyRepository.save(apply);
     }
 

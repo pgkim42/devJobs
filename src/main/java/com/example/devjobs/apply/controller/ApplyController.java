@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -69,27 +70,25 @@ public class ApplyController {
     }
 
     // 공고 지원 api
-    @PostMapping("applyto/{code}")
+    @PostMapping("applyto/{jobCode}")
     public ResponseEntity<String> applyTo(
-            @PathVariable("code") Integer jobCode,
-            @RequestBody ApplyDTO dto) {
+            @PathVariable Integer jobCode,
+            @RequestParam Integer resumeCode,
+            Principal principal) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalArgumentException("사용자가 인증되지 않았습니다.");
-        }
+        // 인증된 사용자 ID 가져오기
+        String userCode = principal.getName();
 
-        // SecurityContext에서 Principal 추출
-        Object principal = authentication.getPrincipal();
-        if (!(principal instanceof UserDetailsImpl)) {
-            throw new IllegalArgumentException("인증된 사용자 정보를 찾을 수 없습니다.");
-        }
+        try {
+            // 지원하기 서비스 호출
+            applyService.applyTo(jobCode, userCode, resumeCode);
+            return ResponseEntity.ok("지원이 성공적으로 완료되었습니다.");
+        } catch (IllegalArgumentException e) {
+            // 잘못된 입력 처리
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            // 기타 서버 오류 처리
+        } return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("지원 처리 중 오류가 발생했습니다.");
 
-        // UserDetailsImpl에서 userCode 추출
-        UserDetailsImpl userDetails = (UserDetailsImpl) principal;
-        String userCode = userDetails.getUser().getUserCode();
-
-        applyService.applyTo(jobCode, userCode, dto);
-        return ResponseEntity.ok("지원이 완료 되었습니다.");
     }
 }

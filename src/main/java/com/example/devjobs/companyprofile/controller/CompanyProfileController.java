@@ -59,11 +59,6 @@ public class CompanyProfileController {
         String userCode = principal.getName();
         System.out.println(userCode);
 
-//        // 소유권 검증
-//        service.
-
-
-
         // Principal 객체에서 Authentication 정보 추출
         Authentication authentication = (Authentication) principal;
 
@@ -72,7 +67,6 @@ public class CompanyProfileController {
 
         // UserDetailsImpl 객체에서 User 정보 가져오기
         User user = userDetails.getUser();
-
 
         if(user.getCompanyProfile() != null) {
             // 로그인한 사용자의 회사번호

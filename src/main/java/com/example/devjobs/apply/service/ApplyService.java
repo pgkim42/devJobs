@@ -22,7 +22,7 @@ public interface ApplyService {
 
     void remove(Integer code);
 
-    void applyTo(Integer jobCode, String userCode, ApplyDTO dto);
+    void applyTo(Integer jobCode, String userCode, Integer resumeCode);
 
     default ApplyDTO entityToDTO(Apply entity) {
         // ApplyDTO 객체 생성
