@@ -70,7 +70,10 @@ public class UserController {
     public ResponseEntity<Integer> getCompanyProfileCode() {
         // SecurityContext에서 로그인된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userCode = (String) authentication.getPrincipal(); // JWT에서 userCode를 String으로 가져옴
+
+        // Principal을 UserDetailsImpl로 변환
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        String userCode = userDetails.getUserCode(); // UserDetailsImpl에서 userCode가져옴
 
         Integer companyProfileCode = userService.getCompanyProfileCodeByUserCode(userCode);
         return ResponseEntity.ok(companyProfileCode);
