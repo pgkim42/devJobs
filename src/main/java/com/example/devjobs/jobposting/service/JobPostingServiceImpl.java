@@ -125,24 +125,18 @@ public class JobPostingServiceImpl implements JobPostingService {
         updateCoordinates(jobPosting);
 
         // 파일 업로드 처리
-<<<<<<< HEAD
         if (dto.getUploadFile() != null && !dto.getUploadFile().isEmpty()) {
             // S3 업로드
             String imgFileName = fileUtil.fileUpload(dto.getUploadFile());
             jobPosting.setImgFileName(imgFileName);
-=======
-//        if (dto.getUploadFile() != null && !dto.getUploadFile().isEmpty()) {
-//            String imgFileName = fileUtil.fileUpload(dto.getUploadFile(), "jobposting");
-//            jobPosting.setImgFileName(imgFileName);
-//        }
+
 
         // 파일 업로드 처리
-        if (uploadFile != null && !uploadFile.isEmpty()) {
+       if (uploadFile != null && !uploadFile.isEmpty()) {
             String imgPath = fileUtil.fileUpload(uploadFile); // S3 업로드 후 URL 반환
             System.out.println("S3 업로드 결과: " + imgPath);
             jobPosting.setImgPath(imgPath); // URL 저장
             jobPosting.setImgFileName(uploadFile.getOriginalFilename()); // 원본 파일 이름 저장
->>>>>>> 1b9319b (merge)
         }
 
         System.out.println("DB 저장 전 imgPath: " + jobPosting.getImgPath());
@@ -233,10 +227,14 @@ public class JobPostingServiceImpl implements JobPostingService {
 //                String fileName = fileUtil.fileUpload(uploadFile, "jobposting");
 //                entity.setImgFileName(fileName);
 //            }
+            // 파일 업데이트
             if (uploadFile != null && !uploadFile.isEmpty()) {
-                // S3 업로드
+                // S3에 업로드 및 URL 가져오기
                 String fileName = fileUtil.fileUpload(uploadFile);
-                entity.setImgFileName(fileName);
+
+                entity.setImgPath(fileName); // URL 경로 저장
+                entity.setImgFileName(uploadFile.getOriginalFilename()); // 원본파일 이름
+
             }
 
             repository.save(entity);

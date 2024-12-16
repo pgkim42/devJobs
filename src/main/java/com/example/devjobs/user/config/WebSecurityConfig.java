@@ -58,13 +58,9 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(request -> request
-<<<<<<< HEAD
-                        .requestMatchers("/", "/api/v1/auth/**", "/oauth2/**", "/companyprofile/**", "/jobcategory/**", "/companyprofile/read/**", "/jobposting/**","/similarposting/**", "/jobposting/list", "/jobposting/read/**", "/jobposting/{jobCode}/company-profile-code","/uploadfile/**", "/kakao-map/**").permitAll()
-                        .requestMatchers("/api/v1/company/**", "/jobposting/register", "/jobposting/modify", "/jobposting/remove/**", "/jobposting/company-names").hasRole("COMPANY")
-=======
+
                         .requestMatchers("/", "/api/v1/auth/**", "/oauth2/**", "/companyprofile/**", "/jobcategory/**", "/companyprofile/read/", "/similarposting/**", "/jobposting/list", "/jobposting/read/**","/jobposting//{jobCode}/company-profile-code", "/uploadfile/**", "/kakao-map/**").permitAll()
                         .requestMatchers("/api/v1/company/**", "/jobposting/register", "/jobposting/modify", "/jobposting/remove/**").hasRole("COMPANY")
->>>>>>> 1b9319b (merge)
                         .requestMatchers("/api/v1/social-remove","/api/v1/change-password", "/api/v1/check-password").hasAnyRole("USER", "COMPANY")
                         .requestMatchers("/simlilarposting/**", "/resume/**", "/apply/**").hasRole("USER")
                         .anyRequest().authenticated()

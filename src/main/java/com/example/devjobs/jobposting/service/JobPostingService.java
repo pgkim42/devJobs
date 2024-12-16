@@ -89,7 +89,8 @@ public interface JobPostingService {
                 .workExperience(entity.getWorkExperience())
                 .tag(entity.getTag())
                 .jobCategory(entity.getJobCategory())
-                .imgFileName(entity.getImgFileName())
+                .imgFileName(entity.getImgFileName()) // 원본 파일 이름
+                .imgPath(entity.getImgPath()) // S3 URL 경로
                 .skill(entity.getSkill()) // 추가된 skill 필드
                 .address(entity.getAddress()) // 주소 매핑
                 .latitude(entity.getLatitude()) // 위도 매핑
@@ -98,7 +99,6 @@ public interface JobPostingService {
                 .userCode(entity.getUserCode().getUserCode())
                 // imgPath 필드는 @Transient로 설정되어 데이터베이스에 저장되지 않으며,
                 // getImgPath() 메서드를 통해 imgDirectory와 imgFileName을 결합한 경로를 반환
-                .imgPath(entity.getImgPath()) // 전체 파일 경로
                 .build();
         return dto;
     }

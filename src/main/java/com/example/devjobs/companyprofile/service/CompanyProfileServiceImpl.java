@@ -1,9 +1,12 @@
 package com.example.devjobs.companyprofile.service;
 
+import com.example.devjobs.apply.dto.ApplyDTO;
+import com.example.devjobs.apply.entity.Apply;
 import com.example.devjobs.companyprofile.dto.CompanyProfileDTO;
 import com.example.devjobs.companyprofile.dto.CompanyProfileUpdateDTO;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.companyprofile.repository.CompanyProfileRepository;
+import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.repository.UserRepository;
 import com.example.devjobs.util.FileUtil;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -29,6 +33,36 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
     @Autowired
     private FileUtil fileUtil;
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ApplyDTO> getApplicantsByCompanyProfile(Integer companyProfileCode){
+            CompanyProfile companyProfile = repository.findById(companyProfileCode).orElseThrow(() -> new IllegalArgumentException("해당 회사 프로필을 찾을 수 없습니다."));
+
+            List<JobPosting> jobPostings = companyProfile.getJobPostings();
+            List<ApplyDTO> applicants = new ArrayList<>();
+
+            for (JobPosting jobPosting : jobPostings) {
+                List<Apply> applies = jobPosting.getApplies();
+                applicants.addAll(applies.stream()
+                        .map(this::entityToDTO)
+                        .collect(Collectors.toList()));
+            }
+
+            return applicants;
+    }
+
+    private ApplyDTO entityToDTO(Apply entity) {
+        return ApplyDTO.builder()
+                .applyCode(entity.getApplyCode())
+                .jobCode(entity.getJobCode().getJobCode())
+                .resumeCode(entity.getResumeCode().getResumeCode())
+                .applyStatus(entity.getApplyStatus())
+                .submissionDate(entity.getCreateDate())
+                .updateDate(entity.getUpdateDate())
+                .userCode(entity.getUserCode().getUserCode())
+                .build();
+    }
 
     @Override
     public int getCurrentCompanyProfileCode() {
@@ -180,4 +214,5 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
             }
         }
     }
+
 }

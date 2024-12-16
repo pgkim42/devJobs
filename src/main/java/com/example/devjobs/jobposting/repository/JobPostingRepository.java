@@ -17,11 +17,11 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Integer>
     // 공고마감일이 현재 시간 이전이고, 공고상태가 true인 공고 조회(batch)
     List<JobPosting> findByPostingDeadlineBeforeAndPostingStatusTrue(LocalDateTime now);
 
-    // [전체 공고] 카운트
+    // [전체 공고] 카운트(admin용)
     @Query("SELECT COUNT(jp) FROM JobPosting jp")
     long countAllJobPostings();
 
-    // [진행 중인 공고] 카운트
+    // [진행 중인 공고] 카운트(admin용)
     @Query("SELECT COUNT(jp) FROM JobPosting jp WHERE jp.postingStatus = true")
     long countActiveJobPostings();
 

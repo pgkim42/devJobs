@@ -13,6 +13,7 @@ public interface ApplyService {
     int register(ApplyDTO dto);
 
     List<ApplyDTO> getList();
+
     List<ApplyDTO> getUserApplications(String userId);
 
     ApplyDTO read(int code);
@@ -20,6 +21,8 @@ public interface ApplyService {
     void modify(ApplyDTO dto);
 
     void remove(Integer code);
+
+    void applyTo(Integer jobCode, String userCode, Integer resumeCode);
 
     default ApplyDTO entityToDTO(Apply entity) {
         // ApplyDTO 객체 생성
@@ -62,4 +65,6 @@ public interface ApplyService {
 
         return entity;
     }
+
+
 }

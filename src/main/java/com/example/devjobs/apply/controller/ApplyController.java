@@ -2,13 +2,17 @@ package com.example.devjobs.apply.controller;
 
 import com.example.devjobs.apply.dto.ApplyDTO;
 import com.example.devjobs.apply.service.ApplyService;
+import com.example.devjobs.user.service.implement.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -17,6 +21,8 @@ public class ApplyController {
 
     @Autowired
     ApplyService service;
+    @Autowired
+    private ApplyService applyService;
 
     @PostMapping("/register")
     public ResponseEntity<Integer> register(@RequestBody ApplyDTO dto) {
@@ -38,7 +44,6 @@ public class ApplyController {
 
         return new ResponseEntity<>(applications, HttpStatus.OK); // 200 OK
     }
-
 
 //    @GetMapping("/list")
 //    public ResponseEntity<List<ApplyDTO>> getList() {
@@ -64,4 +69,26 @@ public class ApplyController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    // 공고 지원 api
+    @PostMapping("applyto/{jobCode}")
+    public ResponseEntity<String> applyTo(
+            @PathVariable Integer jobCode,
+            @RequestParam Integer resumeCode,
+            Principal principal) {
+
+        // 인증된 사용자 ID 가져오기
+        String userCode = principal.getName();
+
+        try {
+            // 지원하기 서비스 호출
+            applyService.applyTo(jobCode, userCode, resumeCode);
+            return ResponseEntity.ok("지원이 성공적으로 완료되었습니다.");
+        } catch (IllegalArgumentException e) {
+            // 잘못된 입력 처리
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            // 기타 서버 오류 처리
+        } return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("지원 처리 중 오류가 발생했습니다.");
+
+    }
 }

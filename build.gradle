@@ -33,6 +33,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-json'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.542'
 
 //    implementation 'com.querydsl:querydsl-jpa'
 //    annotationProcessor 'com.querydsl:querydsl-apt'

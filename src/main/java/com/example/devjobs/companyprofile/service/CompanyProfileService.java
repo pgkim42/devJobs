@@ -1,5 +1,6 @@
 package com.example.devjobs.companyprofile.service;
 
+import com.example.devjobs.apply.dto.ApplyDTO;
 import com.example.devjobs.companyprofile.dto.CompanyProfileDTO;
 import com.example.devjobs.companyprofile.dto.CompanyProfileUpdateDTO;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
@@ -22,6 +23,8 @@ public interface CompanyProfileService {
     void remove(int code);
 
     int getCurrentCompanyProfileCode();
+
+    List<ApplyDTO> getApplicantsByCompanyProfile(Integer companyProfileCode);
 
     default CompanyProfileDTO entityToDTO(CompanyProfile entity) {
         return CompanyProfileDTO.builder()
