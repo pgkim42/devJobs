@@ -20,6 +20,8 @@ public interface JobPostingService {
 
     void remove(Integer jobCode);
 
+    List<String> getCompanyNamesFromJobPostings();
+
     // KAKOMAP API용
     Optional<JobPosting> getbyId(Integer jobCode);
 
@@ -29,10 +31,16 @@ public interface JobPostingService {
     // 진행중인 공고 조회
     long countActiveJobPostings();
 
+    Integer getCompanyProfileCodeByJobCode(Integer jobCode);
+
     void modify(Integer jobCode, String title, String content, String recruitJob,
                 Integer recruitField, String salary, boolean postingStatus,
                 Integer workExperience, String tag, String jobCategory,
                 String skill, LocalDateTime postingDeadline, MultipartFile uploadFile, LocalDateTime lastUpdated, String address);
+
+    List<String> getCompanyNamesFromJobPostings();
+
+    Integer getCompanyProfileCodeByJobCode(Integer jobCode);
 
     default JobPosting dtoToEntity(JobPostingDTO dto) {
 

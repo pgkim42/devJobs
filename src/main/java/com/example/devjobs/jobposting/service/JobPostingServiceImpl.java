@@ -1,5 +1,7 @@
 package com.example.devjobs.jobposting.service;
 
+import com.example.devjobs.companyprofile.entity.CompanyProfile;
+import com.example.devjobs.companyprofile.repository.CompanyProfileRepository;
 import com.example.devjobs.jobposting.dto.JobPostingDTO;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.jobposting.repository.JobPostingRepository;
@@ -39,6 +41,10 @@ public class JobPostingServiceImpl implements JobPostingService {
 
     @Autowired
     KakaoMapService kakaoMapService;
+    @Autowired
+    private JobPostingRepository jobPostingRepository;
+    @Autowired
+    private CompanyProfileRepository companyProfileRepository;
 
     // Skill 파싱
     public List<String> parseSkills(String skillString) {
@@ -111,10 +117,6 @@ public class JobPostingServiceImpl implements JobPostingService {
         String currentUserName = authentication.getName();
         User user = userRepository.findByUserId(currentUserName);
 
-        if (user == null) {
-            throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
-        }
-
         // JobPosting 엔티티 생성
         JobPosting jobPosting = dtoToEntity(dto);
         jobPosting.setUserCode(user); // 로그인한 사용자 설정
@@ -123,10 +125,11 @@ public class JobPostingServiceImpl implements JobPostingService {
         updateCoordinates(jobPosting);
 
         // 파일 업로드 처리
-//        if (dto.getUploadFile() != null && !dto.getUploadFile().isEmpty()) {
-//            String imgFileName = fileUtil.fileUpload(dto.getUploadFile(), "jobposting");
-//            jobPosting.setImgFileName(imgFileName);
-//        }
+        if (dto.getUploadFile() != null && !dto.getUploadFile().isEmpty()) {
+            // S3 업로드
+            String imgFileName = fileUtil.fileUpload(dto.getUploadFile());
+            jobPosting.setImgFileName(imgFileName);
+
 
         // 파일 업로드 처리
        if (uploadFile != null && !uploadFile.isEmpty()) {
@@ -142,6 +145,8 @@ public class JobPostingServiceImpl implements JobPostingService {
         repository.save(jobPosting);
         return jobPosting.getJobCode();
     }
+
+
 
 
     @Override
@@ -267,6 +272,32 @@ public class JobPostingServiceImpl implements JobPostingService {
         } else {
             throw new IllegalArgumentException("해당 JobPosting 코드가 존재하지 않습니다.");
         }
+    }
+
+    @Override
+    public List<String> getCompanyNamesFromJobPostings() {
+        return jobPostingRepository.findCompanyNamesByJobPostings();
+    }
+
+    @Override
+    public Integer getCompanyProfileCodeByJobCode(Integer jobCode) {
+        // 1. JobPosting 조회
+        JobPosting jobPosting = repository.findById(jobCode)
+                .orElseThrow(() -> new IllegalArgumentException("Job posting not found for jobCode: " + jobCode));
+
+        // 2. User 조회
+        User user = userRepository.findByUserCode(jobPosting.getUserCode().getUserCode());
+        if (user == null) {
+            throw new IllegalArgumentException("User not found for userCode: " + jobPosting.getUserCode().getUserCode());
+        }
+
+        // 3. CompanyProfile 조회
+        CompanyProfile companyProfile = user.getCompanyProfile();
+        if (companyProfile == null) {
+            throw new IllegalArgumentException("Company profile not found for userCode: " + user.getUserCode());
+        }
+
+        return companyProfile.getCompanyProfileCode();
     }
 
 

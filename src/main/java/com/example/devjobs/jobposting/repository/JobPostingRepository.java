@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface JobPostingRepository extends JpaRepository<JobPosting, Integer> {
@@ -24,4 +25,10 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, Integer>
     @Query("SELECT COUNT(jp) FROM JobPosting jp WHERE jp.postingStatus = true")
     long countActiveJobPostings();
 
+    // 회사이름 가져오는 쿼리
+    @Query(value = "SELECT cp.company_name " +
+                    "FROM job_posting jp " +
+                    "INNER JOIN company_profile cp ON jp.company_profile_code = cp.company_profile_code",
+                    nativeQuery = true)
+    List<String> findCompanyNamesByJobPostings();
 }

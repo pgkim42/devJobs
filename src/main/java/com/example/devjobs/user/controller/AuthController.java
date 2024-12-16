@@ -4,8 +4,10 @@ import com.example.devjobs.user.dto.request.auth.*;
 import com.example.devjobs.user.dto.response.ResponseDto;
 import com.example.devjobs.user.dto.response.auth.*;
 import com.example.devjobs.user.service.AuthService;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,5 +76,14 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/user-info")
+    public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String token) {
+        try {
+            UserInfoResponseDto userInfo = authService.getUserInfo(token);
+            return ResponseEntity.ok(userInfo);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid token or unauthorized request");
+        }
+    }
 
 }

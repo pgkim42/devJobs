@@ -36,6 +36,13 @@ public class JobPostingController {
         return ResponseEntity.ok(service.countActiveJobPostings());
     }
 
+    // 이름 추출
+    @GetMapping("/company-names")
+    public ResponseEntity<List<String>> getCompanyNames() {
+        List<String> companyNames = service.getCompanyNamesFromJobPostings();
+        return ResponseEntity.ok(companyNames);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<Integer> register(
             JobPostingDTO dto,
@@ -106,5 +113,12 @@ public class JobPostingController {
     public ResponseEntity remove(@PathVariable("code") Integer code) {
         service.remove(code);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+
+    @GetMapping("/{jobCode}/company-profile-code")
+    public ResponseEntity<Integer> getCompanyProfileCode(@PathVariable Integer jobCode) {
+        Integer companyProfileCode = service.getCompanyProfileCodeByJobCode(jobCode);
+        return ResponseEntity.ok(companyProfileCode);
     }
 }

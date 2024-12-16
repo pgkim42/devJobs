@@ -79,5 +79,16 @@ public class UserServiceImplement implements UserService {
         return passwordEncoder.matches(password, user.getPassword());
     }
 
+    @Override
+    public CompanyProfile getUserCompanyProfile(String userCode) {
+        User user = userRepository.findByUserCode(userCode);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found for userCode: " + userCode);
+        }
+
+        // CompanyProfile 반환
+        return user.getCompanyProfile();
+    }
+
 
 }
