@@ -26,6 +26,9 @@
 
         void remove(Integer resumeCode);
 
+        // userCode로 이력서 개수 찾기
+        long getResumeCount(String userCode);
+
         // 자격증, 언어능력 >> List에서 Json으로 변환 필요 (DB에 JSON 형태로로 저장) 직렬화?
         default Resume dtoToEntity(ResumeDTO dto) {
 

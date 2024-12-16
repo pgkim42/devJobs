@@ -245,4 +245,8 @@ public class ResumeServiceImpl implements ResumeService {
 
         return resume;
     }
+
+    public long getResumeCount(String userCode) {
+        return repository.countByUserCode(userCode);
+    }
 }
