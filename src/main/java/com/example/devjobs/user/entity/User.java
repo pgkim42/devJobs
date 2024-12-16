@@ -38,6 +38,8 @@ public class User extends BaseEntity {
 
     private String role;
 
+    private String companyProfileCode;
+
     public User(SignUpRequestDto dto) {
         this.userId = dto.getUserId();
         this.name = dto.getName();
@@ -52,6 +54,12 @@ public class User extends BaseEntity {
         } else {
             this.userCode = "dev_" + dto.getUserId();
         }
+
+        //
+        if (role.equals("company")) {
+            this.companyProfileCode = dto.getCompanyCode();
+        }
+
     }
 
 

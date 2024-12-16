@@ -2,6 +2,7 @@ package com.example.devjobs.apply.service;
 
 import com.example.devjobs.apply.dto.ApplyDTO;
 import com.example.devjobs.apply.entity.Apply;
+import com.example.devjobs.apply.entity.ApplyStatus;
 import com.example.devjobs.apply.entity.ApplyStatusValidator;
 import com.example.devjobs.apply.repository.ApplyRepository;
 import com.example.devjobs.jobposting.entity.JobPosting;
@@ -10,16 +11,19 @@ import com.example.devjobs.resume.entity.Resume;
 import com.example.devjobs.resume.repository.ResumeRepository;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ApplyServiceImpl implements ApplyService {
 
     @Autowired
@@ -68,6 +72,7 @@ public class ApplyServiceImpl implements ApplyService {
         return dtoList;
     }
 
+    // 사용자 지원 정보 조회
     @Override
     public List<ApplyDTO> getUserApplications(String userId) {
         User user = userRepository.findByUserId(userId);
@@ -77,7 +82,7 @@ public class ApplyServiceImpl implements ApplyService {
 
         List<Apply> applications = applyRepository.findByUserCode(user);
         return applications.stream()
-                .map(this::entityToDTO)
+                .map(this::entityToDTO) //회사 이름이 포함된 DTO로 변환
                 .collect(Collectors.toList());
     }
 
@@ -169,4 +174,39 @@ public class ApplyServiceImpl implements ApplyService {
             throw new IllegalArgumentException("해당 지원서 코드가 존재하지 않습니다.");
         }
     }
+
+    // 지원하기
+    @Transactional
+    @Override
+    public void applyTo(Integer jobCode, String userCode, ApplyDTO dto) {
+
+        if (jobCode == null) {
+            throw new IllegalArgumentException("공고 코드가 null입니다.");
+        }
+
+        if (!jobPostingRepository.findById(jobCode).isPresent()) {
+            throw new IllegalArgumentException("해당 공고가 존재하지 않습니다.");
+        }
+        JobPosting jobPosting = jobPostingRepository.findById(jobCode).get();
+
+        if (userCode == null || !userRepository.findById(userCode).isPresent()) {
+            throw new IllegalArgumentException("해당 사용자가 존재하지 않습니다.");
+        }
+        User user = userRepository.findByUserCode(userCode);
+
+        if (dto.getResumeCode() == null || !resumeRepository.findById(dto.getResumeCode()).isPresent()) {
+            throw new IllegalArgumentException("해당 이력서가 존재하지 않습니다.");
+        }
+        Resume resume = resumeRepository.findById(dto.getResumeCode()).get();
+
+        Apply apply = Apply.builder()
+                .jobCode(jobPosting)
+                .userCode(user)
+                .resumeCode(resume)
+                .applyStatus(ApplyStatus.APPLIED)
+                .build();
+
+        applyRepository.save(apply);
+    }
+
 }

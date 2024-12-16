@@ -2,11 +2,14 @@ package com.example.devjobs.apply.controller;
 
 import com.example.devjobs.apply.dto.ApplyDTO;
 import com.example.devjobs.apply.service.ApplyService;
+import com.example.devjobs.user.service.implement.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +20,8 @@ public class ApplyController {
 
     @Autowired
     ApplyService service;
+    @Autowired
+    private ApplyService applyService;
 
     @PostMapping("/register")
     public ResponseEntity<Integer> register(@RequestBody ApplyDTO dto) {
@@ -38,7 +43,6 @@ public class ApplyController {
 
         return new ResponseEntity<>(applications, HttpStatus.OK); // 200 OK
     }
-
 
 //    @GetMapping("/list")
 //    public ResponseEntity<List<ApplyDTO>> getList() {
@@ -64,4 +68,28 @@ public class ApplyController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    // 공고 지원 api
+    @PostMapping("applyto/{code}")
+    public ResponseEntity<String> applyTo(
+            @PathVariable("code") Integer jobCode,
+            @RequestBody ApplyDTO dto) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("사용자가 인증되지 않았습니다.");
+        }
+
+        // SecurityContext에서 Principal 추출
+        Object principal = authentication.getPrincipal();
+        if (!(principal instanceof UserDetailsImpl)) {
+            throw new IllegalArgumentException("인증된 사용자 정보를 찾을 수 없습니다.");
+        }
+
+        // UserDetailsImpl에서 userCode 추출
+        UserDetailsImpl userDetails = (UserDetailsImpl) principal;
+        String userCode = userDetails.getUser().getUserCode();
+
+        applyService.applyTo(jobCode, userCode, dto);
+        return ResponseEntity.ok("지원이 완료 되었습니다.");
+    }
 }
