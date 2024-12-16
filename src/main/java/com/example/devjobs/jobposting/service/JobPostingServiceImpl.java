@@ -129,7 +129,7 @@ public class JobPostingServiceImpl implements JobPostingService {
             // S3 업로드
             String imgFileName = fileUtil.fileUpload(dto.getUploadFile());
             jobPosting.setImgFileName(imgFileName);
-
+        }
 
         // 파일 업로드 처리
        if (uploadFile != null && !uploadFile.isEmpty()) {
