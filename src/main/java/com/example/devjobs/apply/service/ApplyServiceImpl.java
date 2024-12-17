@@ -246,6 +246,8 @@ public class ApplyServiceImpl implements ApplyService {
                 .map(apply -> {
                     Map<String, Object> map = new HashMap<>();
                     map.put("applyCode", apply.getApplyCode());          // 지원 코드
+                    map.put("companyName", apply.getJobCode().getCompanyProfile().getCompanyName()); // 회사 이름
+                    map.put("companyLogo", apply.getJobCode().getCompanyProfile().getUploadFileName()); // 회사 로고
                     map.put("jobTitle", apply.getJobCode().getTitle());  // 공고 제목
                     map.put("applyStatus", apply.getApplyStatus());      // 지원 상태
                     map.put("submissionDate", apply.getCreateDate());    // 지원 날짜
