@@ -168,6 +168,7 @@ public class CompanyProfileController {
     @GetMapping("/by-user")
     public ResponseEntity<List<JobPostingDTO>> getJobPostingsByUserCode(@RequestParam String userCode) {
         List<JobPostingDTO> jobPostings = service.getJobPostingsByUserCode(userCode);
+        System.out.println(jobPostings);
         return ResponseEntity.ok(jobPostings);
     }
 

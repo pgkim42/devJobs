@@ -249,6 +249,7 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
                 .address(jobPosting.getAddress())
                 .latitude(jobPosting.getLatitude())
                 .longitude(jobPosting.getLongitude())
+                .workExperience(jobPosting.getWorkExperience())
                 .build();
     }
 
