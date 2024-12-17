@@ -4,6 +4,7 @@ import com.example.devjobs.apply.dto.ApplyDTO;
 import com.example.devjobs.companyprofile.dto.CompanyProfileDTO;
 import com.example.devjobs.companyprofile.dto.CompanyProfileUpdateDTO;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
+import com.example.devjobs.jobposting.dto.JobPostingDTO;
 import com.example.devjobs.user.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +26,12 @@ public interface CompanyProfileService {
     int getCurrentCompanyProfileCode();
 
     List<ApplyDTO> getApplicantsByCompanyProfile(Integer companyProfileCode);
+
+    // 현재 로그인한 회사의 공고 리스트
+    List<JobPostingDTO> getJobPostingsByUserCode(String userCode);
+
+    // 현재 로그인한 회사 공고 개수
+    Long getJobPostingsByUserCodeCount(String userCode);
 
     default CompanyProfileDTO entityToDTO(CompanyProfile entity) {
         return CompanyProfileDTO.builder()
