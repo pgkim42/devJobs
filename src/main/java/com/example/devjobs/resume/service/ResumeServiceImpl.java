@@ -174,7 +174,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public void remove(Integer resumeCode) {
-        Resume resume = validateOwnership(resumeCode);
+        Resume resume = validateOwnership(resumeCode);  // 사용자만 삭제가 가능한 로직
         repository.delete(resume);
     }
 
