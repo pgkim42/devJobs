@@ -18,7 +18,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -218,4 +220,37 @@ public class ApplyServiceImpl implements ApplyService {
         applyRepository.save(apply);
     }
 
+    @Transactional
+    public List<Map<String, Object>> getMyApplyList(String userCode) {
+
+        User user = new User();
+
+        String prefixedUserCode;
+
+        if ("kakao".equals(user.getType())) {
+            prefixedUserCode = "kakao_" + userCode;
+        } else if ("naver".equals(user.getType())) {
+            prefixedUserCode = "naver_" + userCode;
+        } else {
+            prefixedUserCode = "dev_" + userCode;
+        }
+
+        // 유저 확인
+        user = userRepository.findById(prefixedUserCode)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+
+        System.out.println(userCode);
+
+        // 유저의 지원 내역 조회 후 필요한 데이터만 반환
+        return applyRepository.findByUserCode(user).stream()
+                .map(apply -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("applyCode", apply.getApplyCode());          // 지원 코드
+                    map.put("jobTitle", apply.getJobCode().getTitle());  // 공고 제목
+                    map.put("applyStatus", apply.getApplyStatus());      // 지원 상태
+                    map.put("submissionDate", apply.getCreateDate());    // 지원 날짜
+                    return map;
+                })
+                .collect(Collectors.toList());
+    }
 }

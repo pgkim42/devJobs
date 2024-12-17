@@ -7,6 +7,7 @@ import com.example.devjobs.resume.entity.Resume;
 import com.example.devjobs.user.entity.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ApplyService {
 
@@ -23,6 +24,8 @@ public interface ApplyService {
     void remove(Integer code);
 
     void applyTo(Integer jobCode, String userCode, Integer resumeCode);
+
+    List<Map<String, Object>> getMyApplyList(String userCode);
 
     default ApplyDTO entityToDTO(Apply entity) {
         // ApplyDTO 객체 생성
