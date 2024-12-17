@@ -1,6 +1,7 @@
 package com.example.devjobs.apply.controller;
 
 import com.example.devjobs.apply.dto.ApplyDTO;
+import com.example.devjobs.apply.entity.Apply;
 import com.example.devjobs.apply.service.ApplyService;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.service.AuthService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/apply")
@@ -50,12 +52,6 @@ public class ApplyController {
 
         return new ResponseEntity<>(applications, HttpStatus.OK); // 200 OK
     }
-
-//    @GetMapping("/list")
-//    public ResponseEntity<List<ApplyDTO>> getList() {
-//        List<ApplyDTO> list = service.getList();
-//        return new ResponseEntity<>(list, HttpStatus.OK); // 성공시 200
-//    }
 
     @GetMapping("/read/{code}")
     public ResponseEntity<ApplyDTO> read(@PathVariable int code) {
@@ -103,4 +99,22 @@ public class ApplyController {
         } return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("지원 처리 중 오류가 발생했습니다.");
 
     }
+
+    // 로근인한 유저의 지원현황
+    @GetMapping("myApply")
+    public ResponseEntity<List<Map<String, Object>>> getMyApply(Principal principal) {
+        try {
+            // 로그인된 유저의 userCode 가져오기
+            String userCode = principal.getName();
+
+            // 서비스 호출하여 지원 내역 조회
+            List<Map<String, Object>> applyList = applyService.getMyApplyList(userCode);
+
+            return ResponseEntity.ok(applyList);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
 }

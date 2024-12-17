@@ -7,6 +7,7 @@ import com.example.devjobs.resume.entity.Resume;
 import com.example.devjobs.user.entity.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ApplyService {
 
@@ -24,6 +25,8 @@ public interface ApplyService {
 
     void applyTo(Integer jobCode, String userCode, Integer resumeCode);
 
+    List<Map<String, Object>> getMyApplyList(String userCode);
+  
     boolean isDuplicateApplication(Integer jobCode, String userCode);
 
     default ApplyDTO entityToDTO(Apply entity) {
