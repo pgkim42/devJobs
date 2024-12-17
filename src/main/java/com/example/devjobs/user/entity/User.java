@@ -85,7 +85,7 @@ public class User extends BaseEntity {
     // userId를 고정 생성하는 메서드
     private String generateUserIdFromUserCode(String userCode) {
         // userCode의 해시나 일부 문자열을 사용해 userId를 고정 생성
-        return userCode.replaceAll("[^a-zA-Z0-9]", "").substring(0, 10);
+        return userCode.replaceAll("[^a-zA-Z0-9]", "").substring(0, 15);
     }
 
     public User(String userCode, String type){
