@@ -124,6 +124,7 @@ public class ResumeController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+
     // 이력서 개수 카운트하는 API
     @GetMapping("/count")
     public ResponseEntity<Long> getResumeCount(@RequestParam String userCode) {

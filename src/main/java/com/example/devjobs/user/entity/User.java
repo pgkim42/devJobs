@@ -75,11 +75,17 @@ public class User extends BaseEntity {
 
     public User( String userCode, String email, String name, String type){
         this.userCode = userCode;
-        this.userId = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+        this.userId = generateUserIdFromUserCode(userCode);  // userCode 기반 userId 생성
         this.email = email;
         this.name = name;
         this.type = type;
         this.role = "ROLE_USER";
+    }
+
+    // userId를 고정 생성하는 메서드
+    private String generateUserIdFromUserCode(String userCode) {
+        // userCode의 해시나 일부 문자열을 사용해 userId를 고정 생성
+        return userCode.replaceAll("[^a-zA-Z0-9]", "").substring(0, 10);
     }
 
     public User(String userCode, String type){
