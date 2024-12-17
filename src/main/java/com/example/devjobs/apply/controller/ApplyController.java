@@ -2,6 +2,9 @@ package com.example.devjobs.apply.controller;
 
 import com.example.devjobs.apply.dto.ApplyDTO;
 import com.example.devjobs.apply.service.ApplyService;
+import com.example.devjobs.user.entity.User;
+import com.example.devjobs.user.service.AuthService;
+import com.example.devjobs.user.service.UserService;
 import com.example.devjobs.user.service.implement.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,9 @@ public class ApplyController {
     ApplyService service;
     @Autowired
     private ApplyService applyService;
+
+    @Autowired
+    UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<Integer> register(@RequestBody ApplyDTO dto) {
@@ -79,6 +85,7 @@ public class ApplyController {
         // 인증된 사용자 ID 가져오기
         // principal.getName()을 통해 사용자 ID를 가져올 수 있음 + 사용자 유저는 앞에 dev_ 붙여야함
         String userCode = "dev_" + principal.getName();
+
 
         try {
             if (applyService.isDuplicateApplication(jobCode, userCode)) {

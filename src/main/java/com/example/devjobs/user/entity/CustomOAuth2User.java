@@ -16,11 +16,20 @@ import java.util.Map;
 public class CustomOAuth2User implements OAuth2User {
 
     private String userCode;
+//    private String userId;
     private String email;
     private String name;
     private String type;
 
     // 생성자 수정: userId, email, name, type 모두 받도록
+//    public CustomOAuth2User(String userCode, String userId, String email, String name, String type) {
+//        this.userCode = userCode;
+//        this.userId = userId;
+//        this.email = email;
+//        this.name = name;
+//        this.type = type;
+//    }
+
     public CustomOAuth2User(String userCode, String email, String name, String type) {
         this.userCode = userCode;
         this.email = email;

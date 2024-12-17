@@ -21,9 +21,14 @@ public class UserDetailsImpl implements UserDetails {
         return user;
     }
 
+    public String getUserCode() {
+        return user.getUserCode(); // User 엔티티의 userCode 반환
+    }
+
     @Override
     public String getUsername() {
         return user.getUserId(); // User 엔티티의 userId 반환
+//        return user.getUserCode();
     }
 
     @Override
