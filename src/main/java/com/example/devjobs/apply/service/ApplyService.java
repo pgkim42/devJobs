@@ -24,6 +24,8 @@ public interface ApplyService {
 
     void applyTo(Integer jobCode, String userCode, Integer resumeCode);
 
+    boolean isDuplicateApplication(Integer jobCode, String userCode);
+
     default ApplyDTO entityToDTO(Apply entity) {
         // ApplyDTO 객체 생성
         return ApplyDTO.builder()

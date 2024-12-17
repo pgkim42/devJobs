@@ -77,9 +77,14 @@ public class ApplyController {
             Principal principal) {
 
         // 인증된 사용자 ID 가져오기
-        String userCode = principal.getName();
+        // principal.getName()을 통해 사용자 ID를 가져올 수 있음 + 사용자 유저는 앞에 dev_ 붙여야함
+        String userCode = "dev_" + principal.getName();
 
         try {
+            if (applyService.isDuplicateApplication(jobCode, userCode)) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 지원한 공고입니다."); // 409 Conflict
+            }
+
             // 지원하기 서비스 호출
             applyService.applyTo(jobCode, userCode, resumeCode);
             return ResponseEntity.ok("지원이 성공적으로 완료되었습니다.");
