@@ -1,5 +1,6 @@
 package com.example.devjobs.jobposting.dto;
 
+import com.example.devjobs.companyprofile.dto.CompanyProfileDTO;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
@@ -42,6 +43,8 @@ public class JobPostingDTO {
     private String imgFileName;  // 업로드된 파일명
 
     private String imgPath; // s3 저장 (URL)
+
+    private CompanyProfileDTO profile;  // 회사정보 추가!
 
     private Integer companyProfileCode; // 기업프로필코드
 

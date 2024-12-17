@@ -7,6 +7,7 @@ import com.example.devjobs.companyprofile.dto.CompanyProfileUpdateDTO;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.companyprofile.repository.CompanyProfileRepository;
 import com.example.devjobs.companyprofile.service.CompanyProfileService;
+import com.example.devjobs.jobposting.dto.JobPostingDTO;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.service.implement.UserDetailsImpl;
 import com.example.devjobs.util.FileUtil;
@@ -162,4 +163,19 @@ public class CompanyProfileController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    // 기업 공고 리스트 조회
+    @GetMapping("/by-user")
+    public ResponseEntity<List<JobPostingDTO>> getJobPostingsByUserCode(@RequestParam String userCode) {
+        List<JobPostingDTO> jobPostings = service.getJobPostingsByUserCode(userCode);
+        return ResponseEntity.ok(jobPostings);
+    }
+
+    // 기업 공고 리스트 개수
+    @GetMapping("/list/count")
+    public ResponseEntity<Long> getJobPostingsByUserCodeCount(@RequestParam String userCode) {
+        Long count = service.getJobPostingsByUserCodeCount(userCode);
+        return ResponseEntity.ok(count);
+    }
+
 }

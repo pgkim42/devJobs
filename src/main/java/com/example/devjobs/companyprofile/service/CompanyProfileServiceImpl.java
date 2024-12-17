@@ -6,6 +6,7 @@ import com.example.devjobs.companyprofile.dto.CompanyProfileDTO;
 import com.example.devjobs.companyprofile.dto.CompanyProfileUpdateDTO;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.companyprofile.repository.CompanyProfileRepository;
+import com.example.devjobs.jobposting.dto.JobPostingDTO;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.repository.UserRepository;
@@ -51,6 +52,8 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
             return applicants;
     }
+
+
 
     private ApplyDTO entityToDTO(Apply entity) {
         return ApplyDTO.builder()
@@ -213,6 +216,40 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
                 throw new IllegalArgumentException("파일 크기는 5MB를 초과할 수 없습니다.");
             }
         }
+    }
+
+    // 현재 로그인한 회사 공고 리스트 출력
+    @Override
+    public List<JobPostingDTO> getJobPostingsByUserCode(String userCode) {
+        List<JobPosting> jobPostings = repository.findJobPostingsByUserCode(userCode);
+
+        // 엔티티를 DTO로 변환
+        return jobPostings.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Long getJobPostingsByUserCodeCount(String userCode) {
+        return repository.countJobPostingsByUserCode(userCode);
+    }
+
+    private JobPostingDTO mapToDTO(JobPosting jobPosting) {
+        return JobPostingDTO.builder()
+                .jobCode(jobPosting.getJobCode())
+                .title(jobPosting.getTitle())
+                .content(jobPosting.getContent())
+                .recruitJob(jobPosting.getRecruitJob())
+                .recruitField(jobPosting.getRecruitField())
+                .salary(jobPosting.getSalary())
+                .postingDate(jobPosting.getCreateDate())
+                .postingDeadline(jobPosting.getPostingDeadline())
+                .postingStatus(jobPosting.isPostingStatus())
+                .skill(jobPosting.getSkill())
+                .address(jobPosting.getAddress())
+                .latitude(jobPosting.getLatitude())
+                .longitude(jobPosting.getLongitude())
+                .build();
     }
 
 }

@@ -1,7 +1,9 @@
 package com.example.devjobs.jobposting.service;
 
+import com.example.devjobs.companyprofile.dto.CompanyProfileDTO;
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
 import com.example.devjobs.companyprofile.repository.CompanyProfileRepository;
+import com.example.devjobs.companyprofile.service.CompanyProfileService;
 import com.example.devjobs.jobposting.dto.JobPostingDTO;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.jobposting.repository.JobPostingRepository;
@@ -41,10 +43,12 @@ public class JobPostingServiceImpl implements JobPostingService {
 
     @Autowired
     KakaoMapService kakaoMapService;
+
     @Autowired
     private JobPostingRepository jobPostingRepository;
+
     @Autowired
-    private CompanyProfileRepository companyProfileRepository;
+    private CompanyProfileService profileService;
 
     // Skill 파싱
     public List<String> parseSkills(String skillString) {
@@ -154,13 +158,20 @@ public class JobPostingServiceImpl implements JobPostingService {
 
         List<JobPosting> entityList = repository.findAll();
         List<JobPostingDTO> dtoList = entityList.stream()
-                .map(entity -> entityToDto(entity))
+                .map(entity -> {
+                    JobPostingDTO dto = entityToDto(entity);
+
+                    // 회사정보를 조회하여 리스트에 추가
+                    CompanyProfileDTO profile = profileService.read(dto.getCompanyProfileCode());
+                    dto.setProfile(profile);
+
+                    return dto;
+                })
                 .collect(Collectors.toList());
 
         return dtoList;
 
     }
-
     @Override
     public JobPostingDTO read(Integer jobCode) {
         Optional<JobPosting> result = repository.findById(jobCode);
