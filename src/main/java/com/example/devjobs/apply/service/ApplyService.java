@@ -35,6 +35,11 @@ public interface ApplyService {
     // 지원자 관리 내 상태 업데이트
     void updateApplyStatus(Integer applyCode, String newStatus);
 
+    // 지원자 현황 카운트 (전체)
+    Long getTotalApplications(String userCode);
+
+    // 지원자 현황 카운트 (지원, 서류통과, 면접)
+    Long getOngoingApplications(String userCode);
 
 
     default ApplyDTO entityToDTO(Apply entity) {

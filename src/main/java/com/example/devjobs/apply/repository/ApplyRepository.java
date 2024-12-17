@@ -41,4 +41,20 @@ public interface ApplyRepository extends JpaRepository<Apply, Integer> {
             "WHERE j.userCode.userCode = :userCode")
     List<Map<String, Object>> findApplicationsByJobPoster(@Param("userCode") String userCode);
 
+    // 회사 내 지원자 현황 카운트
+    @Query("SELECT COUNT(a) " +
+            "FROM Apply a " +
+            "JOIN a.jobCode j " +
+            "WHERE j.userCode.userCode = :userCode")
+    Long countTotalApplicationsByUserCode(@Param("userCode") String userCode);
+
+    @Query("SELECT COUNT(a) " +
+            "FROM Apply a " +
+            "JOIN a.jobCode j " +
+            "WHERE j.userCode.userCode = :userCode " +
+            "AND a.applyStatus IN ('APPLIED', 'PASSED', 'INTERVIEW')")
+    Long countOngoingApplicationsByUserCode(@Param("userCode") String userCode);
+
+
+
 }

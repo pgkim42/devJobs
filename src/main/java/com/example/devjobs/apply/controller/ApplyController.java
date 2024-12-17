@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -102,7 +103,7 @@ public class ApplyController {
 
     }
 
-    // 로근인한 유저의 지원현황
+    // 로그인한 유저의 지원현황
     @GetMapping("myApply")
     public ResponseEntity<List<Map<String, Object>>> getMyApply(Principal principal) {
         try {
@@ -119,6 +120,7 @@ public class ApplyController {
         }
     }
 
+    // 공고에 지원한 지원자들의 정보를 조회하는 기능
     @GetMapping("/jobPoster/applications")
     public ResponseEntity<List<Map<String, Object>>> getApplicationsByJobPoster(Principal principal) {
         try {
@@ -149,6 +151,18 @@ public class ApplyController {
 
         applyService.updateApplyStatus(applyCode, newStatus);
         return ResponseEntity.ok().body("Status updated successfully");
+    }
+
+    @GetMapping("/applications/count")
+    public ResponseEntity<Map<String, Long>> getApplicationCounts(@RequestParam String userCode) {
+        Long total = service.getTotalApplications(userCode);
+        Long ongoing = service.getOngoingApplications(userCode);
+
+        Map<String, Long> result = new HashMap<>();
+        result.put("totalComApplications", total);
+        result.put("ongoingComApplications", ongoing);
+
+        return ResponseEntity.ok(result);
     }
 
 }

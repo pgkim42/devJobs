@@ -293,4 +293,14 @@ public class ApplyServiceImpl implements ApplyService {
         apply.setApplyStatus(newStatus);
         applyRepository.save(apply);
     }
+
+    @Override
+    public Long getTotalApplications(String userCode) {
+        return applyRepository.countTotalApplicationsByUserCode(userCode);
+    }
+
+    @Override
+    public Long getOngoingApplications(String userCode) {
+        return applyRepository.countOngoingApplicationsByUserCode(userCode);
+    }
 }
