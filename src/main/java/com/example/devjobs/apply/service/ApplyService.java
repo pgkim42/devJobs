@@ -29,6 +29,10 @@ public interface ApplyService {
   
     boolean isDuplicateApplication(Integer jobCode, String userCode);
 
+    // 회사 내 지원자관리
+    List<Map<String, Object>> getApplicationsByJobPoster(String userCode);
+
+
     default ApplyDTO entityToDTO(Apply entity) {
         // ApplyDTO 객체 생성
         return ApplyDTO.builder()

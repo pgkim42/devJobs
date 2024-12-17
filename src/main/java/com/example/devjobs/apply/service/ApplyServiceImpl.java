@@ -274,4 +274,9 @@ public class ApplyServiceImpl implements ApplyService {
         }
         return false;
     }
+
+    @Override
+    public List<Map<String, Object>> getApplicationsByJobPoster(String userCode) {
+        return applyRepository.findApplicationsByJobPoster(userCode);
+    }
 }

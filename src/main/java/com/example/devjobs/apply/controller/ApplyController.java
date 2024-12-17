@@ -117,4 +117,19 @@ public class ApplyController {
         }
     }
 
+    @GetMapping("/jobPoster/applications")
+    public ResponseEntity<List<Map<String, Object>>> getApplicationsByJobPoster(Principal principal) {
+        try {
+            // 현재 로그인한 사용자의 ID 가져오기
+            String userCode = "com_" + principal.getName();
+
+            List<Map<String, Object>> applications = applyService.getApplicationsByJobPoster(userCode);
+
+            return ResponseEntity.ok(applications);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
 }
