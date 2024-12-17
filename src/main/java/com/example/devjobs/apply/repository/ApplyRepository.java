@@ -27,7 +27,8 @@ public interface ApplyRepository extends JpaRepository<Apply, Integer> {
 
     List<Apply> findByJobCodeAndUserCode(@Param("jobCode") JobPosting jobCode, @Param("userCode") User userCode);
 
-    @Query("SELECT new map(a.userCode.name as name, " +
+    @Query("SELECT new map(a.userCode.name as name," +
+            "a.applyCode as applyCode," +
             "u.email as email, " +
             "j.title as title, " +
             "r.workExperience as workExperience, " +

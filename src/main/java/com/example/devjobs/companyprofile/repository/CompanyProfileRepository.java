@@ -19,12 +19,18 @@ public interface CompanyProfileRepository extends JpaRepository<CompanyProfile, 
     Optional<CompanyProfile> findByUser_UserCode(String userCode);
 
 
-    // 특정 회사의 모든 공고 조회
+    // 특정 회사의 모든 공고 조회 (유저)
+    @Query("SELECT j FROM JobPosting j WHERE j.companyProfile.companyProfileCode = :companyProfileCode")
+    List<JobPosting> findJobPostingsByCompanyProfileCode(@Param("companyProfileCode") Integer companyProfileCode);
+
+    // 기업페이지 내 모든 공고 조회 (기업)
     @Query("SELECT j FROM JobPosting j WHERE j.userCode.userCode = :userCode")
     List<JobPosting> findJobPostingsByUserCode(@Param("userCode") String userCode);
 
-    // 특정 회사(CompanyProfile)에 해당하는 공고 개수 세기
-    @Query("SELECT COUNT(j) FROM JobPosting j WHERE j.userCode.userCode = :userCode")
-    Long countJobPostingsByUserCode(@Param("userCode") String userCode);
+//    // 특정 회사(CompanyProfile)에 해당하는 공고 개수 세기
+//    @Query("SELECT COUNT(j) FROM JobPosting j WHERE j.userCode.userCode = :userCode")
+//    Long countJobPostingsByUserCode(@Param("userCode") String userCode);
+
+
 
 }

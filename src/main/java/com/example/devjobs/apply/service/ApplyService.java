@@ -32,6 +32,10 @@ public interface ApplyService {
     // 회사 내 지원자관리
     List<Map<String, Object>> getApplicationsByJobPoster(String userCode);
 
+    // 지원자 관리 내 상태 업데이트
+    void updateApplyStatus(Integer applyCode, String newStatus);
+
+
 
     default ApplyDTO entityToDTO(Apply entity) {
         // ApplyDTO 객체 생성

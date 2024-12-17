@@ -27,11 +27,15 @@ public interface CompanyProfileService {
 
     List<ApplyDTO> getApplicantsByCompanyProfile(Integer companyProfileCode);
 
-    // 현재 로그인한 회사의 공고 리스트
+    // 회사 정보 내 채용공고 확인(유저)
+    List<JobPostingDTO> getJobPostingsByCompanyProfileCode(Integer companyProfileCode);
+
+    // 기업페이지 내 채용공고 확인(기업)
     List<JobPostingDTO> getJobPostingsByUserCode(String userCode);
 
-    // 현재 로그인한 회사 공고 개수
-    Long getJobPostingsByUserCodeCount(String userCode);
+
+//    // 현재 로그인한 회사 공고 개수
+//    Long getJobPostingsByUserCodeCount(String userCode);
 
     default CompanyProfileDTO entityToDTO(CompanyProfile entity) {
         return CompanyProfileDTO.builder()

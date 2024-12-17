@@ -2,6 +2,7 @@ package com.example.devjobs.apply.controller;
 
 import com.example.devjobs.apply.dto.ApplyDTO;
 import com.example.devjobs.apply.entity.Apply;
+import com.example.devjobs.apply.entity.ApplyStatusValidator;
 import com.example.devjobs.apply.service.ApplyService;
 import com.example.devjobs.user.entity.User;
 import com.example.devjobs.user.service.AuthService;
@@ -26,6 +27,7 @@ public class ApplyController {
 
     @Autowired
     ApplyService service;
+
     @Autowired
     private ApplyService applyService;
 
@@ -60,9 +62,9 @@ public class ApplyController {
     }
 
     @PutMapping("/modify")
-    public ResponseEntity modify(@RequestBody ApplyDTO dto) {
-        service.modify(dto);
-        return new ResponseEntity(dto, HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> modify(@RequestBody ApplyDTO dto) {
+        applyService.modify(dto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/remove/{code}")
@@ -130,6 +132,23 @@ public class ApplyController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
         }
+    }
+
+    // 지원자 관리 내 상태 수정 API
+    @PutMapping("/{applyCode}/status")
+    public ResponseEntity<?> updateApplyStatus(
+            @PathVariable Integer applyCode,
+            @RequestBody Map<String, String> statusRequest) {
+
+        String newStatus = statusRequest.get("status");
+
+        // 상태 유효성 검사
+        if (!ApplyStatusValidator.isValid(newStatus)) {
+            return ResponseEntity.badRequest().body("Invalid status: " + newStatus);
+        }
+
+        applyService.updateApplyStatus(applyCode, newStatus);
+        return ResponseEntity.ok().body("Status updated successfully");
     }
 
 }
