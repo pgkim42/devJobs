@@ -24,7 +24,7 @@ public class OAuth2UserServiceImplement extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(request);
         String oauthClientName = request.getClientRegistration().getClientName();
 
-        String userCode = null;  // userCode -> userId로 수정
+        String userCode = null;
         String name = null;
         String email = null;
         String type = null;
@@ -42,7 +42,7 @@ public class OAuth2UserServiceImplement extends DefaultOAuth2UserService {
             }
 
             userCode = "kakao_" + oAuth2User.getAttributes().get("id");
-            type = "kakao";  // 소셜 타입을 "kakao"로 설정
+            type = "kakao";
         }
 
         // 네이버 로그인 처리
@@ -51,14 +51,25 @@ public class OAuth2UserServiceImplement extends DefaultOAuth2UserService {
             userCode = "naver_" + responseMap.get("id").substring(0, 14);
             email = responseMap.get("email");
             name = responseMap.get("name");
-            type = "naver";  // 소셜 타입을 "naver"로 설정
+            type = "naver";
         }
 
-        // 유저 객체 생성 및 저장
-        User user = new User(userCode, email, name, type);
-        userRepository.save(user);
+        // Step 1: 기존 유저 조회
+        User existingUser = userRepository.findOptionalByUserCode(userCode)
+                .orElse(null);
+
+        if (existingUser == null) {
+            // Step 2: 기존 유저가 없으면 새로 저장
+            existingUser = new User(userCode, email, name, type);
+            userRepository.save(existingUser);
+        } else {
+            // Step 3: 기존 유저 정보 업데이트 (필요 시)
+            existingUser.setEmail(email);
+            existingUser.setName(name);
+            userRepository.save(existingUser);  // 업데이트된 정보 저장
+        }
 
         // CustomOAuth2User 객체 생성하여 반환
-        return new CustomOAuth2User(userCode, email, name, type);  // 이제 userId를 전달
+        return new CustomOAuth2User(existingUser.getUserCode(), existingUser.getEmail(), existingUser.getName(), existingUser.getType());
     }
 }

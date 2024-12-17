@@ -253,4 +253,23 @@ public class ApplyServiceImpl implements ApplyService {
                 })
                 .collect(Collectors.toList());
     }
+
+  @Override
+    public boolean isDuplicateApplication(Integer jobCode, String userCode) {
+        JobPosting jobPosting = JobPosting.builder()
+                .jobCode(jobCode) //PK
+                .build();
+        User user = User.builder()
+                .userCode(userCode) //PK
+                .build();
+//        Optional<Apply> result = applyRepository.findByJobCodeAndUserCode(jobPosting, user);
+//        return result.isPresent();
+
+        List<Apply> result = applyRepository.findByJobCodeAndUserCode(jobPosting, user);
+
+        if(result.size() > 0) {
+            return true;
+        }
+        return false;
+    }
 }
