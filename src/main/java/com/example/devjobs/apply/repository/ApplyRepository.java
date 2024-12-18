@@ -33,7 +33,8 @@ public interface ApplyRepository extends JpaRepository<Apply, Integer> {
             "j.title as title, " +
             "r.workExperience as workExperience, " +
             "a.createDate as submissionDate, " +
-            "a.applyStatus as applyStatus) " +
+            "a.applyStatus as applyStatus, " +
+            "r.resumeCode as resumeCode) " +
             "FROM Apply a " +
             "JOIN a.userCode u " +
             "JOIN a.jobCode j " +

@@ -18,6 +18,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -128,17 +129,20 @@ public class GPTUtil {
         List<JobPostingDTO> jobPostingList = jobPostingService.getList();
         List<HashMap<String,String>> convertJob = new ArrayList<>();
         for(JobPostingDTO posting : jobPostingList){
-            HashMap<String,String> map = new HashMap<>();
-            map.put("jobCode", posting.getJobCode().toString());
-            map.put("workExperience", posting.getWorkExperience().toString());
-            map.put("skill", posting.getSkill());
-            map.put("jobCategory", posting.getJobCategory());
-            convertJob.add(map);
+            if (posting.getPostingDeadline().isAfter(LocalDateTime.now())) { // 마감일이 현재 시간보다 이후인지 확인
+                HashMap<String, String> map = new HashMap<>();
+                map.put("jobCode", posting.getJobCode().toString());
+                map.put("workExperience", posting.getWorkExperience().toString());
+                map.put("skill", posting.getSkill());
+                map.put("jobCategory", posting.getJobCategory());
+                map.put("postingStatus", String.valueOf(posting.isPostingStatus()));
+                convertJob.add(map);
+            }
         }
-        builder.append("구인공고 목록:");
+        builder.append("구인공고 목록: postingStatus가 true인 공고만 출력");
         builder.append(convertJob);
 
-        builder.append("답변은 이런식으로 해줘: 1,2,3");
+        builder.append("답변은 오로지 숫자만 해줘. 예시) 1,2,3");
         System.out.println(builder);
         // 질문 만들기 end
 
