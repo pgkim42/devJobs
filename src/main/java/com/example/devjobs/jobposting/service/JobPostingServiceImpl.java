@@ -268,6 +268,8 @@ public class JobPostingServiceImpl implements JobPostingService {
             throw new IllegalArgumentException("로그인된 사용자 정보를 찾을 수 없습니다.");
         }
 
+        System.out.println("로그인한 유저의 ROLE: " + loggedInUser.getRole());
+
         // 삭제하려는 JobPosting 검색
         Optional<JobPosting> result = repository.findById(jobCode);
 
@@ -275,7 +277,9 @@ public class JobPostingServiceImpl implements JobPostingService {
             JobPosting entity = result.get();
 
             // 작성자와 로그인된 사용자 비교
-            if (!entity.getUserCode().getUserCode().equals(loggedInUser.getUserCode())) {
+            // ROLE이 ADMIN인 사람도 삭제할 수 있음
+            if (!entity.getUserCode().getUserCode().equals(loggedInUser.getUserCode())
+                    && !loggedInUser.getRole().equals("ROLE_ADMIN")) {
                 throw new SecurityException("작성자만 게시글을 삭제할 수 있습니다.");
             }
 
