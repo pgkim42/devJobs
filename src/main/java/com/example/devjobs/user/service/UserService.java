@@ -1,9 +1,11 @@
 package com.example.devjobs.user.service;
 
 import com.example.devjobs.companyprofile.entity.CompanyProfile;
+import com.example.devjobs.user.dto.UserDTO;
 import com.example.devjobs.user.dto.request.auth.UpdateUserRequestDto;
 import com.example.devjobs.user.dto.response.auth.UserResponseDto;
 import com.example.devjobs.user.entity.User;
+import java.util.List;
 
 public interface UserService {
 
@@ -20,5 +22,6 @@ public interface UserService {
     // 유저아이디로 유저정보를 조회
     User getUserId(String userId);
 
+    List<UserDTO> getAllUsers();
 }
 

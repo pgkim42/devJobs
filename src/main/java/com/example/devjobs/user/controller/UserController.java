@@ -1,5 +1,6 @@
 package com.example.devjobs.user.controller;
 
+import com.example.devjobs.user.dto.UserDTO;
 import com.example.devjobs.user.dto.request.auth.ChangePasswordRequest;
 import com.example.devjobs.user.dto.request.auth.PasswordCheckRequest;
 import com.example.devjobs.user.service.UserService;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -79,5 +81,8 @@ public class UserController {
         return ResponseEntity.ok(companyProfileCode);
     }
 
-
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
 }
