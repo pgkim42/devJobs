@@ -39,8 +39,6 @@ public class User extends BaseEntity {
 
     private String role;
 
-    private String companyProfileCode;
-
     public User(SignUpRequestDto dto) {
         this.userId = dto.getUserId();
         this.name = dto.getName();
@@ -54,11 +52,6 @@ public class User extends BaseEntity {
             this.userCode = "com_" + dto.getUserId();
         } else {
             this.userCode = "dev_" + dto.getUserId();
-        }
-
-        //
-        if (role.equals("company")) {
-            this.companyProfileCode = dto.getCompanyCode();
         }
 
     }
@@ -96,7 +89,8 @@ public class User extends BaseEntity {
 
     //    // (cascade를 위한 @OneToMany)
 //    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OneToOne
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "company_profile_code") // 원하는 외래 키 컬럼 이름 지정
     private CompanyProfile companyProfile;
 
 //    @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)

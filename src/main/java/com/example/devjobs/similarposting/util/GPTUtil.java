@@ -154,7 +154,7 @@ public class GPTUtil {
 
         for(String code : arr){
             for(JobPostingDTO job : jobPostingList){
-                if(job.getJobCode() == Integer.parseInt(code)){
+                if(job.getJobCode() == Integer.parseInt(code.trim())){
 
                     result.add(job);
                 }
