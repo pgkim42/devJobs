@@ -274,4 +274,33 @@ public class ApplyServiceImpl implements ApplyService {
         }
         return false;
     }
+
+    // 지원자 관리 가져오는 메소드
+    @Override
+    public List<Map<String, Object>> getApplicationsByJobPoster(String userCode) {
+        return applyRepository.findApplicationsByJobPoster(userCode);
+    }
+
+
+    @Override
+    @Transactional
+    public void updateApplyStatus(Integer applyCode, String newStatus) {
+        Apply apply = applyRepository.findById(applyCode)
+                .orElseThrow(() -> new IllegalArgumentException("지원서가 존재하지 않습니다."));
+
+        System.out.println(applyCode);
+
+        apply.setApplyStatus(newStatus);
+        applyRepository.save(apply);
+    }
+
+    @Override
+    public Long getTotalApplications(String userCode) {
+        return applyRepository.countTotalApplicationsByUserCode(userCode);
+    }
+
+    @Override
+    public Long getOngoingApplications(String userCode) {
+        return applyRepository.countOngoingApplicationsByUserCode(userCode);
+    }
 }

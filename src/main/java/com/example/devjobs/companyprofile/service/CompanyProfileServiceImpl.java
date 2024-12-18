@@ -218,7 +218,17 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
         }
     }
 
-    // 현재 로그인한 회사 공고 리스트 출력
+    // 회사 정보 내 채용공고 확인(유저)
+    @Override
+    public List<JobPostingDTO> getJobPostingsByCompanyProfileCode(Integer companyProfileCode) {
+        List<JobPosting> jobPostings = repository.findJobPostingsByCompanyProfileCode(companyProfileCode);
+
+        // 엔티티를 DTO로 변환
+        return jobPostings.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public List<JobPostingDTO> getJobPostingsByUserCode(String userCode) {
         List<JobPosting> jobPostings = repository.findJobPostingsByUserCode(userCode);
@@ -229,10 +239,11 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public Long getJobPostingsByUserCodeCount(String userCode) {
-        return repository.countJobPostingsByUserCode(userCode);
-    }
+
+//    @Override
+//    public Long getJobPostingsByUserCodeCount(String userCode) {
+//        return repository.countJobPostingsByUserCode(userCode);
+//    }
 
     private JobPostingDTO mapToDTO(JobPosting jobPosting) {
         return JobPostingDTO.builder()

@@ -8,10 +8,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -24,5 +26,35 @@ public interface ApplyRepository extends JpaRepository<Apply, Integer> {
 //    Optional<Apply> findByJobCodeAndUserCode(@Param("jobCode") JobPosting jobCode, @Param("userCode") User userCode);
 
     List<Apply> findByJobCodeAndUserCode(@Param("jobCode") JobPosting jobCode, @Param("userCode") User userCode);
+
+    @Query("SELECT new map(a.userCode.name as name," +
+            "a.applyCode as applyCode," +
+            "u.email as email, " +
+            "j.title as title, " +
+            "r.workExperience as workExperience, " +
+            "a.createDate as submissionDate, " +
+            "a.applyStatus as applyStatus) " +
+            "FROM Apply a " +
+            "JOIN a.userCode u " +
+            "JOIN a.jobCode j " +
+            "JOIN a.resumeCode r " +
+            "WHERE j.userCode.userCode = :userCode")
+    List<Map<String, Object>> findApplicationsByJobPoster(@Param("userCode") String userCode);
+
+    // 회사 내 지원자 현황 카운트
+    @Query("SELECT COUNT(a) " +
+            "FROM Apply a " +
+            "JOIN a.jobCode j " +
+            "WHERE j.userCode.userCode = :userCode")
+    Long countTotalApplicationsByUserCode(@Param("userCode") String userCode);
+
+    @Query("SELECT COUNT(a) " +
+            "FROM Apply a " +
+            "JOIN a.jobCode j " +
+            "WHERE j.userCode.userCode = :userCode " +
+            "AND a.applyStatus IN ('APPLIED', 'PASSED', 'INTERVIEW')")
+    Long countOngoingApplicationsByUserCode(@Param("userCode") String userCode);
+
+
 
 }
