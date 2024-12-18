@@ -55,6 +55,12 @@ public interface ApplyRepository extends JpaRepository<Apply, Integer> {
             "AND a.applyStatus IN ('APPLIED', 'PASSED', 'INTERVIEW')")
     Long countOngoingApplicationsByUserCode(@Param("userCode") String userCode);
 
+    @Query("SELECT COUNT(a) " +
+            "FROM Apply a " +
+            "JOIN a.jobCode j " +
+            "WHERE j.userCode.userCode = :userCode " +
+            "AND a.applyStatus IN ('ACCEPTED')")
+    Long countFinalApplicationsByUserCode(@Param("userCode") String userCode);
 
 
 }

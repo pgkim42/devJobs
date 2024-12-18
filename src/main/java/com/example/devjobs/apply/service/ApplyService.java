@@ -41,6 +41,7 @@ public interface ApplyService {
     // 지원자 현황 카운트 (지원, 서류통과, 면접)
     Long getOngoingApplications(String userCode);
 
+    Long getFinalApplications(String userCode);
 
     default ApplyDTO entityToDTO(Apply entity) {
         // ApplyDTO 객체 생성

@@ -1,5 +1,6 @@
 package com.example.devjobs.similarposting.controller;
 
+import com.example.devjobs.jobposting.dto.JobPostingDTO;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.similarposting.service.SimilarPostingService;
 import com.example.devjobs.similarposting.util.GPTUtil;
@@ -41,7 +42,7 @@ public class SimilarPostingController {
     // GPT API를 사용한 구인 공고 추천
     @GetMapping("/{resumeCode}")
     public ResponseEntity<?> similarPostings2(@PathVariable int resumeCode) {
-        List<JobPosting> result = util.recommendPostings(resumeCode);
+        List<JobPostingDTO> result = util.recommendPostings(resumeCode);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

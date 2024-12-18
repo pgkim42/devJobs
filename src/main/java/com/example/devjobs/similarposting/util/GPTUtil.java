@@ -1,7 +1,9 @@
 package com.example.devjobs.similarposting.util;
 
+import com.example.devjobs.jobposting.dto.JobPostingDTO;
 import com.example.devjobs.jobposting.entity.JobPosting;
 import com.example.devjobs.jobposting.repository.JobPostingRepository;
+import com.example.devjobs.jobposting.service.JobPostingService;
 import com.example.devjobs.resume.entity.Resume;
 import com.example.devjobs.resume.repository.ResumeRepository;
 import com.example.devjobs.similarposting.dto.ChatGPTRequestMsg;
@@ -34,8 +36,11 @@ public class GPTUtil {
     @Autowired
     ResumeRepository resumeRepository;
 
+//    @Autowired
+//    JobPostingRepository jobPostingRepository;
+
     @Autowired
-    JobPostingRepository jobPostingRepository;
+    JobPostingService jobPostingService;
 
     // GPT API 인증키
     @Value("${apikey}")
@@ -49,7 +54,7 @@ public class GPTUtil {
         List<ChatGPTRequestMsg> msglist = new ArrayList<>();
         msglist.add(new ChatGPTRequestMsg("user", question));
 //        msglist.add(new ChatGPTRequestMsg("user","자바가 뭐야?"));
-//		msglist.add(new ChatGPTRequestMsg("user", "안녕"));
+//      msglist.add(new ChatGPTRequestMsg("user", "안녕"));
 
         // 요청 메세지 생성
         GPTRequest requestmsg = new GPTRequest(model, msglist, 300);
@@ -95,7 +100,7 @@ public class GPTUtil {
 //    구직자의 jobCategory, skill, workExperience를 기준으로 가장 적합한 상위 3개의 구인공고의 jobCode를 추천해줘.
 //    구직자정보:{jobCategory=IT/개발, skill=hi,java,spring, workExperience=0}
 //    구인공고 목록:[{jobCategory=IT/개발, skill=java, ddd,d d, workExperience=2, jobCode=1}, {jobCategory=zzzzz, skill=Java, workExperience=1, jobCode=2}, {jobCategory=IT, skill=Java, workExperience=20, jobCode=3}, {jobCategory=IT/개발, skill=spring, java, a, workExperience=2, jobCode=5}]
-    public List<JobPosting> recommendPostings(int resumeCode){
+    public List<JobPostingDTO> recommendPostings(int resumeCode){
 
         // 질문 만들기 start
         StringBuilder builder = new StringBuilder("구직자의 jobCategory, skill, workExperience를 기준으로 가장 적합한 상위 3개의 구인공고의 jobCode를 추천해줘.");
@@ -117,12 +122,12 @@ public class GPTUtil {
             builder.append("구직자정보:");
             builder.append(convertResume);
         }
-        
+
         // 공고 리스트 조회
         // 질문이 길면 토큰량이 많아져요! 구인공고정보를 요약해주세요!
-        List<JobPosting> jobPostingList = jobPostingRepository.findAll();
+        List<JobPostingDTO> jobPostingList = jobPostingService.getList();
         List<HashMap<String,String>> convertJob = new ArrayList<>();
-        for(JobPosting posting : jobPostingList){
+        for(JobPostingDTO posting : jobPostingList){
             HashMap<String,String> map = new HashMap<>();
             map.put("jobCode", posting.getJobCode().toString());
             map.put("workExperience", posting.getWorkExperience().toString());
@@ -145,11 +150,12 @@ public class GPTUtil {
         String[] arr = answer.split(",");
 
         // 답변에 해당하는 구인공고 리스트
-        List<JobPosting> result = new ArrayList<>();
+        List<JobPostingDTO> result = new ArrayList<>();
 
         for(String code : arr){
-            for(JobPosting job : jobPostingList){
+            for(JobPostingDTO job : jobPostingList){
                 if(job.getJobCode() == Integer.parseInt(code)){
+
                     result.add(job);
                 }
             }
@@ -159,3 +165,4 @@ public class GPTUtil {
     }
 
 }
+

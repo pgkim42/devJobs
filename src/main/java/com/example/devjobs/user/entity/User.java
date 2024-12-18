@@ -94,17 +94,18 @@ public class User extends BaseEntity {
         this.role = "ROLE_USER";
     }
 
-    // (cascade를 위한 @OneToMany)
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    //    // (cascade를 위한 @OneToMany)
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToOne
     private CompanyProfile companyProfile;
 
-    @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Resume> resumes;
+//    @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
+//    private List<Resume> resumes;
 
-    @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Apply> applies;
+//    @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
+//    private List<Apply> applies;
 
-    @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<JobPosting> jobPostings;
+//    @OneToMany(mappedBy = "userCode", cascade = CascadeType.REMOVE, orphanRemoval = true)
+//    private List<JobPosting> jobPostings;
 
 }

@@ -303,4 +303,9 @@ public class ApplyServiceImpl implements ApplyService {
     public Long getOngoingApplications(String userCode) {
         return applyRepository.countOngoingApplicationsByUserCode(userCode);
     }
+
+    @Override
+    public Long getFinalApplications(String userCode) {
+        return applyRepository.countFinalApplicationsByUserCode(userCode);
+    }
 }

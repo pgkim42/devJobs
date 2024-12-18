@@ -157,10 +157,12 @@ public class ApplyController {
     public ResponseEntity<Map<String, Long>> getApplicationCounts(@RequestParam String userCode) {
         Long total = service.getTotalApplications(userCode);
         Long ongoing = service.getOngoingApplications(userCode);
+        Long finalTotal = service.getFinalApplications(userCode);
 
         Map<String, Long> result = new HashMap<>();
         result.put("totalComApplications", total);
         result.put("ongoingComApplications", ongoing);
+        result.put("finalApplications", finalTotal);
 
         return ResponseEntity.ok(result);
     }
