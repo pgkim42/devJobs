@@ -12,7 +12,7 @@ public class EmailProvider {
 
     private final JavaMailSender javaMailSender;
 
-    private final String SUBJECT = "[신입] 인증 메일입니다."; // 메일 내용 작성 추후 교체
+    private final String SUBJECT = "[DevJobs] 인증 메일입니다."; // 메일 내용 작성 추후 교체
 
     public boolean sendCertificationMail(String email, String certificationNumber){
 
@@ -40,7 +40,7 @@ public class EmailProvider {
     private String getCertificationMessage(String certificationNumber) {
 
         String certificationMessage = "";
-        certificationMessage += "<h1 style='text-align: center;'>[임대주택 가격 서비스] 인증메일</h1>";
+        certificationMessage += "<h1 style='text-align: center;'>[DevJobs] 인증메일 입니다.</h1>";
         certificationMessage += "<h3 style='text-align: center;'>인증코드 : <strong style ='font-size: 32px; letter-spacing: 8px;'>" + certificationNumber + "</strong></h3>";
         return certificationMessage;
 
