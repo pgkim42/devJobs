@@ -11,7 +11,7 @@ public class KakaoMapService {
 
     // 카카오 지도 REST API URL (주소 → 좌표 변환 API)
     private static final String KAKAO_API_URL = "https://dapi.kakao.com/v2/local/search/address.json";
-    private static final String KAKAO_API_KEY = "ec2872b5f4232ba6697a36308bbc99bd";
+    private static final String KAKAO_API_KEY = "";
 
     /**
      * 입력된 주소를 기반으로 카카오 지도 API를 호출하여 좌표를 반환하는 메서드
